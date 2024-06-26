@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springproject.goodz.pay.mapper.PayMapper">
+
+	<!-- 구매 등록 -->
+  <insert id="insertPurchase" parameterType="Purchase">
+	<selectKey keyProperty="purchaseNo" resultType="int" order="AFTER">
+		SELECT LAST_INSERT_ID()
+	</selectKey>
+    INSERT INTO Purchase (user_id, p_no, purchase_price, payment_method, purchase_state, option_id)
+    VALUES (#{userId}, #{pNo}, #{purchasePrice}, #{paymentMethod}, #{purchaseState}, #{optionId})
+  </insert>
+
+	<!-- 구매 업데이트 -->
+	<update id="updatePurchase" parameterType="Purchase">
+		UPDATE Purchase
+		SET purchase_state = #{purchaseState},
+			order_id = #{orderId},
+			address = #{address},
+			updated_at = CURRENT_TIMESTAMP
+		WHERE purchase_no = #{purchaseNo}
+	</update>
+
+	<!-- 판매 등록 -->
+	<insert id="insertSale" parameterType="Sales">
+		INSERT INTO Sales (user_id, p_no, size, sales_tracking_no, address, sale_price, account, sale_state, sale_date)
+		VALUES (#{userId}, #{pNo}, #{size}, #{salesTrackingNo}, #{address}, #{salePrice}, #{account}, #{saleState}, NOW())
+	</insert>
+
+	<select id="selectPurchase" resultType="Purchase">
+		SELECT *
+		FROM Purchase
+		WHERE purchase_no = #{purchaseNo}
+	</select>
+
+
+	<select id="findPurchasesByUserId">
+		SELECT 
+			p.purchase_no AS purchaseNo,
+			p.user_id AS userId,
+			p.p_no AS pNo,
+			p.option_id AS optionId,
+			p.order_id AS orderId,
+			p.purchase_price AS purchasePrice,
+			p.payment_method AS paymentMethod,
+			p.purchase_state AS purchaseState,
+			p.ordered_at AS orderedAt,
+			p.updated_at AS updatedAt,
+			p.tracking_no AS trackingNo,
+			po.size AS size  <!-- size 추가 -->
+		FROM 
+			Purchase p
+		JOIN 
+			product_option po ON p.option_id = po.option_id
+		WHERE 
+			p.user_id = #{userId}
+	</select>
+
+	<!-- <select id="findPurchasesByUserIdWithPage" resultType="Purchase" parameterType="map">
+		SELECT 
+			purchase_no AS purchaseNo,
+			user_id AS userId,
+			p_no AS pNo,
+			option_id AS OptionId,
+			order_id AS OrderId,
+			purchase_price AS PurchasePrice,
+			payment_method AS PaymentMethod,
+			purchase_state AS PurchaseState,
+			ordered_at AS OrderedAt,
+			updated_at AS UpdatedAt
+		FROM 
+			Purchase
+		WHERE 
+			user_id = #{userId}
+		ORDER BY
+			purchase_no DESC
+		LIMIT #{start}, #{rows}
+	</select> -->
+
+	<update id="cancelPurchase">
+		UPDATE Purchase
+		SET purchase_state = 'cancelled'
+		WHERE purchase_no = #{purchaseNo}
+	</update>
+
+	<select id="findSalesByUserId">
+		SELECT *
+		  FROM sales
+		 WHERE user_id = #{userId}
+	</select>
+</mapper>

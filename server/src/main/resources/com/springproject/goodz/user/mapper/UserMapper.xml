@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springproject.goodz.user.mapper.UserMapper">
+
+    <resultMap type="Users" id="userMap">
+        <id property="userId" column="user_id" javaType="String"/>
+        <result property="no" column="no" />
+        <result property="username" column="username" />
+        <result property="nickname" column="nickname" />
+        <result property="password" column="password" />
+        <result property="birth" column="birth" />
+        <result property="phoneNumber" column="phone_number" />
+        <result property="profilePictureUrl" column="profile_picture_url" />
+        <result property="profileImgNo" column="file_no" />
+        <result property="account" column="account" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+        <result property="enabled" column="enabled" />
+        <result property="countFollower" column="count_follower" />
+        <result property="countFollowing" column="count_following" />
+        <collection property="authList" resultMap="authMap" />
+    </resultMap>
+
+        
+    <resultMap type="UserAuth" id="authMap">
+        <result property="authNo" column="auth_no" />
+        <result property="userId" column="user_id" />
+        <result property="auth" column="auth" />
+    </resultMap>
+
+    <resultMap type="ShippingAddress" id="shippingAddressMap">
+        <id property="addressNo" column="address_no" />
+        <result property="userId" column="user_id" />
+        <result property="recipientName" column="recipient_name" />
+        <result property="address" column="address" />
+        <result property="zipCode" column="zip_code" />
+        <result property="phoneNumber" column="phone_number" />
+        <result property="isDefault" column="is_default" />
+        <result property="type" column="type" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <!-- 로그인 - username -->
+    <select id="login" resultMap="userMap">
+        SELECT u.user_id
+              ,u.username
+              ,u.password
+              ,u.birth
+              <!-- ,u.profile_picture_url -->
+              ,u.account
+              ,u.created_at
+              ,u.updated_at
+              ,1 enabled
+              ,auth
+        FROM user u LEFT OUTER JOIN user_auth auth ON u.user_id = auth.user_id
+        WHERE u.user_id = #{userId}
+    </select>
+
+<!-- 회원 조회 - id -->
+    <select id="select" resultMap="userMap">
+        <!-- SELECT u.user_id
+              ,u.username
+              ,u.nickname
+              ,u.password
+              ,u.birth
+              ,u.profile_picture_url
+              ,u.account
+              ,u.created_at
+              ,u.updated_at
+              ,1 enabled
+              ,auth
+              ,(SELECT COUNT(*) FROM follow WHERE user_id = u.user_id)AS count_follower
+	          ,(SELECT COUNT(*) FROM follow WHERE follower_id = u.user_id)AS count_following
+        FROM user u LEFT OUTER JOIN user_auth auth ON u.user_id = auth.user_id
+        WHERE u.user_id = #{userId} -->
+        SELECT u.no as no
+			  ,u.user_id
+              ,u.username
+              ,u.nickname
+              ,u.password
+              ,u.birth
+              <!-- ,u.profile_picture_url -->
+              ,f.no as file_no
+              ,u.account
+              ,u.created_at
+              ,u.updated_at
+              ,1 enabled
+              ,auth
+              ,IFNULL((SELECT COUNT(*) FROM follow WHERE user_id = u.user_id),0)AS count_follower
+	          ,IFNULL((SELECT COUNT(*) FROM follow WHERE follower_id = u.user_id),0)AS count_following
+        FROM user u
+        LEFT OUTER JOIN user_auth auth ON u.user_id = auth.user_id
+		LEFT OUTER JOIN file f on u.no = parent_no and f.parent_table='user'
+        WHERE u.user_id = #{userId}
+    </select>
+    
+
+    <!-- 회원 조회 - nickname -->
+    <select id="selectByNickname" resultMap="userMap">
+        SELECT u.no
+              ,u.user_id
+              ,u.username
+              ,u.nickname
+              ,u.password
+              ,u.birth
+              <!-- ,u.profile_picture_url -->
+              ,f.no as file_no
+              ,u.account
+              ,u.created_at
+              ,u.updated_at
+              ,1 enabled
+              ,auth
+              ,IFNULL((SELECT COUNT(*) FROM follow WHERE user_id = u.user_id),0)AS count_follower
+	          ,IFNULL((SELECT COUNT(*) FROM follow WHERE follower_id = u.user_id),0)AS count_following
+        FROM user u
+        LEFT OUTER JOIN user_auth auth ON u.user_id = auth.user_id
+        LEFT OUTER JOIN file f on u.no = parent_no and f.parent_table='user'
+        WHERE u.nickname = #{nickname}
+    </select>
+
+
+
+    <!-- 회원 가입 -->
+    <insert id="join">
+        INSERT INTO user (user_id, username, nickname, password, birth, phone_number)
+        VALUES (#{userId}, #{username}, #{nickname}, #{password}, #{birth}, #{phoneNumber})
+    </insert>
+
+    <!-- 회원 정보 수정 -->
+    <update id="update">
+        UPDATE user
+        <set>
+            nickname = #{nickname},
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                phone_number = #{phoneNumber},
+            </if>
+            updated_at = now()
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+
+
+
+    <!-- 회원 권한 등록 -->
+    <insert id="insertAuth">
+        INSERT INTO user_auth( user_id, auth )
+        VALUES ( #{userId}, #{auth} )
+    </insert>
+
+    <!-- 아이디 찾기 -->
+    <select id="findId" resultType="string">
+        SELECT user_id
+          FROM user
+         WHERE phone_number = #{phoneNumber}
+           AND username = #{userName}
+    </select>
+
+    <!-- 비밀번호 찾기 -->
+    <select id="findPw" resultType="Users">
+       SELECT *
+         FROM user
+        WHERE username = #{userName}
+          AND birth = #{birth}
+          AND user_id = #{userId}
+    </select>
+
+     <!-- 비밀번호 변경 -->
+    <update id="changePw">
+    UPDATE user
+       SET password = #{password}
+     WHERE user_id  = #{userId}
+    </update> 
+
+    <!-- 쿼리 성능 향상을 위한 신규 아이디 중복 체크 쿼리 -->
+    <select id="check" resultType="java.lang.Integer">
+        <choose>
+            <when test="userId != null and nickname != null">
+                SELECT COUNT(*)
+                FROM user
+                WHERE nickname = #{nickname}
+                  AND user_id != #{userId}
+            </when>
+            <when test="userId != null">
+                SELECT COUNT(*)
+                FROM user
+                WHERE user_id = #{userId}
+            </when>
+            <when test="nickname != null">
+                SELECT COUNT(*)
+                FROM user
+                WHERE nickname = #{nickname}
+            </when>
+            <otherwise>
+                SELECT 0
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <insert id="insertAddress" parameterType="Shippingaddress">
+        INSERT INTO Shippingaddress (user_id, recipient_name, phone_number, address, zip_code, is_default, created_at, updated_at)
+        VALUES (#{userId}, #{recipientName}, #{phoneNumber}, #{address}, #{zipCode}, #{isDefault}, NOW(), NOW())
+    </insert>
+
+    <!-- 주소 업데이트 (기본 배송지 등록 여부 포함)-->
+    <update id="updateAddress" parameterType="Shippingaddress">
+       UPDATE Shippingaddress
+        SET recipient_name = #{recipientName},
+            phone_number = #{phoneNumber},
+            address = #{address},
+            zip_code = #{zipCode},
+            is_default = #{isDefault},
+            updated_at = NOW()
+        WHERE address_no = #{addressNo}
+    </update>
+
+    <!-- 유저 아이디의 맞는 배송지 불러오기 -->
+    <select id="selectByUserId" resultMap="shippingAddressMap">
+        SELECT * FROM Shippingaddress 
+        WHERE user_id = #{userId}
+        ORDER BY is_default DESC, updated_at DESC
+    </select>
+
+
+    <!-- 배송지 단일 조회 -->
+    <select id="selectAddress" resultType="Shippingaddress" >
+        SELECT * FROM Shippingaddress 
+        WHERE address_no = #{addressNo}
+    </select>
+
+    <!-- 삭제 -->
+    <delete id="deleteAddress">
+        DELETE FROM Shippingaddress
+        WHERE address_no IN ( ${addressNo} )
+    </delete>
+
+    <!-- 유저 계좌 등록 -->
+    <update id="insertAccount">
+        UPDATE user
+          SET account = #{account}
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 소셜 회원 가입 -->
+    <insert id="insertSocial" parameterType="UserSocial">
+        INSERT INTO user_social (user_id, username, nickname, provider, social_id, picture)
+        VALUES (#{userId}, #{username}, #{nickname}, #{provider}, #{socialId}, #{picture})
+    </insert>
+
+    <!-- 소셜 회원 조회 -->
+    <select id="selectSocial" resultType="UserSocial">
+        SELECT * 
+        FROM user_social
+        WHERE provider = #{provider} 
+        AND social_id = #{socialId}
+    </select>
+
+
+    <!-- 소셜 회원 수정 -->
+    <update id="updateSocial">
+        UPDATE user_social
+           SET user_id = #{userId}
+              ,provider = #{provider}
+              ,social_id = #{socialId}
+              ,username = #{username}
+              ,picture = #{picture}
+              ,updated_at = #{updatedAt}
+        WHERE provider = #{provider} 
+        AND social_id = #{socialId}
+    </update>
+
+  <!-- 소셜정보로 회원 조회 -->
+<select id="selectBySocial" resultMap="userMap">
+    SELECT u.user_id
+          ,u.user_id
+          ,u.nickname
+          ,u.birth
+          ,u.phone_number
+          <!-- ,u.profile_picture_url -->
+          ,u.password
+          ,u.username
+          ,u.created_at
+          ,u.updated_at
+          ,auth.auth
+    FROM user u 
+         LEFT OUTER JOIN user_auth auth ON u.user_id = auth.user_id
+    WHERE u.user_id = (
+                    SELECT user_id
+                      FROM user_social
+                    WHERE provider = #{provider} 
+                      AND social_id = #{socialId}
+                )
+    </select>
+
+    <select id="findUserByUsername" resultType="Users">
+        SELECT *
+        FROM user 
+        WHERE user_id = #{userId}
+    </select>
+</mapper>

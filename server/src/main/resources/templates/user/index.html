@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/mypage_layout}"
+      >
+<!-- ⭐ layout:decorate="~{/레이아웃 경로/레이아웃 파일명}" -->
+<head>
+    <style>
+        .box {
+            margin-bottom: 15px;
+        }
+
+        .profile_img {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%; 
+            overflow: hidden; 
+            margin-right: 15px;
+        }
+        .profile_img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product_img img {
+            width: 100%;
+        }
+
+        .product_brand, .product_name {
+            white-space: nowrap;       /* 줄바꿈을 하지 않도록 설정 */
+            overflow: hidden;          /* 넘치는 부분을 숨김 */
+            text-overflow: ellipsis;   /* 넘치는 부분을 ...으로 표시 */
+            display: block;            /* display 속성을 block으로 설정하여 width를 적용 */
+            width: 100%;
+        }
+    </style>
+
+    <title>마이 페이지</title>
+</head>
+
+<body layout:fragment="content">
+    <div class="container">
+        <div class="userMainContainer">
+
+            <!-- 유저 정보 -->
+            <div class="box profile_details d-flex justify-content-between border rounded-3 p-3">
+                <div class="d-flex">
+                    <div class="profile_img">
+                        <!-- 유저가 설정한 이미지 가져와야함. 없으면 기본 이미지로 설정-->
+                        <th:block th:if="${user == null or user.profileImgNo == null}">
+                            <img src="/img/user/basic_social.png" alt="프로필이미지" class="rounded-circle">
+                        </th:block>
+                        <th:block th:if="${user != null or user.profileImgNo != null}">
+                                <img th:src="|/files/${user.profileImgNo}|" alt="프로필이미지" class="rounded-circle">
+                        </th:block>
+                    </div>
+                    <div class="profile_info d-flex flex-column my-auto">
+                        <!-- 유저의 아이디와 닉네임 -->
+                        <p class="nickname  fw-bold m-0" th:text="${user != null ? user.nickname : 'Error'}"></p>
+                        <p class="user_id m-0" style="font-size: medium;" th:text="${user.userId}"></p>
+                    </div>
+                </div>
+                <div class="profile_buttons my-auto">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="manage_info()">내 정보 관리</button>
+                    <a type="button" class="btn btn-sm btn-outline-secondary" th:href="|/styles/user/@${user.nickname}|">스타일</a>
+                </div>
+            </div>
+
+            <!-- 구매 내역 -->
+            <div class="box border rounded-3 p-3">
+                <div class="d-flex justify-content-between">
+                    <p class="fw-bold">구매 내역</p>
+                    <a href="/user/purchase" class="text-body-tertiary" style="text-decoration: none;">+ 더보기</a>
+                </div>
+                <div class="row text-center">
+                    <!-- 유저의 현황에 맞는 수를 가져옴 -->
+                    <div class="col border-end my-3 hover-effect">
+                        <p>미결제</p>
+                        <p th:text="${pendingPurchases.size()}"></p>
+                    </div>
+                    <div class="col border-end my-3 hover-effect">
+                        <p>결제 완료</p>
+                        <p th:text="${paidPurchases.size()}"></p>
+                    </div>
+                    <div class="col border-end my-3 hover-effect">
+                        <p>배송 중</p>
+                        <p th:text="${shippingPurchases.size()}"></p>
+                    </div>
+                    <div class="col border-end my-3 hover-effect">
+                        <p>배송 완료</p>
+                        <p th:text="${deliveredPurchases.size()}"></p>
+                    </div>
+                    <div class="col my-3 hover-effect">
+                        <p>취소</p>
+                        <p th:text="${cancelledPurchases.size()}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 판매 내역 -->
+            <div class="box border rounded-3 p-3">
+                <div class="d-flex justify-content-between">
+                    <p class="fw-bold">판매 내역</p>
+                    <a href="/user/sales" class="text-body-tertiary" style="text-decoration: none;">+ 더보기</a>
+                </div>
+                <div class="row text-center">
+                    <!-- 유저의 현황에 맞는 수를 가져옴 -->
+                    <div class="col border-end my-3 hover-effect">
+                        <p>판매 요청</p>
+                        <p th:text="${pendingSales.size()}"></p>
+                    </div>
+                    <div class="col border-end my-3 hover-effect">
+                        <p>수취 완료</p>
+                        <p th:text="${receptionSales.size()}"></p>
+                    </div>
+                    <div class="col border-end my-3 hover-effect">
+                        <p>검수 중</p>
+                        <p th:text="${checkingSales.size()}"></p>
+                    </div>
+                    <div class="col border-end my-3 hover-effect">
+                        <p>정산 완료</p>
+                        <p th:text="${completedSales.size()}"></p>
+                    </div>
+                    <div class="col my-3 hover-effect">
+                        <p>취소</p>
+                        <p th:text="${cancelledSales.size()}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <!-- 유저가 눌러놓은 관심을 가져옴 -->
+                <p class="wishlist_title fw-bold fs-5 m-0">관심</p>
+                <div class="box row wishlist border rounded-3 p-3 m-0">
+                    <div class="col-12 d-flex justify-content-end">
+                        <a href="/user/wishlist/products" class="text-body-tertiary" style="text-decoration: none;">+ 더보기</a>
+                    </div>
+                    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-4 g-1" id="brandProducts">
+                        <th:block th:if="${wishlistProducts.size() > 0}">
+                            <th:block th:each="product : ${wishlistProducts}">
+                                <div class="col">
+                                    <div class="card border-0">
+                                        <div class="card-body">
+                                            <a th:href="@{/product/{pNo}(pNo=${product.pNo})}">
+                                                <img th:src="@{/files/img(imgUrl=${product.imageUrl})}" alt="상품 이미지" class="rounded-4 w-100">
+                                            </a>
+                                            <div class="card-text py-2">
+                                                <p class="product_brand m-0  fw-semibold" style="font-size: medium;" th:text="${product.bName}"></p>
+                                                <p class="product_name m-0" style="font-size: small;" th:text="${product.productName}"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </th:block>
+                    </div>
+                    <th:block th:if="${wishlistProducts.size() == 0}">
+                        <h5 class="text-body-tertiary text-center">관심 목록에 추가된 상품이 없습니다.</h5>
+                    </th:block>
+                </div>      
+            </div>
+        </div>      
+    </div>
+
+    <script>
+        function manage_info(){
+              window.location.href = '/user/manage_info';
+        }
+    </script>
+    
+</body>
+</html>

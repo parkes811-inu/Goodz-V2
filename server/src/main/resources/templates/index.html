@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인 화면</title>
+
+    <!-- 이미지 슬라이드 css -->
+    <style>
+        .carousel-item img {
+            width: 100%;
+            height: 500px; /* 원하는 높이 값으로 변경 */
+            object-fit: contain; /* 이미지가 컨테이너에 맞게 조절됩니다 */
+            object-position: top; /* 이미지의 위쪽 부분을 보여줍니다 */
+        }
+        .carousel-inner {
+            height: 500px; /* 원하는 높이 값으로 변경 */
+        }
+
+        /* 화면 너비가 1024px 이하일 때 적용되는 스타일 */
+        @media only screen and (max-width: 1024px) {
+            #productCarousel {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <!-- container css -->
+    <style>
+        .profile_img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%; /* 둥근 모서리 */
+            overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
+        }
+
+        .profile_img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지 비율을 유지하면서 컨테이너에 맞춤 */
+        }
+
+        .product_item img {
+            width: 100%;
+        }
+        
+        .product_brand, .product_name {
+            white-space: nowrap;       /* 줄바꿈을 하지 않도록 설정 */
+            overflow: hidden;          /* 넘치는 부분을 숨김 */
+            text-overflow: ellipsis;   /* 넘치는 부분을 ...으로 표시 */
+            display: block;            /* display 속성을 block으로 설정하여 width를 적용 */
+            width: 100px;
+        }
+    </style>
+</head>
+<body layout:fragment="content">
+    <div class="container">
+
+        <!-- 이미지 슬라이드 -->
+        <div class="col-12">
+            <div id="productCarousel" class="carousel slide container p-0" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="/img/main/main1.png" class="d-block w-100" alt="main 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/img/main/main2.png" class="d-block w-100" alt="main 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/img/main/main3.png" class="d-block w-100" alt="main 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/img/main/main4.png" class="d-block w-100" alt="main 4">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/img/main/main5.png" class="d-block w-100" alt="main 5">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/img/main/main6.png" class="d-block w-100" alt="main 6">
+                    </div>
+                </div>
+
+                <!-- 이전/다음 버튼 -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+
+            </div>
+        </div>
+
+
+        <div class="container mt-4">
+
+            <!-- New Arrivals -->
+            <div class="NewArrivals">
+                <h5 class="text-md-start fw-bold mt-5">New Arrivals</h5>
+                <th:block th:if="${newArrivalsList == null or newArrivalsList.isEmpty()}">
+                    <br><br><h5 class="text-body-tertiary text-center">최근 입고된 상품이 없습니다.</h5><br><br>
+                </th:block>
+                <div class="row row-cols-2 row-cols-sm-2 row-cols-md-4 g-4" id="taggedStyles">
+                    <!-- [DB] 반복문으로 최대 4개 까지 -->
+                    <div th:each="product : ${newArrivalsList}" class="col">
+                        <div class="card border-0">
+                            <div class="card-body">
+                                <a th:href="@{/product/{id}(id=${product.pNo})}">
+                                    <img th:src="@{/files/img(imgUrl=${product.imageUrl})}" alt="상품 이미지" class="rounded-4 w-100">
+                                </a>
+                                <div class="card-text py-2">
+                                    <div class="d-flex justify-content-start column-gap-1">
+                                        <p class="user-id fw-bold m-0" th:text="${product.productName}"></p>
+                                    </div>
+                                    <div class="d-flex justify-content-start column-gap-1">
+                                        <p th:text="${product.formattedMinPrice}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular Posts -->
+            <div class="PopularPosts mb-5">
+                <h5 class="text-md-start fw-bold mt-5">Popular Posts</h5>
+
+                <th:block th:if="${popularPosts == null or popularPosts.isEmpty()}">
+                    <br><br><h5 class="text-body-tertiary text-center" id="noProductsMessage">조회된 게시글이 없습니다.</h5><br><br>
+                </th:block>
+
+                <div class="row row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-3" id="postsList">
+                    <th:block th:each="post : ${popularPosts}">
+
+                        <!-- [DB] 반복문으로 최대 4개 까지 -->
+                        <div class="col">
+                            <!--[DB] 프로필 & 아이디 -->
+                            <div class="card-text py-2">
+                                <a th:href="|/styles/user/@${post.nickname}|" class="d-flex justify-content-start column-gap-1"  style="text-decoration: none; color: #393E46;">
+                                    <img th:src="|/files/${post.profileImgNo}|" alt="프로필이미지" class="profile_img">
+                                    <p class="userId fw-bold m-0" th:text="${post.nickname}"></p>
+                                </a>
+                            </div>
+
+                            <!--[DB] 이미지 -->
+                            <a th:href="|/styles/${post.postNo}|">
+
+                                <img th:src="|/files/${post.fileNo}|" alt="게시글" class="rounded-4" style="width: 100%;">
+                            </a>
+                        </div>
+
+                    </th:block>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 무한 스크롤 변수
+        let page = 1;  // 페이지 번호는 1부터 시작
+        const size = 4;  // 한 번에 불러올 항목 수
+        const postsListContainer = document.getElementById('postsList');
+        const noProductsMessage = document.getElementById('noProductsMessage');
+        let allPostsLoaded = false;
+        const loadedPosts = new Set();
+
+        // 게시물을 더 불러오는 함수
+        const loadMorePosts = () => {
+            if (allPostsLoaded) return;
+
+            fetch(`/index/posts?page=${page}&size=${size}`)  
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.length === 0) {
+                        allPostsLoaded = true;
+                        return;
+                    }
+
+                    if (data.length < size) {
+                        allPostsLoaded = true;
+                    }
+
+                    data.forEach(post => {
+                        if (!loadedPosts.has(post.postNo)) {
+                            loadedPosts.add(post.postNo);
+
+                            const col = document.createElement('div');
+                            col.classList.add('col');
+
+                            const card = `
+                                <div class="card border-0">
+                                    <div class="card-text py-2">
+                                        <a th:href="|/styles/user/@${post.nickname}|" class="d-flex justify-content-start column-gap-1"  style="text-decoration: none; color: #393E46;">
+                                            <img src="/files/${post.profileImgNo}" alt="프로필이미지" class="profile_img">
+                                            <p class="userId fw-bold m-0">${post.nickname}</p>
+                                        </a>
+                                    </div>
+                                    <a href="/styles/${post.postNo}">
+                                        <img src="/files/${post.fileNo}" alt="게시글" class="rounded-4" style="width: 100%;">
+                                    </a>
+                                </div>
+                            `;
+                            col.innerHTML = card;
+                            postsListContainer.appendChild(col);
+                        }
+                    });
+                    page++;
+                })
+                .catch(error => console.error('Error:', error));
+        };
+
+        const handleScroll = () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 1000) {
+                loadMorePosts();
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        loadMorePosts(); // 처음 페이지 로드 시 첫 번째 호출
+
+    </script>
+</body>
+</html>

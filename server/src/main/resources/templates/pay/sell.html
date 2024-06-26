@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{/layouts/pay_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판매하기</title>
+    
+    <style>
+        .product_img {
+            margin-right: 20px;
+            text-align: left;
+            margin-top: 20px; 
+            width: 200px;  /* 너비를 200px로 설정 */
+            height: auto;  /* 높이 비율 유지 */
+        }
+        .product_detail {
+            margin-top: 20px;
+        }
+        .product_detail .product_info {
+            margin-bottom: 20px;
+        }
+        .info_list {
+            flex-grow: 1;
+        }
+        .info_box .title {
+            min-width: 80px;
+            font-weight: bold;
+        }
+        .info_box .desc {
+            margin-left: 10px;
+        }
+        .info_box {
+            margin-bottom: 10px;
+        }
+        .shipping_info img {
+            width: 50px;
+            height: auto;
+            margin-right: 25px;
+        }
+        .section_header {
+            font-weight: bold;
+            font-size: 1.2rem; 
+            margin-bottom: 15px;
+        }
+        .order_summary {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .order_summary .summary_item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .order_summary .summary_total {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 10px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .order_summary .pay_button {
+            width: 100%;
+            padding: 15px;
+            background-color: #000;
+            border: none;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.1em;
+            border-radius: 5px;
+            margin-top: 20px;
+            color: #fff;
+        }
+        .section_unit h1 {
+            font-size: 1.5rem;
+            margin-top: 30px;
+        }
+        .btn-wrapper {
+            margin-top: 20px;
+        }
+        .btn-primary {
+        background-color: #000;
+        border-color: #000;
+        }
+        .btn-primary:hover {
+            background-color: #333;
+            border-color: #333;
+        }
+        .btn-primary:focus, .btn-primary:active {
+            background-color: #333 !important;
+            border-color: #333 !important;
+            box-shadow: none;
+        }
+        .btn {
+            color: white;
+            background-color: #393E46;
+        }
+        #sellForm {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>판매하기</title>
+    <!-- 필요한 스타일 및 스크립트 로드 -->
+</head>
+<body layout:fragment="content">
+    <div class="container">
+        <form action="/pay/sell" id="sellForm" method="post">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+            <input type="hidden" id="initialPrice" th:value="${initialPrice}" />
+            <input type="hidden" id="productNo" name="productNo" th:value="${product.pNo}" />
+            <input type="hidden" id="size" name="size" th:value="${size}" />
+            <input type="hidden" id="salePrice" name="salePrice" th:value="${price - 5000}" />
+            <input type="hidden" id="hiddenAddress" name="address" th:value="${defaultAddress != null ? defaultAddress.address : ''}" />
+            <input type="hidden" id="hiddenAccount" name="account" th:value="${hasAccount ? 'true' : 'false'}" />
+
+            <div class="section_unit mb-4 text-center">
+                <h1 class="mt-5" style="font-size: 1.5rem; margin-bottom: 12px;">판매하기</h1>
+            </div>
+            <div class="section_unit mb-4">
+                <div class="section_content p-3 border rounded">
+                    <div class="product_info_area mb-4 d-flex align-items-center">
+                        <!-- 상품 이미지 -->
+                        <div class="product_img">
+                            <img th:src="@{/files/img(imgUrl=${product.imageUrl})}" alt="상품 이미지" class="img-fluid">
+                        </div>
+                        <!-- 상품 정보 -->
+                        <div class="product_detail">
+                            <div class="product_info">
+                                <strong>상품명</strong><br><span th:text="${product.productName}"></span>
+                            </div>
+                            <div class="product_info">
+                                <strong>사이즈</strong><br><span th:text="${size}">사이즈</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 상품 보내는 주소 -->
+            <section>
+                <div class="section_unit mb-4">
+                    <div class="section_content p-3 border rounded mb-4">
+                        <div class="section_header">배송 주소</div>
+                        <div class="delivery_info d-flex align-items-center">
+                            <div class="info_list">
+                                <div class="info_box d-flex align-items-center">
+                                    <div class="title">받는 분</div>
+                                    <div class="desc">GoodZ</div>
+                                </div>
+                                <div class="info_box d-flex align-items-center">
+                                    <div class="title">연락처</div>
+                                    <div class="desc">02-1234-5678</div>
+                                </div>
+                                <div class="info_box d-flex align-items-center">
+                                    <div class="title">배송 주소</div>
+                                    <div class="desc">서울 송파구 올림픽로 300</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 발송 방법 -->
+                <div class="section_unit mb-4">
+                    <div class="section_content p-3 border rounded mb-4">
+                        <div class="section_header">발송 방법</div>
+                        <div class="shipping_info d-flex align-items-center">
+                            <img src="/img/pay/box.png" alt="배송박스" class="img-fluid">
+                            <div class="shipping_detail d-flex flex-column">
+                                <div class="shipping_method" style="font-weight: bold;">일반배송</div>
+                                <div class="shipping_cost text-muted">선불<br>착불 발송 시 정산금액에서 차감</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 운송장 번호 입력 -->
+                <div class="section_unit mb-4">
+                    <div class="section_content p-3 border rounded mb-4">
+                        <div class="section_header">운송장 번호</div>
+                        <div class="form-group mb-3">
+                            <label for="courier" class="form-label">택배사</label>
+                            <select id="courier" name="courier" class="form-select" required>
+                                <option selected disabled>택배사를 선택해주세요</option>
+                                <option value="cj">CJ대한통운</option>
+                                <option value="lotte">롯데택배</option>
+                                <option value="hanjin">한진택배</option>
+                                <option value="logen">로젠택배</option>
+                                <option value="postoffice">우체국택배</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="trackingNumber" class="form-label">운송장 번호</label>
+                            <input type="text" id="trackingNumber" name="trackingNumber" class="form-control" placeholder="운송장 번호를 입력해주세요" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 반송 주소 -->
+                <div class="section_unit mb-4">
+                    <div class="section_content p-3 border rounded mb-4">
+                        <div class="section_header">반송 주소</div>
+                        <div th:if="${hasAddress}" class="delivery_info d-flex align-items-center">
+                            <!-- 기본 배송지 정보가 있는 경우 -->
+                            <div class="info_list">
+                                <div class="info_box d-flex align-items-center">
+                                    <div class="title">받는 분</div>
+                                    <div class="desc" id="recipientName" th:text="${defaultAddress.recipientName}"></div>
+                                </div>
+                                <div class="info_box d-flex align-items-center">
+                                    <div class="title">연락처</div>
+                                    <div class="desc" id="phoneNumber" th:text="${defaultAddress.phoneNumber}"></div>
+                                </div>
+                                <div class="info_box d-flex align-items-center">
+                                    <div class="title">배송 주소</div>
+                                    <div class="desc" id="address" th:text="${defaultAddress.address}"></div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-secondary ms-3" type="button" data-bs-toggle="modal" data-bs-target="#addressModal">변경</button>
+                        </div>
+                        <div th:if="${!hasAddress}" class="text-center">
+                            <!-- 기본 배송지 정보가 없는 경우 -->
+                            <p class="text-secondary">배송지 정보가 없습니다. 새 배송지를 등록해주세요.</p>
+                            <a id="add_address_btn" class="btn btn-outline-secondary" href="/user/add_address">새 배송지 주소 추가</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 반송 주소 변경 모달 -->
+                <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addressModalLabel">배송 주소 변경</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-group">
+                                    <li th:each="address : ${addresses}" 
+                                        class="list-group-item list-group-item-action" 
+                                        th:data-recipient-name="${address.recipientName}"
+                                        th:data-phone-number="${address.phoneNumber}"
+                                        th:data-address="${address.address}"
+                                        data-bs-dismiss="modal">
+                                        <div><strong th:text="${address.recipientName}"></strong></div>
+                                        <div th:text="${address.phoneNumber}"></div>
+                                        <div th:text="${address.address}"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 정산 계좌 정보 표시 -->
+                <div class="section_unit mb-4">
+                    <div class="section_content p-3 border rounded mb-4">
+                        <div class="section_header">정산 계좌 정보</div>
+                        <div th:if="${hasAccount}" class="account_info d-flex align-items-center">
+                            <div class="info_list">
+                                <div class="info_box d-flex align-items-center">
+                                    <div class="title">은행명</div>
+                                    <div class="desc" th:text="${bankName}"></div>
+                                </div>
+                                <div class="info_box d-flex align-items-center">
+                                    <div class="title">계좌번호</div>
+                                    <div class="desc" th:text="${accountNumber}"></div>
+                                </div>
+                                <div class="info_box d-flex align-items-center">
+                                    <div class="title">예금주</div>
+                                    <div class="desc" th:text="${accountHolder}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${!hasAccount}" class="text-center">
+                            <p class="text-secondary">정산 계좌 정보가 없습니다. 계좌를 등록해주세요.</p>
+                            <a id="add_account_btn" class="btn btn-outline-secondary" href="/user/account">계좌 등록</a>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- 최종 주문 정보 -->
+            <div class="section_unit mb-4">
+                <div class="section_content p-3 border rounded order_summary">
+                    <div class="section_header">최종 주문 정보</div>
+                    <div class="summary_item">
+                        <span>상품 가격</span>
+                        <!-- <span id="productPrice" th:text="${price} + '원'"></span> -->
+                        <span id="productPrice" th:attr="data-price=${price}" class="price"></span>
+                    </div>
+                    <div class="summary_item">
+                        <span>검수비</span>
+                        <span>- 5,000원</span>
+
+                    </div>
+                    <div class="summary_item">
+                        <span>배송비</span>
+                        <span>선불 ・ 착불시 정산금액에서 차감</span>
+                    </div>
+                    <div class="summary_item summary_total">
+                        <span>총 결제금액</span>
+
+                        <!-- <span th:text="${price + 5000} + '원'"></span> -->
+                        <span th:attr="data-price=${price - 5000}" class="price"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-wrapper w-100 mb-5">
+                <button id="payment-button" class="btn btn-secondary w-100" type="submit" th:disabled="${!hasAccount}">판매하기</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const courierSelect = document.getElementById('courier'); // 택배사 선택 요소
+            const trackingNumberInput = document.getElementById('trackingNumber'); // 운송장 번호 입력 요소
+            const paymentButton = document.getElementById('payment-button'); // 판매하기 버튼
+            const sellForm = document.getElementById('sellForm'); // 판매 폼
+    
+            // 서버에서 전달된 계좌 정보 유무
+            const hasAccount = document.getElementById('hiddenAccount').value === 'true';
+    
+            // 폼의 유효성을 검사하는 함수
+            function validateForm() {
+                if (courierSelect.value && trackingNumberInput.value.trim() && hasAccount) {
+                    paymentButton.removeAttribute('disabled');
+                } else {
+                    paymentButton.setAttribute('disabled', 'disabled');
+                }
+            }
+
+            // 가격 변경
+            var priceElements = document.querySelectorAll('.price');
+                priceElements.forEach(function(el) {
+                    var price = parseFloat(el.getAttribute('data-price'));
+                    el.textContent = formatCurrency(price);
+                });
+            
+
+            function formatCurrency(price) {
+                return parseInt(price).toLocaleString() + ' 원';
+            }
+
+    
+            // 초기 폼 상태 설정
+            validateForm();
+    
+            // 택배사 선택이 변경될 때마다 validateForm 함수를 호출합니다.
+            courierSelect.addEventListener('change', validateForm);
+    
+            // 운송장 번호 입력이 변경될 때마다 validateForm 함수를 호출합니다.
+            trackingNumberInput.addEventListener('input', validateForm);
+    
+            // 폼이 제출될 때 실행되는 이벤트 리스너를 추가합니다.
+            sellForm.addEventListener('submit', function(event) {
+                if (!hasAccount) {
+                    // 계좌 정보가 없으면 계좌 등록 페이지로 이동
+                    event.preventDefault();
+                    window.location.href = "/user/account";
+                } else {
+                    // 기존 hidden input 제거
+                    const existingHidden = document.querySelector('input[name="courierKorean"]');
+                    if (existingHidden) {
+                        existingHidden.remove();
+                    }
+                    // 택배사 이름을 한글로 변환하여 hidden input에 설정합니다.
+                    const courierKorean = {
+                        cj: "CJ대한통운",
+                        lotte: "롯데택배",
+                        hanjin: "한진택배",
+                        logen: "로젠택배",
+                        postoffice: "우체국택배"
+                    }[courierSelect.value];
+                    const courierHiddenInput = document.createElement('input');
+                    courierHiddenInput.type = 'hidden';
+                    courierHiddenInput.name = 'courierKorean';
+                    courierHiddenInput.value = courierKorean;
+                    sellForm.appendChild(courierHiddenInput);
+                }
+            });
+    
+            // 주소 선택 함수
+            function selectAddress(recipientName, phoneNumber, address) {
+                document.getElementById('recipientName').textContent = recipientName;
+                document.getElementById('phoneNumber').textContent = phoneNumber;
+                document.getElementById('address').textContent = address;
+                document.getElementById('hiddenAddress').value = address;
+            }
+    
+            // 모달의 리스트 항목 클릭 이벤트 핸들러 추가 (이벤트 위임 사용)
+            document.querySelector('#addressModal .modal-body').addEventListener('click', function (event) {
+                const target = event.target.closest('li.list-group-item');
+                if (target) {
+                    const recipientName = target.getAttribute('data-recipient-name');
+                    const phoneNumber = target.getAttribute('data-phone-number');
+                    const address = target.getAttribute('data-address');
+                    selectAddress(recipientName, phoneNumber, address);
+                    // 모달 닫기
+                    var addressModal = new bootstrap.Modal(document.getElementById('addressModal'));
+                    addressModal.hide();
+                }
+            });
+    
+            // 폼 유효성 검사 호출
+            validateForm();
+        });
+    </script>
+</body>
+</html>

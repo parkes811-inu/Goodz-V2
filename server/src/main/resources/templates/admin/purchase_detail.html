@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/admin_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지 - 매입 상태 변경(유저판매)</title>
+    <style>
+        .content {
+            flex: 1;
+            margin-top: 25px;
+            margin-bottom: 300px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        .header h2 {
+            font-size: 23px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            width: 120px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .form-group input,
+        .form-group select {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .submit-btn {
+            background-color: #555;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            width: 300px;
+            text-align: center;
+        }
+
+        .submit-btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+
+<body layout:fragment="content">
+    <div class="content mt-5">
+        <div class="header">
+            <h2>매입현황</h2>
+        </div>
+        
+        <form id="purchase-form" method="post" th:action="@{/admin/purchase/update}">
+            <input type="hidden" name="sNo" th:value="${saleDetail.saleNo}" />
+            <div class="form-group">
+                <label for="sale-date">판매 요청 일자</label>
+                <input type="text" id="sale-date" th:value="${saleDetail.saleDate}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="user-ID">유저 ID</label>
+                <input type="text" id="user-ID" th:value="${saleDetail.userId}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="address">반송 주소</label>
+                <input type="text" id="address" th:value="${saleDetail.address}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="sales-number">판매 번호</label>
+                <input type="text" id="sales-number" th:value="${saleDetail.saleNo}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="product-number">상품 번호</label>
+                <input type="text" id="product-number" th:value="${saleDetail.productNo}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="product-name">상품명</label>
+                <input type="text" id="product-name" th:value="${saleDetail.productName}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="size">사이즈</label>
+                <input type="text" id="size" th:value="${saleDetail.size}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="tracking-no">운송장 번호</label>
+                <input type="text" id="tracking-no" th:value="${saleDetail.salesTrackingNo}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="account">정산 계좌</label>
+                <input type="text" id="account" th:value="${saleDetail.account}" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="sale-state">상태</label>
+                <select id="sale-state" class="form-control" name="saleState" th:value="${saleDetail.saleState}">
+                    <option value="pending" th:selected="${saleDetail.saleState == 'pending'}">판매요청</option>
+                    <option value="reception" th:selected="${saleDetail.saleState == 'reception'}">수취완료</option>
+                    <option value="checking" th:selected="${saleDetail.saleState == 'checking'}">검수중</option>
+                    <option value="completed" th:selected="${saleDetail.saleState == 'completed'}">정산완료</option>
+                    <option value="cancelled" th:selected="${saleDetail.saleState == 'cancelled'}">취소됨</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-btn">등록 완료</button>
+        </form>
+    </div>
+</body>
+</html>

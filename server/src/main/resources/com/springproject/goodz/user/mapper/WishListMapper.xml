@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springproject.goodz.user.mapper.WishListMapper">
+
+    <!-- 저장 체크 여부 - id 기준 -->
+    <select id="listById" resultType="int">
+        SELECT count(*)
+        FROM wishList
+        WHERE user_id = #{userId} and parent_table = #{parentTable} and parent_no = #{parentNo}
+    </select>
+
+    <!-- 저장 갯수 갱신 -->
+    <select id="countWish" resultType="int">
+        SELECT count(*)
+        FROM wishList
+        WHERE parent_table = #{parentTable} and parent_no = #{parentNo}
+    </select>
+
+    <!-- 저장 off -> on -->
+    <insert id="wishOn">
+        INSERT INTO wishList (user_id, parent_table, parent_no)
+        VALUES (#{userId}, #{parentTable}, #{parentNo})
+    </insert>
+
+    <!-- 저장 on -> off -->
+    <delete id="wishOff">
+        DELETE FROM wishList
+        WHERE user_id = #{userId} and parent_table = #{parentTable} and parent_no = #{parentNo}
+    </delete>
+
+    <!--유저 관심 리스트 조회 - parentTable, userId 기준 조회 -->
+    <select id="listByParent" resultType="Wish">
+        SELECT *
+        FROM wishList
+        WHERE parent_table = #{parentTable} and user_id = #{userId}
+    </select>
+
+    <!-- 종속된 저장들 모두 삭제 -->
+    <delete id="deleteAll">
+        DELETE FROM wishList
+        WHERE parent_table = #{parentTable} and parent_no = #{parentNo}
+    </delete>
+
+    <!-- 최근 관심상품 4개 조회 - 유저 마이페이지 메인화면 조회용 -->
+    <select id="fourByParent" resultType="Wish">
+        SELECT *
+        FROM wishList
+        WHERE parent_table = #{parentTable} and user_id = #{userId}
+        ORDER BY created_at DESC
+        LIMIT 4;
+    </select>
+
+</mapper>

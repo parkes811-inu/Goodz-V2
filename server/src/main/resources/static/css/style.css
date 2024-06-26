@@ -1,0 +1,211 @@
+/* -------------------⬇️[header]⬇️------------------- */
+/* .nav-link {
+    font-weight: bold;
+}
+*/
+.nav-link.active {
+    font-weight: bolder;
+}
+.logo img {
+    /* 이미지 크기 키움 */
+    height: 60px; 
+}
+.nav-item {
+    margin-right: 20px;
+}
+.secondary-nav .nav-item .nav-link {
+    font-size: 12px;
+    color: gray !important; /* 글자 색상 회색으로 변경 */
+}
+.secondary-nav .nav-item .nav-link:hover {
+    color: black !important;
+}
+.header_container {
+   height: 97.8px !important;
+}
+
+
+
+/* -------------- ⬇️ [반응형 css] ⬇️ -------------- */
+/* 1200px 이상일 때 적용 */
+@media (min-width: 1200px) {
+    .footer .links .link-wrapper {
+        /* display: flex; */
+        flex-direction: row !important;
+        text-align: left;
+        align-items: flex-start;
+    }
+}
+
+ /* -------------- ⬇️ [Body 공통 css] ⬇️ -------------- */
+ /* 글꼴 */
+
+ body {
+   /* font-family: "Inter", sans-serif; */
+   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+   font-optical-sizing: auto;
+   font-weight: weight;
+   font-style: normal;
+   font-variation-settings:"slnt" 0;
+ }
+
+ body {
+     display: flex;
+     flex-direction: column;
+     /* min-height: 100vh; */
+     margin: 0;
+     /* font-family: Arial, sans-serif; */
+     padding: 0;
+ }
+.container {
+    padding: 0;
+}
+/* 푸터 맨 하단에 고정시키는 코드 */
+.mainContainer {
+    min-height: calc(100vh - 10rem);
+    margin: 0 auto;
+    width: 100%;    /* 이게 없으면 아이템이 작아지면 컨테이너도 작아짐 */
+    max-width: 1000px;
+}
+
+/* 푸터 맨 하단에 고정시키는 코드 - 마이페이지용 */
+.userMainContainer {
+    padding: 15px;
+    margin: 20px auto 0 auto;
+    min-height: calc(100vh - 10rem);
+    max-width: 800px;
+}
+/* 유저 프로필 사진 -s */
+.profile-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* 둥근 모서리 */
+    overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
+    /* width: 100%; */
+    /* height: 100%; */
+    object-fit: cover; /* 이미지 비율을 유지하면서 컨테이너에 맞춤 */
+}
+.profile-img-m {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* 둥근 모서리 */
+    overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
+    /* width: 100%; */
+    /* height: 100%; */
+    object-fit: cover; /* 이미지 비율을 유지하면서 컨테이너에 맞춤 */
+}
+
+/* ------------ ⬇️ Hearder css 시작 ⬇️------------ */
+/* header {
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+} */
+
+header .nav-item {
+    font-size: 18px;
+}
+
+
+/* ------------ ⬇️ Footer css 시작 ⬇️ ------------ */
+.content {
+    flex: 1;
+}
+.footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: #F7F7F7;
+    border-top: 1px solid #ddd;
+    box-sizing: border-box;
+    position: relative;
+    bottom: 0;
+    letter-spacing: -0.5px;
+
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+}
+.footer .left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.footer .left img {
+    height: 40px;
+    margin-bottom: 10px;
+}
+.footer .links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+    margin: 5px 20px;
+    letter-spacing: -1px;
+}
+.footer .links a,
+.footer .links button {
+    margin-right: 10px;
+    color: #000;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 0;
+    font: inherit;
+}
+.footer .links .link-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    flex-wrap: wrap;
+}
+.footer .right {
+    text-align: right;
+    white-space: nowrap;
+}
+.footer .right p {
+    margin: 5px 0;
+    white-space: nowrap;
+}
+.social-icons {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.social-icons button {
+    margin-right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.social-icons img {
+    height: 20px;
+}
+
+
+
+/* ------------ cancel btn css ------------ */
+.cancel {
+    position: absolute;
+    top: 50px;
+    right: 550px;
+}
+/*
+------------ cancel btn css ------------
+*/
+
+
+/* 저장, 좋아요 버튼 및 갯수 css 시작 */
+.count-like, .count-wish {
+    font-size: medium;
+    margin: 0;
+}
+
+.btn-like, .btn-wish {
+    border: none;
+    background: none;
+}
+/* 저장, 좋아요 버튼 및 갯수 css 끝 */

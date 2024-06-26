@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+    <th:block th:fragment="script">
+        <!-- js 가져오는 순서-->
+        <!-- jQuery -->
+        <!-- jQuery 기반 라이브러리 -->
+        <!-- 자바스크립트 라이브러리 -->
+        <!-- 사용자 정의 자바스크립트 -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/script.js" ></script>
+        <!-- slim버전 : AJAX와 애니메이션 기능이 포함되지 않음.. -->
+        <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
+        <!-- min버전 : 기본 jQuery 라이브러리를 압축한 버전으로, 모든 기능이 포함되어 있습니다-->
+        <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+        
+        <!-- 상품등록 옵션추가버튼 -->
+        <script>
+            $(document).ready(function(){
+                // "추가" 버튼을 클릭했을 때 이벤트 처리
+                $("#add_option").click(function(){
+                    // 새로운 행을 생성
+                    var newRow = `
+                        <tr>
+                            <td></td>
+                            <td><input type="text" class="form-control" name="size"></td>
+                            <td><input type="text" class="form-control" name="price"></td>
+                            <td><input type="text" class="form-control"></td>
+                            <td>
+                                <select class="form-select" name="status">
+                                    <option value="on" selected>판매중</option>
+                                    <option value="off">판매중지</option>
+                                </select>
+                            </td>
+                        </tr>`;
+                    $("tbody").append(newRow)
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html>

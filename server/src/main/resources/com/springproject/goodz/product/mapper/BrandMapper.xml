@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springproject.goodz.product.mapper.BrandMapper">
+
+    <select id="list" resultType="Brand">
+        SELECT *
+        FROM brand
+    </select>
+
+    <select id="brandList" resultType="Brand">
+        SELECT *
+        FROM brand
+        WHERE b_name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY b_no ASC
+        LIMIT #{page.index}, #{page.rows}
+    </select>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*) FROM brand
+        WHERE b_name LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+    <select id="maxNo">
+        SELECT max(b_no) as maxNo
+        FROM brand
+    </select>
+
+    <insert id="insert">
+        INSERT INTO brand (b_name)
+        VALUES (#{bName})
+    </insert>
+
+
+
+</mapper>

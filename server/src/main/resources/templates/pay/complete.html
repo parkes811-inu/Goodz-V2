@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <style>
+        .complete {
+            text-align: center;
+            margin: 180px 410px; 
+        }
+        .complete>img {
+            padding-bottom: 30px !important;
+            width: 250px;
+        }
+        .complete h1 {
+            font-weight: bold; 
+            margin-bottom: 20px; 
+        }
+        .complete p {
+            font-size: 14px; 
+            margin-bottom: 30px; 
+        }
+        .complete button {
+            background-color: #000; 
+            color: #fff; 
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .complete button:hover {
+            background-color: #444;
+        }
+    </style>
+
+    <title>구매 완료 페이지</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body layout:fragment="content">
+    <div class="container complete">
+        <img src="/img/pay/logo.png" alt="GoodZ" class="logo">
+        <h1 th:text="${type == 'buy' ? '구매 완료' : (type == 'sell' ? '판매 요청 완료' : '구매 실패')}"></h1>
+        <p th:text="${type == 'buy' ? '구매가 완료되었습니다!' : (type == 'sell' ? '판매 요청이 완료되었습니다!' : '구매를 실패하였습니다.')}"></p>
+        <button th:if="${type == 'buy'}" onclick="location.href='/user/purchase'">구매내역으로 이동</button>
+        <button th:if="${type == 'sell'}" onclick="location.href='/user/sales'">판매내역으로 이동</button>
+        <button th:if="${type == 'fail'}" onclick="location.href='/'">메인으로 돌아가기</button>
+    </div>
+</body>
+</html>
