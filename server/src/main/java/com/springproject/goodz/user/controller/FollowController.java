@@ -27,14 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
-
-
-/**
- * [GET]        /follow/userId  팔로워/팔로잉 갱신
- * [POST]       /follow         팔로우 신청
- * [DELETE]     /follow         언팔 신청
- */
-
 @Slf4j
 @Controller
 public class FollowController {
