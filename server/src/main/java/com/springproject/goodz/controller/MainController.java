@@ -1,33 +1,26 @@
 package com.springproject.goodz.controller;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.springproject.goodz.post.dto.Post;
 import com.springproject.goodz.post.service.PostService;
 import com.springproject.goodz.product.dto.Product;
 import com.springproject.goodz.product.dto.ProductOption;
 import com.springproject.goodz.product.service.ProductService;
-import com.springproject.goodz.user.dto.Wish;
 import com.springproject.goodz.utils.dto.Files;
 import com.springproject.goodz.utils.service.FileService;
 
 import lombok.extern.slf4j.Slf4j;
 
-
-
-
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("")
 public class MainController {
 
@@ -44,13 +37,13 @@ public class MainController {
     DecimalFormat decimalFormat = new DecimalFormat("#,### 원");
 
     @GetMapping("/{page}")
-    public String page(@PathVariable("page") String page) {
-        return page;
+    public ResponseEntity<String> page(@PathVariable("page") String page) {
+        return ResponseEntity.ok(page);
     }
 
     // footer 하단 링크 
     @GetMapping("/footer/{id}")
-    public String getFooterMapping(@PathVariable("id") int id, Model model) {
+    public ResponseEntity<String> getFooterMapping(@PathVariable("id") int id) {
         String template;
         switch (id) {
             case 1:
@@ -68,11 +61,11 @@ public class MainController {
             default:
                 template = "/"; // default to home
         }
-        return template;
+        return ResponseEntity.ok(template);
     }
     
     @GetMapping("")
-    public String newArrivals(Model model) throws Exception {
+    public ResponseEntity<Map<String, Object>> newArrivals() throws Exception {
         List<Product> newArrivalsList = productService.newArrivals();
 
         // 👔 최근 입고 제품
@@ -103,7 +96,6 @@ public class MainController {
                 product.setFormattedMinPrice(formattedMinPrice);
             }
 
-
             // 첫 번째 이미지 URL 설정
             if (!productImages.isEmpty()) {
                 product.setImageUrl(productImages.get(0).getFilePath());
@@ -111,15 +103,15 @@ public class MainController {
                 product.setImageUrl("/files/img?imgUrl=no-image.png"); // 기본 이미지 경로 설정
             }
         }
-        model.addAttribute("newArrivalsList", newArrivalsList);
-
         // 📄인기게시글 4개
         List<Post> popularPosts = postService.popularPosts(0, 4);
-        model.addAttribute("popularPosts", popularPosts);
-
-        return "/index";
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("newArrivalsList", newArrivalsList);
+        response.put("popularPosts", popularPosts);
+        
+        return ResponseEntity.ok(response);
     }
-
 
     // 인피니티 스크롤을 위한 컨트롤러
     @GetMapping("/index/posts")
