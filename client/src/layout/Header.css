@@ -1,0 +1,48 @@
+/* 헤더 총 높이 */
+.header_container {
+    height: 97.8px
+}
+
+/* 로고 */
+.logo img {
+    height: 60px; 
+}
+
+/* ul 스타일 속성 없앰 - 가로정렬 */
+ul {
+    list-style-type: none !important;
+    display: flex;
+    padding: 0;
+}
+
+li {padding: 10px !important;}
+/* 링크태그의 기본 css 속성 없앰. Link태그는 a로 잡히나봄. */
+a { text-decoration: none; color: black; }
+
+/* 좌측 카테고리 링크 */
+.links-category li a {
+    /* padding: 10px; */
+    color: gray;
+    font-size: 16px;
+    
+}
+
+/* 우측 상단 카테고리 링크 */
+.links-user li a {
+    /* padding: 10px; */
+    color: gray;
+    font-size: 14px;
+    
+}
+
+/* 우측 하단 링크 */
+.links-main {
+    /* font-weight: bold; */
+    font-size: 18px;
+}
+
+.seperation {
+    background-color: #393E46;
+    height: 15px;
+    margin: 0 auto;
+}
