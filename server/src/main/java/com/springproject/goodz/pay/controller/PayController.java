@@ -2,19 +2,16 @@ package com.springproject.goodz.pay.controller;
 
 import java.net.URLDecoder;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.springproject.goodz.pay.dto.Purchase;
 import com.springproject.goodz.pay.dto.Sales;
@@ -31,7 +28,7 @@ import com.springproject.goodz.utils.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/pay")
 public class PayController {
 
@@ -51,19 +48,18 @@ public class PayController {
      * 결제 페이지 화면
      * @param pNo 상품 번호
      * @param size 상품 사이즈
-     * @param model 모델
      * @param session 세션
      * @return 결제 페이지
      * @throws Exception
      */
     @GetMapping("/buy")
-    public String buy(@RequestParam("pNo") int pNo,
-                      @RequestParam("size") String size,
-                      Model model, HttpSession session) throws Exception {
+    public ResponseEntity<Object> buy(@RequestParam("pNo") int pNo,
+                                      @RequestParam("size") String size,
+                                      HttpSession session) throws Exception {
 
         Users user = (Users) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/user/login";
+            return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
         }
 
         // 기본 배송지를 찾기 위한 로직
@@ -80,7 +76,6 @@ public class PayController {
         Product product = productService.getProductBypNo(pNo);
         List<ProductOption> options = productService.getProductOptionsByProductId(product.getPNo());
         product.setOptions(options);
-
 
         int purchasePrice = 0;
         int optionId = 0;
@@ -112,12 +107,11 @@ public class PayController {
         log.info("purchaseNo : " + purchaseNo);
 
         if (result == 0) {
-            return "redirect:/product/detail/" + pNo;
+            return new ResponseEntity<>("ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return "redirect:/pay/buy/" + purchaseNo; // 상품 구매 페이지로 이동
+        return new ResponseEntity<>(purchaseNo, HttpStatus.OK); // 상품 구매 페이지로 이동
     }
-
 
     /**
      * 결제 하기 
@@ -126,16 +120,15 @@ public class PayController {
      * @throws Exception 
      */
     @GetMapping("/buy/{purchaseNo}")
-    public String getMethodName(@PathVariable("purchaseNo") int purchaseNo,
-                                Model model,
-                                HttpSession session) throws Exception {
+    public ResponseEntity<Object> getMethodName(@PathVariable("purchaseNo") int purchaseNo,
+                                                HttpSession session) throws Exception {
         // TODO: purchaseNo 확인
         log.info("purchaseNo : " + purchaseNo);
         
         Users user = (Users) session.getAttribute("user");
         // TODO : 나중에 시큐리티로 권한 처리할 것..
         if (user == null) {
-            return "redirect:/user/login";
+            return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
         }
 
         // userId 가져 와서 
@@ -178,23 +171,19 @@ public class PayController {
             product.setImageUrl("/files/img?imgUrl=no-image.png"); // 기본 이미지 경로 설정
         }
 
-        model.addAttribute("product", product); // 모델에 상품 정보를 추가합니다.
-        model.addAttribute("size", productOption.getSize());
-        model.addAttribute("image", productImages);
-        model.addAttribute("price", purchase.getPurchasePrice());
-        model.addAttribute("purchaseNo", purchaseNo); // purchaseNo를 모델에 추가
-        model.addAttribute("optionId", optionId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("product", product);
+        response.put("size", productOption.getSize());
+        response.put("image", productImages);
+        response.put("price", purchase.getPurchasePrice());
+        response.put("purchaseNo", purchaseNo); // purchaseNo를 모델에 추가
+        response.put("optionId", optionId);
+        response.put("defaultAddress", defaultAddress);
+        response.put("hasAddress", !addresses.isEmpty());
+        response.put("addresses", addresses);
 
-        // 기본 배송지가 있는지 여부를 모델에 추가
-        model.addAttribute("defaultAddress", defaultAddress);
-        model.addAttribute("hasAddress", !addresses.isEmpty());
-        model.addAttribute("addresses", addresses);
-
-        return "/pay/buy";
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    
-
 
     /**
      * 결제 성공 시 호출되는 메서드 (POST 요청)
@@ -202,16 +191,16 @@ public class PayController {
      * @param paymentKey 결제 키
      * @param orderId 주문 ID
      * @param amount 결제 금액
+     * @param address 배송 주소
      * @return 결제 결과
      * @throws Exception
      */
-    @ResponseBody
     @PostMapping("/buy")
-    public String updatePurchase(@RequestParam("purchaseNo") int purchaseNo,
-                                 @RequestParam("paymentKey") String paymentKey,
-                                 @RequestParam("orderId") String orderId,
-                                 @RequestParam("amount") int amount,
-                                 @RequestParam("address") String address) throws Exception {
+    public ResponseEntity<String> updatePurchase(@RequestParam("purchaseNo") int purchaseNo,
+                                                 @RequestParam("paymentKey") String paymentKey,
+                                                 @RequestParam("orderId") String orderId,
+                                                 @RequestParam("amount") int amount,
+                                                 @RequestParam("address") String address) throws Exception {
         log.info("updatePurchase 호출됨: purchaseNo={}, orderId={}, amount={}, address={}", purchaseNo, orderId, amount, address);
 
         Purchase purchase = new Purchase();
@@ -227,10 +216,10 @@ public class PayController {
         int result = payService.updatePurchase(purchase);
         if (result > 0) {
             log.info("구매 업데이트 성공");
-            return "success";
+            return new ResponseEntity<>("success", HttpStatus.OK);
         }
         log.info("구매 업데이트 실패");
-        return "fail";
+        return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -238,20 +227,19 @@ public class PayController {
      * @param pNo 상품 번호
      * @param size 상품 사이즈
      * @param price 상품 가격
-     * @param model 모델
      * @param session 세션
      * @return 판매 페이지
      * @throws Exception
      */
     @GetMapping("/sell/{p_no}")
-    public String sell(@PathVariable("p_no") int pNo,
-                       @RequestParam("size") String size,
-                       @RequestParam("price") int price,
-                       Model model, HttpSession session) throws Exception {
+    public ResponseEntity<Object> sell(@PathVariable("p_no") int pNo,
+                                       @RequestParam("size") String size,
+                                       @RequestParam("price") int price,
+                                       HttpSession session) throws Exception {
     
         Users user = (Users) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/user/login";
+            return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
         }
     
         // 단일 상품 조회
@@ -281,20 +269,17 @@ public class PayController {
         } else {
             product.setImageUrl("/files/img?imgUrl=no-image.png"); // 기본 이미지 경로 설정
         }
-    
-        model.addAttribute("product", product); // 모델에 상품 정보를 추가합니다.
-        model.addAttribute("size", size);
-        model.addAttribute("image", productImages);
-    
-        // 기본 배송지가 있는지 여부를 모델에 추가
-        model.addAttribute("defaultAddress", defaultAddress);
-        model.addAttribute("hasAddress", !addresses.isEmpty());
-        model.addAttribute("addresses", addresses);
-    
-        // 가격 정보 추가
-        model.addAttribute("price", price); // 선택된 가격
-        model.addAttribute("initialPrice", product.getInitialPrice()); // 초기 가격 추가
-    
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("product", product);
+        response.put("size", size);
+        response.put("image", productImages);
+        response.put("defaultAddress", defaultAddress);
+        response.put("hasAddress", !addresses.isEmpty());
+        response.put("addresses", addresses);
+        response.put("price", price); // 선택된 가격
+        response.put("initialPrice", product.getInitialPrice()); // 초기 가격 추가
+
         // 정산 계좌 정보 추가
         String account = user.getAccount();
         if (account != null && !account.isEmpty()) {
@@ -303,15 +288,15 @@ public class PayController {
             String accountNumber = accountParts[0].substring(accountParts[0].indexOf(" ") + 1);
             String accountHolder = accountParts[1];
     
-            model.addAttribute("bankName", bankName);
-            model.addAttribute("accountNumber", accountNumber);
-            model.addAttribute("accountHolder", accountHolder);
-            model.addAttribute("hasAccount", true);
+            response.put("bankName", bankName);
+            response.put("accountNumber", accountNumber);
+            response.put("accountHolder", accountHolder);
+            response.put("hasAccount", true);
         } else {
-            model.addAttribute("hasAccount", false);
+            response.put("hasAccount", false);
         }
     
-        return "/pay/sell";
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
@@ -324,28 +309,27 @@ public class PayController {
      * @param address 배송 주소
      * @param salePrice 판매 가격
      * @param session 세션
-     * @param model 모델
      * @return 판매 등록 결과 페이지
      * @throws Exception
      */
     @PostMapping("/sell")
-    public String insertSale(@RequestParam("productNo") int productNo,
-                            @RequestParam("courierKorean") String courierKorean,
-                            @RequestParam("trackingNumber") String trackingNumber,
-                            @RequestParam("size") String size,
-                            @RequestParam("address") String address,
-                            @RequestParam("salePrice") int salePrice,
-                            HttpSession session, Model model) throws Exception {
+    public ResponseEntity<String> insertSale(@RequestParam("productNo") int productNo,
+                                             @RequestParam("courierKorean") String courierKorean,
+                                             @RequestParam("trackingNumber") String trackingNumber,
+                                             @RequestParam("size") String size,
+                                             @RequestParam("address") String address,
+                                             @RequestParam("salePrice") int salePrice,
+                                             HttpSession session) throws Exception {
 
         Users user = (Users) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/user/login";
+            return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
         }
 
         // 계좌 정보 확인
         String account = user.getAccount();
         if (account == null || account.isEmpty()) {
-            return "redirect:/user/account";
+            return new ResponseEntity<>("NO_ACCOUNT", HttpStatus.BAD_REQUEST);
         }
 
         // Sales 객체 생성 및 데이터 설정
@@ -362,28 +346,26 @@ public class PayController {
         int result = payService.insertSale(sales);
 
         if (result > 0) {
-            return "redirect:/pay/complete/sell";
+            return new ResponseEntity<>("SELL_SUCCESS", HttpStatus.OK);
         } else {
-            model.addAttribute("errorMessage", "판매 정보를 저장하는 데 실패했습니다.");
-            return "/pay/sell";
+            return new ResponseEntity<>("SELL_FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
      * 결제 또는 판매 완료 페이지
      * @param type 완료 타입 (buy 또는 sell)
-     * @param model 모델
      * @return 완료 페이지
+     * 결제 또는 판매가 완료된 후, 결제 정보를 업데이트하고 상태를 변경하는 실제 처리 작업을 수행
      * @throws Exception 
      */
-    @GetMapping("/complete")
-    public String complete (@RequestParam(value = "purchaseNo", required = false) Integer purchaseNo,
-                            @RequestParam(value = "paymentKey", required = false) String paymentKey,
-                            @RequestParam(value = "orderId", required = false) String orderId,
-                            @RequestParam(value = "amount", required = false) Integer amount,
-                            @RequestParam(value = "address", required = false) String address,
-                            @RequestParam(value = "type", required = false) String type, 
-                            Model model) throws Exception {
+    @PostMapping("/complete")
+    public ResponseEntity<String> complete (@RequestParam(value = "purchaseNo", required = false) Integer purchaseNo,
+                                            @RequestParam(value = "paymentKey", required = false) String paymentKey,
+                                            @RequestParam(value = "orderId", required = false) String orderId,
+                                            @RequestParam(value = "amount", required = false) Integer amount,
+                                            @RequestParam(value = "address", required = false) String address,
+                                            @RequestParam(value = "type", required = false) String type) throws Exception {
         
         String decodedAddress = URLDecoder.decode(address, "UTF-8"); // URL 디코딩
 
@@ -401,7 +383,6 @@ public class PayController {
         int result = payService.updatePurchase(purchase);
         if (result > 0) {
             log.info("구매 업데이트 성공");
-            model.addAttribute("type", type);
             
             Purchase optionId = payService.selectPurchase(purchaseNo);
             int cnt = productService.checkStockQuantity(optionId.getOptionId());
@@ -413,25 +394,23 @@ public class PayController {
                 productService.minusQuantityByProductId(optionId.getOptionId());
             }
 
-            return "redirect:/pay/complete/buy";
+            return new ResponseEntity<>("BUY_SUCCESS", HttpStatus.OK);
         }
         log.info("구매 업데이트 실패");
-        type = "fail";
-        model.addAttribute("type", type);
-        return "redirect:/pay/fail" + purchaseNo;
+        return new ResponseEntity<>("BUY_FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
      * 결제 완료 페이지
-     * @param purchaseNo
      * @param type : buy
-     * @param model
      * @return
+     * 결제 또는 판매 완료 후 유저에게 완료 타입을 전달하는 역할
+     *  실제로 데이터베이스를 업데이트하거나 처리하는 작업 X
      */
     @GetMapping("/complete/{type}")
-    public String getResult(@PathVariable("type") String type, Model model) {
-        model.addAttribute("type", type);
-        return "/pay/complete";
+    public ResponseEntity<Map<String, String>> getResult(@PathVariable("type") String type) {
+        Map<String, String> response = new HashMap<>();
+        response.put("type", type);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    
 }
