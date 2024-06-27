@@ -20,15 +20,18 @@ import com.springproject.goodz.user.dto.Users;
 import com.springproject.goodz.user.service.FollowService;
 import com.springproject.goodz.user.service.UserService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 
 @Slf4j
-@Controller
+@RestController
 public class FollowController {
 
     @Autowired
@@ -41,46 +44,30 @@ public class FollowController {
     /**
      * 팔로워 조회 - 프로필계정 요청한 id 기준
      */
+    // @ApiOperation(value="팔로워 조회", notes="요청한 id의 팔로워를 조회합니다.")
+    // @ApiResponses({
+    //     @ApiResponse(code = 200, message = "API 정상작동"),
+    //     @ApiResponse(code = 500, message = "서버측 에런")
+    // })
     @GetMapping("/follower/{userId}")
-    public String followerCount(@PathVariable("userId")String profileId, Model model, HttpSession session) {
+    public ResponseEntity<?> followerCount(@PathVariable("userId")String profileId) {
 
          try {
-             
-            // ⭐ 프로필 계정 세팅
+            // 👩‍💼 프로필 계정 세팅
             Users profileUser = userService.select(profileId);
 
             
             // 팔로워 목록과 수 조회
             Map<String, Object> followerDetails = followService.getFollowerDetails(profileId);
             List<Users> followerList = (List<Users>) followerDetails.get("followerList");
-            int count = (int) followerDetails.get("followerCount");
-            
-            profileUser.setFollowList(followerList);
-            
-            log.info(profileUser.getNickname() + "님의 팔로워 수: " + count);
-            
-            model.addAttribute("profileUser", profileUser);
 
-            // 👤 세션계정 세팅 및 팔로잉 목록 가져오기
-            Users loginUser = (Users)session.getAttribute("user");
-
-            // 비로그인 상태면 리턴.
-            if (loginUser == null) {
-                return "/post/user/follow";
-            }
-
-            Map<String, Object> followingDetails = followService.getFollowingDetails(loginUser.getUserId());
-            List<Users> loginUserFollowingList = (List<Users>) followingDetails.get("followingList");
-
-            model.addAttribute("loginUser", loginUser);
-            model.addAttribute("loginUserFollowingList", loginUserFollowingList);
-
+            return new ResponseEntity<>(followerList, HttpStatus.OK);
         } catch (Exception e) {
             log.info("팔로잉 조회 시 예외 발생");
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return "/post/user/follow";
     }       
 
     /**
