@@ -29,4 +29,16 @@ public class Users {
     private int countFollower;          // 팔로워 수
     private int countFollowing;         // 팔로잉 수
 
+    public Users() {
+        
+    }
+    
+    public Users(Users user) {
+        this.no = user.getNo();
+        this.userId = user.getUserId();
+        this.password = user.getPassword();
+        this.username = user.getUsername();
+        this.authList = user.getAuthList();
+    }
+
 }

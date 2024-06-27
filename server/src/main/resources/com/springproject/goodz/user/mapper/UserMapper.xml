@@ -47,6 +47,7 @@
     <!-- 로그인 - username -->
     <select id="login" resultMap="userMap">
         SELECT u.user_id
+              ,u.no
               ,u.username
               ,u.password
               ,u.birth
