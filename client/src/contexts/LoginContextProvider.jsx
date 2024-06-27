@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import axios from '../apis/axios';
 import * as auth from '../apis/common/auth';
 import api from '../apis/axios';
 
@@ -45,7 +44,7 @@ const LoginContextProvider = ( {children} ) => {
 
         // axios common header에 등록
         // 한번 로그인이 되면 다음 요청부터는 autorization에 등록되기때문에 
-        axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+        api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
         // 👩‍💼 사용자 정보 요청
         let response;
@@ -57,7 +56,7 @@ const LoginContextProvider = ( {children} ) => {
             response = await auth.info();
         } catch (error) {
             console.log(`error: ${error}`);
-            console.log(`status: ${response.status}`);
+            // console.log(`status: ${response.status}`);
             return;
         }
 

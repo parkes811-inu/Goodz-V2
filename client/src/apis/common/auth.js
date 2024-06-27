@@ -1,7 +1,7 @@
 import api from '../axios';
 
 // 로그인
-export const login = (username, password) => api.get(`/login?username=${username}&password=${password}`)
+export const login = (username, password) => api.post(`/login?username=${username}&password=${password}`)
 
 // 사용자 정보 (요청을 보내면 유저정보를 찾아 보내줌)
 export const info = () => api.get(`/users/info`)

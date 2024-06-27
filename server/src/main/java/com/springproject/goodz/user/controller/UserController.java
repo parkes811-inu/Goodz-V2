@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,6 +42,7 @@ import com.springproject.goodz.product.dto.Page;
 import com.springproject.goodz.product.dto.Product;
 import com.springproject.goodz.product.dto.ProductOption;
 import com.springproject.goodz.product.service.ProductService;
+import com.springproject.goodz.user.dto.CustomUser;
 import com.springproject.goodz.user.dto.Shippingaddress;
 import com.springproject.goodz.user.dto.Users;
 import com.springproject.goodz.user.dto.Wish;
@@ -53,7 +55,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     
     @Autowired
@@ -82,6 +84,30 @@ public class UserController {
 
     @Value("${upload.path}")
     private String uploadPath;
+
+    /**
+     * 사용자 정보 조회
+     * @param customUser
+     * @return
+     */
+    @GetMapping("/info")
+    public ResponseEntity<?> userInfo(@AuthenticationPrincipal CustomUser customUser) {
+        
+        log.info("::::: customUser :::::");
+        log.info("customUser : "+ customUser);
+
+        Users user = customUser.getUser();
+        log.info("user : " + user);
+
+        // 인증된 사용자 정보 
+        if( user != null ) {
+            log.info("인증됫슴요~");
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+
+        // 인증 되지 않음
+        return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+    }
   
     @GetMapping("")
     public String index(Model model) throws Exception {

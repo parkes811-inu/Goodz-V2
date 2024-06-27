@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -56,10 +58,16 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationConfiguration authenticationConfiguration;
 
+    @Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
+		return authenticationManager;
+	}
+
     // 스프링 시큐리티 설정 메소드
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
+        log.info("securityFilterChain...");
         
         // 🔐 폼 로그인 설정
         // ✅ 커스텀 로그인 페이지
@@ -73,22 +81,23 @@ public class SecurityConfig {
         
         // 폼 기반 로그인 비활성화
         http.formLogin( login -> login.disable() );
+
         // HTTP 기본 인증 비활성화
         http.httpBasic( basic -> basic.disable() );
         
         // OAuth 로그인 설정
-        // .oauth2Login(oauth2Login -> oauth2Login
-        //         .loginPage("/login")
-        //         .successHandler(authenticationSuccessHandler())
-        // );
+        http.oauth2Login(oauth2Login -> oauth2Login
+                .loginPage("/login")
+                .successHandler(authenticationSuccessHandler())
+        );
         
         // ✅ 사용자 정의 인증 설정
         // http.userDetailsService(userDetailServiceImpl);
         
         // 🔄 자동 로그인 설정
         http.rememberMe(me -> me.key("aloha")
-        .tokenRepository(tokenRepository())
-        .tokenValiditySeconds(60 * 60 * 24 * 7)
+            .tokenRepository(tokenRepository())
+            .tokenValiditySeconds(60 * 60 * 24 * 7)
         );
         
         http.csrf(csrf -> csrf.disable()); // CSRF 설정 임시로 해제 6/27 -도희
@@ -102,6 +111,7 @@ public class SecurityConfig {
             .addFilterBefore(new JwtRequestFilter(authenticationManager, jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
             ;
         
+
         // ✅ 인가 설정
         // http.authorizeRequests(requests -> requests
         //     // .antMatchers("/user", "/user/**").hasRole("USER")
@@ -123,11 +133,7 @@ public class SecurityConfig {
         return http.build();
     }
     
-    @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
+    
     /**
      * 🍃 자동 로그인 저장소 빈 등록
      * ✅ 데이터 소스
@@ -172,6 +178,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new LoginSuccessHandler();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

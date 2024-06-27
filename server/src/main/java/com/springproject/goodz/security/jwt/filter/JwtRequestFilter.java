@@ -37,6 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+                
         // HTTP 헤더에서 토큰을 가져옴
         String header = request.getHeader(SecurityConstants.TOKEN_HEADER);
         log.info("authorization : " + header);
