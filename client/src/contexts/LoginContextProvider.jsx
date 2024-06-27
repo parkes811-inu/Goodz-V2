@@ -78,6 +78,44 @@ const LoginContextProvider = ( {children} ) => {
         loginSetting(data, accessToken);
     }
 
+     // 🔐로그인
+    const login = async (username, password) => {
+        console.log(`username: ${username}`);
+        console.log(`password: ${password}`);
+
+        try {
+            const response = await auth.login(username, password);
+            const data = response.data;
+            const status = response.status;
+            const headers = response.headers;
+            const authorization = headers.authorization;
+            // 📀jwt
+            const accessToken = authorization.replace("Bearer ", "");
+
+            console.log(`data: ${data}`);
+            console.log(`status: ${status}`);   // 200: 성공
+            console.log(`headers: ${headers}`);
+            console.log(`📀jwt: ${accessToken}`);
+
+            // 로그인 성공 ✅
+            if (status == 200) {
+                Cookies.set("accessToken", accessToken);
+
+                // 로그인 체크
+                loginCheck();
+
+                // 로그인 성공 alert
+                alert("로그인 성공");
+
+                // 메인페이지로 이동
+                navigate("/");
+            }
+
+        } catch (error) {
+            alert("로그인 실패", "유효한 계정이 아니거나, 아이디 혹은 비밀번호가 일치하지 않습니다.", "error" )
+        }
+    }
+
 
     // 로그아웃
     const logout = () => {
@@ -148,16 +186,23 @@ const LoginContextProvider = ( {children} ) => {
     
     
     /* ------------------------------------------------------------------ */
+    // Mount / Update
+    useEffect( () => {
+        // 로그인 체크
+        loginCheck();
+        // 1️⃣ 쿠키에서 jwt를 꺼낸다.
+        // 2️⃣ jwt 있으면, 서버로부터 사용자 정보를 요청해 받아온다.
+        // 3️⃣ 로그인 세팅을 한다. (로그인여부, 사용자정보, 권한정보 등록)
+    }, [])
 
+    return (
 
-  return (
+        // 컨텍스트 지정 -> value={?, ?}
+        <LoginContext.Provider value={ {isLogin, login, logout} }>
+            {children}
+        </LoginContext.Provider>
 
-    // 컨텍스트 지정 -> value={?, ?}
-    <LoginContext.Provider value={ {isLogin, logout} }>
-        {children}
-    </LoginContext.Provider>
-
-  )
+    )
 }
 
 export default LoginContextProvider

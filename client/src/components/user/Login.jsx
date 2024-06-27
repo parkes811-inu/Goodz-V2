@@ -1,8 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+import { LoginContext } from '../../contexts/LoginContextProvider'
 
 const Login = () => {
+
+    // LoginContextProvider에서 생성한 컨텍스트를 가져와서 씀
+    const { login } = useContext(LoginContext)
+
+    const onLogin = (e) => {
+        e.preventDefault()                      // 기본 이벤트 방지
+        const form = e.target                   // <form> 요소
+        const userId = form.userId.value    // 아이디   - <form> 아래 input name="username"의 value
+        const password = form.password.value    // 비밀번호 - <form> 아래 input name="password"의 value
+
+        login( userId, password );
+    }
+
   return (
     <div className="container">
         <div className="mainContainer">
@@ -13,7 +27,7 @@ const Login = () => {
                 </div>
     
                 {/* <!-- 아이디&비밀번호 입력칸 --> */}
-                <form action="/login" method="post" className="form-group">
+                <form action="/login" method="post" className="form-group" onSubmit={(e) => onLogin(e)}>
                     <div className="input my-2">
                         <div className="py-2">
                             <input type="text" id="userId" name="userId" className ="form-control" placeholder="ID" />
