@@ -51,7 +51,8 @@ public class FollowServiceImpl implements FollowService{
     // 팔로워 목록과 수 조회
     @Override
     public Map<String, Object> getFollowerDetails(String userId) throws Exception {
-        
+
+        log.info("::::: {}의 팔로워 조회중... :::::", userId);
         List<Follow> followers = followerList(userId);
         List<Users> followerList = new ArrayList<>();
 
@@ -61,9 +62,10 @@ public class FollowServiceImpl implements FollowService{
                 followerList.add(follower);
             }
         }
+        
         Map<String, Object> result = new HashMap<>();
-        result.put("followerList", followerList);
-        result.put("followerCount", followerList.size());
+        result.put("followerList", followerList);           // 팔로워 리스트
+        result.put("followerCount", followerList.size());   // 팔로워 수
 
         return result;
     }
@@ -91,8 +93,8 @@ public class FollowServiceImpl implements FollowService{
             }
         }
         Map<String, Object> result = new HashMap<>();
-        result.put("followingList", followingList);
-        result.put("followingCount", followingList.size());
+        result.put("followingList", followingList);         // 팔로잉 목록
+        result.put("followingCount", followingList.size()); // 팔로잉
 
         return result;
     }

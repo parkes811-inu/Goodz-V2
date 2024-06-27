@@ -2,14 +2,19 @@ package com.springproject.goodz.post.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.springproject.goodz.post.service.TagService;
 import com.springproject.goodz.product.dto.Product;
 import com.springproject.goodz.product.service.ProductService;
 import com.springproject.goodz.utils.dto.Files;
@@ -30,13 +35,16 @@ import lombok.extern.slf4j.Slf4j;
 public class TagController {
 
     @Autowired
+    public TagService tagService;
+
+    @Autowired
     public ProductService productService;
 
     @Autowired
     public FileService fileService;
     
-    @GetMapping("")
-    public String search(@RequestParam("keyword") String keyword, Model model) {
+    @GetMapping("/keyword={keyword}")
+    public ResponseEntity<?> search(@RequestParam("keyword") String keyword, Model model) {
 
             List<Product> searchedItems = new ArrayList<>();
         try {
@@ -57,15 +65,34 @@ public class TagController {
                     product.setMainImgNo(mainImg.getNo());
                 }
             }
+            
+            return new ResponseEntity<>(searchedItems, HttpStatus.OK);
 
         } catch (Exception e) {
             log.info("상품 검색에 실패하였습니다.");
             e.printStackTrace();
+
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        model.addAttribute("searchedItems", searchedItems);
-
-        return "/post/tag/searchedItem";
     }
+
+    @GetMapping("/{postNo}")
+    public ResponseEntity<?> tagList(@PathVariable("postNo") int postNo) {
+        
+        try {
+            /**
+             * 게시글에 종속된 상품태그 조회
+             * "tagList" : List<Product> taggedProducts         태그리스트
+             * "tagCount": List<Product> taggedProducts.size()  태그 수
+             */
+            Map<String, Object> tagList = tagService.tagList(postNo);
+            return new ResponseEntity<>(tagList, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     
 }

@@ -6,27 +6,52 @@
 <mapper namespace="com.springproject.goodz.post.mapper.PostMapper">
 
     <resultMap type="Post" id="postMap">
-        <id property="postNo" column="post_no" javaType="int" />
-        <result property="userId" column="user_id" />
-        <result property="nickname" column="nickname" />
-        <result property="profileImgNo" column="profileImgNo" />
-        <result property="content" column="content" />
-        <result property="likeCount" column="likeCount" />
-        <result property="wishCount" column="wishCount" />
-        <collection property="tagList" resultMap="productMap" />
-    </resultMap>
-
-    <resultMap type="Product" id="productMap">
+    <id property="postNo" column="post_no" javaType="int" />
+    <result property="userId" column="user_id" />
+    <result property="nickname" column="nickname" />
+    <result property="profileImgNo" column="profileImgNo" />
+    <result property="content" column="content" />
+    <result property="likeCount" column="likeCount" />
+    <result property="wishCount" column="wishCount" />
+    <collection property="tagList" ofType="Product">
         <result property="pNo" column="product_no" />
-    </resultMap>
+    </collection>
+</resultMap>
 
 
     <!-- 전체 게시글 조회 - /styles  -->
     <select id="list" resultType="post">
-        SELECT  p.post_no as post_no
+        SELECT  p.post_no,
+            p.user_id,
+            u.nickname,
+            IFNULL(uf.no, 0) as profileImgNo,
+            p.content,
+            f.no as file_no,
+            f.file_name,
+            f.file_path,
+            f.file_code,
+            IFNULL(l.likeCount, 0) as likeCount,
+            IFNULL(w.wishCount, 0) as wishCount
+        FROM post p
+        INNER JOIN user u ON p.user_id = u.user_id
+        LEFT JOIN file f ON p.post_no = f.parent_no AND f.parent_table = 'post' AND f.file_code = 1
+        LEFT JOIN file uf ON u.no = uf.parent_no AND uf.parent_table = 'user'
+        LEFT JOIN (
+            SELECT post_no, COUNT(*) as likeCount
+            FROM `like`
+            GROUP BY post_no
+        ) l ON p.post_no = l.post_no
+        LEFT JOIN (
+            SELECT parent_no, COUNT(*) as wishCount
+            FROM wishlist
+            WHERE parent_table = 'post'
+            GROUP BY parent_no
+        ) w ON p.post_no = w.parent_no
+        ORDER BY p.created_at DESC;
+        <!-- SELECT  p.post_no as post_no
               , p.user_id as user_id
               , u.nickname as nickname
-              <!-- , u.profile_picture_url as profileImg -->
+              , u.no as profileImgNo
               , p.content as contetnt
               , f.no as file_no
               , f.file_name as file_name
@@ -37,30 +62,33 @@
         FROM post p
         INNER JOIN file f on post_no = parent_no and f.parent_table='post' and file_code = 1
         INNER JOIN user u on p.user_id = u.user_id
-        ORDER BY p.created_at DESC
+        ORDER BY p.created_at DESC -->
     </select>
 
     <!-- 게시글 상세 조회 - /styles/게시글번호  -->
     <select id="select" resultMap="postMap">
         SELECT p.post_no
-             , user_id
+            , p.user_id
+            , u.nickname
+            , COALESCE(uf.no, 0) as profileImgNo
+            , p.content
+        FROM post p
+        INNER JOIN user u ON p.user_id = u.user_id
+        LEFT JOIN file uf ON u.no = uf.parent_no AND uf.parent_table = 'user'
+        WHERE p.post_no = 1;
+        <!-- SELECT p.post_no
+             , p.user_id
+             , IFNULL((SELECT no from file f where u.no = f.parent_no and f.parent_table = "user"),0) as profileImgNo
              , content
              , IFNULL((SELECT count(*) from `like` l where l.post_no = p.post_no),0) as likeCount
              , IFNULL((SELECT count(*) from wishlist w where w.parent_no = p.post_no and w.parent_table = 'post'),0) as wishCount
              , ifNull(t.p_no, null) as product_no
         FROM post p
         LEFT OUTER JOIN tag t ON p.post_no = t.post_no
-        WHERE p.post_no = #{postNo};
+        INNER JOIN user u on p.user_id = u.user_id
+        WHERE p.post_no = 1; -->
     </select>
-    <!-- <select id="select" resultType="post">
-        SELECT post_no
-             , user_id
-             , content
-             , IFNULL((SELECT count(*) from `like` l where l.post_no = p.post_no),0) as likeCount
-             , IFNULL((SELECT count(*) from wishlist w where w.parent_no = p.post_no and w.parent_table = 'post'),0) as wishCount
-        FROM post p
-        WHERE post_no = #{postNo};
-    </select> -->
+
 
     <!-- 프로필 유저의 게시글 조회 - /styles/user/@유저닉네임  -->
     <select id="selectById" resultType="post">

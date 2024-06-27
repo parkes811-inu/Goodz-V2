@@ -3,13 +3,13 @@ package com.springproject.goodz.product.controller;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.Comparator;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -18,10 +18,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +44,7 @@ import com.springproject.goodz.utils.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/product")
 public class ProductController {
 
@@ -76,7 +73,7 @@ public class ProductController {
     DecimalFormat decimalFormat = new DecimalFormat("#,### 원");
 
     @GetMapping("")
-    public String index(Model model) throws Exception {
+    public ResponseEntity<List<Product>> index() throws Exception {
 
         List<Product> productList = productService.list();
 
@@ -115,13 +112,12 @@ public class ProductController {
             }
         }
 
-        model.addAttribute("productList", productList);
-        return "/product/index";
+        return ResponseEntity.ok(productList);
     }
 
     @GetMapping("/{pNo}")
-    public String viewProduct(@PathVariable int pNo, HttpServletRequest request, 
-                            HttpServletResponse response, Model model) throws Exception {
+    public ResponseEntity<Product> viewProduct(@PathVariable int pNo, HttpServletRequest request, 
+                                               HttpServletResponse response) throws Exception {
 
         String cookieName = "viewedProduct_" + pNo;
         boolean alreadyViewed = false;
@@ -150,35 +146,40 @@ public class ProductController {
 
         // 제품 정보 모델에 추가
         Product product = productService.getProductBypNo(pNo);
-        model.addAttribute("product", product);
 
-        return "redirect:/product/detail/" + pNo; // 상품 상세 페이지로 리다이렉트
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/size_table")
-    public String productSizeInfoPage(@RequestParam("category") String category) {
+    public ResponseEntity<String> productSizeInfoPage(@RequestParam("category") String category) {
+        String template;
         switch (category) {
             case "top":
-                return "fragments/product/size_table_top";
+                template = "fragments/product/size_table_top";
+                break;
             case "pants":
-                return "fragments/product/size_table_pants";
+                template = "fragments/product/size_table_pants";
+                break;
             case "shoes":
-                return "fragments/product/size_table_shoes";
+                template = "fragments/product/size_table_shoes";
+                break;
             case "accessory":
-                return "fragments/product/size_table_accessory";
+                template = "fragments/product/size_table_accessory";
+                break;
             default:
                 throw new IllegalArgumentException("Invalid category: " + category);
         }
+        return ResponseEntity.ok(template);
     }
 
     @GetMapping("/detail/{pNo}")
-    public String productDetailPage(@PathVariable("pNo") Integer pNo
-                                  , Model model
-                                  , HttpSession session) throws Exception {
+    public ResponseEntity<Map<String, Object>> productDetailPage(@PathVariable("pNo") Integer pNo, HttpSession session) throws Exception {
+
+        Map<String, Object> response = new HashMap<>();
 
         // 세션 정보 세팅
         Users loginUser = (Users)session.getAttribute("user");
-        model.addAttribute("loginUser", loginUser);                   
+        response.put("loginUser", loginUser);                   
         
         Product product = productService.getProductBypNo(pNo);
         List<ProductOption> options = productService.getProductOptionsByProductId(pNo);
@@ -203,19 +204,19 @@ public class ProductController {
         decimalFormat.applyPattern("#,### 원");
         String formattedMinPrice = currencyFormatter.format(minPrice);
         
-        model.addAttribute("minPrice", minPrice);
-        model.addAttribute("formattedMinPrice", formattedMinPrice);
-        model.addAttribute("minPriceSize", minPriceSize);
+        response.put("minPrice", minPrice);
+        response.put("formattedMinPrice", formattedMinPrice);
+        response.put("minPriceSize", minPriceSize);
 
-        model.addAttribute("product", product);
-        model.addAttribute("options", options);
-        model.addAttribute("images", images);
+        response.put("product", product);
+        response.put("options", options);
+        response.put("images", images);
 
         // 사이즈별 가격 정보를 JSON 형태로 변환
         String pricesJson = new ObjectMapper().writeValueAsString(
             options.stream().collect(Collectors.toMap(ProductOption::getSize, ProductOption::getOptionPrice))
         );
-        model.addAttribute("pricesJson", pricesJson);
+        response.put("pricesJson", pricesJson);
         
         String category = product.getCategory();
         String brand = product.getBName();
@@ -233,12 +234,11 @@ public class ProductController {
         }
 
         String sizeJson = objectMapper.writeValueAsString(sizeMap);
-        model.addAttribute("sizeJson", sizeJson);
+        response.put("sizeJson", sizeJson);
 
         // 사용자 관심 목록 확인
         boolean isWishlisted = false;
         if (loginUser != null) {
-            // isWishlisted = wishListService.isWishlisted(loginUser.getUserId(), "product", pNo);
             Wish wish = new Wish();
             wish.setUserId(loginUser.getUserId());
             wish.setParentTable("product");
@@ -246,21 +246,19 @@ public class ProductController {
             isWishlisted = wishListService.listById(wish);
         }
 
-        model.addAttribute("isWishlisted", isWishlisted);
+        response.put("isWishlisted", isWishlisted);
 
         // 태그된 게시글 목록 좋아요 순 4개 조회
         List<Post> taggedPosts = postService.taggedPost(pNo);
-        model.addAttribute("taggedPosts", taggedPosts);
+        response.put("taggedPosts", taggedPosts);
         
-        return "/product/detail";
+        return ResponseEntity.ok(response);
     }
 
     // 상의 카테고리
     @GetMapping("/top")
-    public String top(Model model) throws Exception {
+    public ResponseEntity<List<Product>> top() throws Exception {
         List<Product> topList = productService.top();
-
-        
 
         for (Product product : topList) {
             // 상품 옵션 설정
@@ -297,14 +295,12 @@ public class ProductController {
             }
         }
 
-        model.addAttribute("topList", topList);
-        return "/product/top";
+        return ResponseEntity.ok(topList);
     }
-
 
     // 하의 카테고리
     @GetMapping("/pants")
-    public String pants(Model model) throws Exception {
+    public ResponseEntity<List<Product>> pants() throws Exception {
         List<Product> pantsList = productService.pants();
 
         for (Product product : pantsList) {
@@ -341,14 +337,12 @@ public class ProductController {
                 product.setImageUrl("/files/img?imgUrl=no-image.png"); // 기본 이미지 경로 설정
             }
         }
-        model.addAttribute("pantsList", pantsList);
-
-        return "/product/pants";
+        return ResponseEntity.ok(pantsList);
     }
 
     // 신발 카테고리
     @GetMapping("/shoes")
-    public String shoes(Model model) throws Exception {
+    public ResponseEntity<List<Product>> shoes() throws Exception {
         List<Product> shoesList = productService.shoes();
         for (Product product : shoesList) {
             // 상품 옵션 설정
@@ -384,14 +378,12 @@ public class ProductController {
                 product.setImageUrl("/files/img?imgUrl=no-image.png"); // 기본 이미지 경로 설정
             }
         }
-        model.addAttribute("shoesList", shoesList);
-
-        return "/product/shoes";
+        return ResponseEntity.ok(shoesList);
     }
 
     // 악세사리 카테고리
     @GetMapping("/accessory")
-    public String accessory(Model model) throws Exception {
+    public ResponseEntity<List<Product>> accessory() throws Exception {
         List<Product> accessoryList = productService.accessory();
 
         for (Product product : accessoryList) {
@@ -428,9 +420,7 @@ public class ProductController {
                 product.setImageUrl("/files/img?imgUrl=no-image.png"); // 기본 이미지 경로 설정
             }
         }
-        model.addAttribute("accessoryList", accessoryList);
-
-        return "/product/accessory";
+        return ResponseEntity.ok(accessoryList);
     }
 
     // 인피니티 스크롤을 위한 컨트롤러
@@ -486,6 +476,5 @@ public class ProductController {
 
         return ResponseEntity.ok(products);
     }
-
-    
 }
+

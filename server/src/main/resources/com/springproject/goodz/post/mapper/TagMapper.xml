@@ -6,7 +6,7 @@
 <mapper namespace="com.springproject.goodz.post.mapper.TagMapper">
 
     <!-- 상품태그 리스트 조회 - 종속된 게시글 기준 -->
-    <select id="taggedList" resultType="Tag" >
+    <select id="tagList" resultType="Tag" >
         SELECT *
         FROM tag
         WHERE post_no = #{postNo}
