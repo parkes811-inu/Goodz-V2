@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,7 @@ import com.springproject.goodz.user.dto.Users;
 import com.springproject.goodz.user.mapper.UserMapper;
 import com.springproject.goodz.utils.dto.Files;
 import com.springproject.goodz.utils.service.FileService;
+import com.springproject.goodz.security.jwt.provider.JwtTokenProvider;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -39,34 +41,42 @@ public class UserServiceImpl implements UserService {
     private FileService fileService;
 
 
-
     @Override
     public boolean login(Users user) throws Exception {
-        // // 💍 토큰 생성
-        String username = user.getUserId();    // 아이디
-        String password = user.getPassword();    // 암호화되지 않은 비밀번호
-        UsernamePasswordAuthenticationToken token 
-            = new UsernamePasswordAuthenticationToken(username, password);
+        String username = user.getUserId();
+        String password = user.getPassword();
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
         
-        // 토큰에 요청 정보 등록
-        // token.setDetails( new WebAuthenticationDetails(request) );
+        try {
+            // 토큰을 이용하여 인증
+            Authentication authentication = authenticationManager.authenticate(token);
+            
+            // 인증된 사용자 확인
+            CustomUser loginUser = (CustomUser) authentication.getPrincipal();
+            log.info("인증된 사용자 아이디 : " + loginUser.getUser().getUsername());
+            
+            // 시큐리티 컨텍스트에 등록
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            
+            // 토큰에 요청정보를 등록
+            // token.setDetails( new WebAuthenticationDetails(requset) );
 
-        // 토큰을 이용하여 인증
-        Authentication authentication = authenticationManager.authenticate(token);
+            // 토큰을 이용하여 인증(로그인)
+            // Authentication authentication = authenticationManager.authenticate(token);
 
-        // 인증된 사용자 확인
-        CustomUser loginUser = (CustomUser) authentication.getPrincipal();
-        log.info("인증된 사용자 아이디 : " + loginUser.getUser().getUsername());
-        boolean result = authentication.isAuthenticated();
-
-        // // 인증 여부 확인
-        // boolean result = authentication.isAuthenticated();
-
-        // 시큐리티 컨텍스트에 등록
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return result;
+    
+            // 클라이언트에게 JWT 토큰 반환 (헤더 설정 등)
+            // 예: HttpServletResponse response를 이용하여 설정
+            // response.setHeader("Authorization", "Bearer " + jwtToken);
+            
+            return true;
+        } catch (Exception e) {
+            log.error("로그인 실패: " + e.getMessage());
+            return false;
+        }
     }
+    
+
 
     @Override
     public Users select(String username) throws Exception {

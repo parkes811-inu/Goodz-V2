@@ -5,30 +5,26 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.springproject.goodz.post.dto.Post;
 import com.springproject.goodz.post.service.PostService;
 import com.springproject.goodz.product.dto.Product;
 import com.springproject.goodz.product.dto.ProductOption;
 import com.springproject.goodz.product.service.ProductService;
-import com.springproject.goodz.user.dto.Wish;
 import com.springproject.goodz.utils.dto.Files;
 import com.springproject.goodz.utils.service.FileService;
 
 import lombok.extern.slf4j.Slf4j;
 
 
-
-
 @Slf4j
-@Controller
-@RequestMapping("")
+@RequestMapping("/main")
+@RestController
 public class MainController {
 
     @Autowired
@@ -43,37 +39,38 @@ public class MainController {
     // DecimalFormat 인스턴스 한 번 생성
     DecimalFormat decimalFormat = new DecimalFormat("#,### 원");
 
-    @GetMapping("/{page}")
-    public String page(@PathVariable("page") String page) {
-        return page;
+    @GetMapping("/page/{page}")
+    public ResponseEntity<String> getPage(@PathVariable("page") String page) {
+        return ResponseEntity.ok(page);
     }
 
     // footer 하단 링크 
     @GetMapping("/footer/{id}")
-    public String getFooterMapping(@PathVariable("id") int id, Model model) {
+    public ResponseEntity<String> getFooterMapping(@PathVariable("id") int id) {
         String template;
         switch (id) {
             case 1:
-                template = "common/privacy"; // templates/common/privacy.html
+                template = "common/privacy";
                 break;
             case 2:
-                template = "common/inspection"; // templates/common/inspection.html
+                template = "common/inspection";
                 break;
             case 3:
-                template = "common/store_info"; // templates/common/store_info.html
+                template = "common/store_info";
                 break;
             case 4:
-                template = "common/guideLine"; // templates/common/community_guidelines.html
+                template = "common/guideLine";
                 break;
             default:
-                template = "/"; // default to home
+                template = "/";
         }
-        return template;
+        return ResponseEntity.ok(template);
     }
     
-    @GetMapping("")
-    public String newArrivals(Model model) throws Exception {
+    @GetMapping("/products/new-arrivals")  
+    public ResponseEntity<List<Product>> getNewArrivals() throws Exception {
         List<Product> newArrivalsList = productService.newArrivals();
+        log.info("getNewArrivals method called");
 
         // 👔 최근 입고 제품
         for (Product product : newArrivalsList) {
@@ -111,28 +108,22 @@ public class MainController {
                 product.setImageUrl("/files/img?imgUrl=no-image.png"); // 기본 이미지 경로 설정
             }
         }
-        model.addAttribute("newArrivalsList", newArrivalsList);
 
         // 📄인기게시글 4개
-        List<Post> popularPosts = postService.popularPosts(0, 4);
-        model.addAttribute("popularPosts", popularPosts);
+        // List<Post> popularPosts = postService.popularPosts(0, 4);
+        // model.addAttribute("popularPosts", popularPosts);
 
-        return "/index";
+        return ResponseEntity.ok(newArrivalsList);
     }
 
 
     // 인피니티 스크롤을 위한 컨트롤러
-    @GetMapping("/index/posts")
-    public ResponseEntity<List<Post>> getPostList(@RequestParam("page") int page, @RequestParam("size") int size) throws Exception {
-        // 📄인기게시글 4개씩 추가 
+    @GetMapping("/popular-posts")
+    public ResponseEntity<List<Post>> getPopularPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "4") int size) throws Exception {
         int offset = page * size;
-
-        List<Post> popularPosts = postService.popularPosts(offset, 4);
-
-        // 쿼리 결과를 로그로 확인
-        System.out.println("쿼리 결과: " + popularPosts);
-
+        List<Post> popularPosts = postService.popularPosts(offset, size);
         return ResponseEntity.ok(popularPosts);
     }
-
 }
