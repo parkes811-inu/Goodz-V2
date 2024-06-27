@@ -68,24 +68,30 @@ public class AdminController {
     }
 
     // 브랜드 목록 조회
+    // 브랜드 목록 조회
     @GetMapping("/brands")
     public ResponseEntity<Map<String, Object>> brandList(Page page,
                             @RequestParam(value = "page", defaultValue = "1") int pageNumber,
                             @RequestParam(value = "keyword", defaultValue = "") String keyword) throws Exception {
         page.setPage(pageNumber);
-        int total = brandService.getTotalCount(keyword);
+        int total = brandService.getTotalCount(keyword); // 총 브랜드 수를 가져오는 로직 필요
         page.setTotal(total);
         List<Brand> brandList = brandService.brandList(page, keyword);
-        log.info("page : " + page);
-        log.info("keyword : " + keyword);
+
+        // 데이터 확인을 위해 로그 추가
+        brandList.forEach(brand -> log.info("Brand: bNo={}, bName={}", brand.getBNo(), brand.getBName()));
 
         Map<String, Object> response = new HashMap<>();
         response.put("brandList", brandList);
         response.put("page", page);
         response.put("keyword", keyword);
 
+        log.info("Response data: {}", response); // 데이터 확인
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    
+    
 
     // 브랜드 등록 페이지로 이동
     @GetMapping("/add_brand")
@@ -199,7 +205,7 @@ public class AdminController {
     }
 
     // 유저가 판매한 번호를 기준으로 단일 조회
-    @GetMapping("/purchase/detail/{sNo}")
+    @GetMapping("/purchase/{sNo}")
     public ResponseEntity<Map<String, Object>> purchaseDetail(@PathVariable("sNo") int sNo) throws Exception {
         Map<String, Object> saleDetail = adminService.userSale(sNo);
         return new ResponseEntity<>(Map.of("saleDetail", saleDetail), HttpStatus.OK);
@@ -255,7 +261,7 @@ public class AdminController {
     }
 
     // 유저가 구매한 상품 단일 조회
-    @GetMapping("/pay_history/detail/{purchaseNo}")
+    @GetMapping("/pay_history/{purchaseNo}")
     public ResponseEntity<Purchase> payhistorydetail(@PathVariable("purchaseNo") int purchaseNo) throws Exception {
         Purchase purchase = adminService.userPurchase(purchaseNo);
         return new ResponseEntity<>(purchase, HttpStatus.OK);
@@ -283,7 +289,7 @@ public class AdminController {
     }
 
     // 어드민 상품 상세 조회
-    @GetMapping("/product/detail/{pNo}")
+    @GetMapping("/product/{pNo}")
     public ResponseEntity<Map<String, Object>> getProductDetail(@PathVariable("pNo") int pNo) throws Exception {
         Product product = productService.getProductBypNo(pNo);
         List<ProductOption> option =  productService.adminOptionsByProductId(pNo);
