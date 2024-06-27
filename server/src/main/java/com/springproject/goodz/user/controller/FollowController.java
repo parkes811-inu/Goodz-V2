@@ -1,6 +1,5 @@
 package com.springproject.goodz.user.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +8,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +18,6 @@ import com.springproject.goodz.user.dto.Users;
 import com.springproject.goodz.user.service.FollowService;
 import com.springproject.goodz.user.service.UserService;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,15 +48,19 @@ public class FollowController {
     public ResponseEntity<?> followerCount(@PathVariable("userId")String profileId) {
 
          try {
-            // 👩‍💼 프로필 계정 세팅
-            Users profileUser = userService.select(profileId);
-
-            
-            // 팔로워 목록과 수 조회
+            log.info("::::: {}의 팔로워 조회요청:::::", profileId);
+            /**
+             * 팔로워 목록과 수 조회
+             * "followerList"   : List<Users> followerList          ➡ 팔로워 리스트
+             * "followerCount"  : List<Users> followerList.size()   ➡ 팔로워 수
+             */
             Map<String, Object> followerDetails = followService.getFollowerDetails(profileId);
-            List<Users> followerList = (List<Users>) followerDetails.get("followerList");
+            
+            log.info(":::::: {}의 팔로워 정보 :::::", profileId);
+            log.info("팔로워 리스트: " + followerDetails.get("followerList").toString());
+            log.info("팔로워 수: " + followerDetails.get("followerCount"));
+            return new ResponseEntity<>(followerDetails, HttpStatus.OK);
 
-            return new ResponseEntity<>(followerList, HttpStatus.OK);
         } catch (Exception e) {
             log.info("팔로잉 조회 시 예외 발생");
             e.printStackTrace();
@@ -77,42 +76,28 @@ public class FollowController {
      * @return
      */
     @GetMapping("/following/{userId}")
-    public String followingCount(@PathVariable("userId")String profileId, Model model, HttpSession session) {
+    public ResponseEntity<?> followingCount(@PathVariable("userId")String profileId, Model model, HttpSession session) {
 
         try {
-
-            // 프로필 계정 세팅
-            Users profileUser = userService.select(profileId);
-
-            // 팔로워 목록과 수 조회
+            /**
+             * 팔로워 목록과 수 조회
+             * "followingList"   : List<Users> followingList          ➡ 팔로워 리스트
+             * "followingCount"  : List<Users> followingList.size()   ➡ 팔로워 수
+             */
             Map<String, Object> followingDetails = followService.getFollowingDetails(profileId);
-            List<Users> followingList = (List<Users>) followingDetails.get("followingList");
-            int count = (int) followingDetails.get("followingCount");
 
-            profileUser.setFollowList(followingList);
+            log.info(":::::: {}의 팔로워 정보 :::::", profileId);
+            log.info("팔로워 리스트: " + followingDetails.get("followingList").toString());
+            log.info("팔로워 수: " + followingDetails.get("followingCount"));
 
-            log.info(profileUser.getNickname() + "님의 팔로워 수: " + count);
-
-            model.addAttribute("profileUser", profileUser);
-
-            // 👤 세션계정 세팅 및 팔로잉 목록 가져오기
-            Users loginUser = (Users)session.getAttribute("user");
-            // 비로그인 상태면 리턴.
-            if (loginUser == null) {
-                return "/post/user/follow";
-            }
-            followingDetails = followService.getFollowingDetails(loginUser.getUserId());
-            List<Users> loginUserFollowingList = (List<Users>) followingDetails.get("followingList");
-
-            model.addAttribute("loginUser", loginUser);
-            model.addAttribute("loginUserFollowingList", loginUserFollowingList);
+            return new ResponseEntity<>(followingDetails, HttpStatus.OK);
 
         } catch (Exception e) {
             log.info("팔로잉 조회 시 예외 발생");
             e.printStackTrace();
         }
 
-        return "/post/user/follow";
+        return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -123,7 +108,7 @@ public class FollowController {
      */
     @PostMapping("/follow")
     public ResponseEntity<String> addFollow(@RequestBody Follow follow) throws Exception {
-        log.info("팔로우 요청");
+        log.info("::::: 팔로우 요청 :::::");
         log.info(follow.getFollowerId() + " -> " + follow.getUserId());
 
         int result = followService.addFollow(follow);
@@ -145,7 +130,7 @@ public class FollowController {
      */
     @DeleteMapping("/follow")
     public ResponseEntity<String> unFollow(@RequestBody Follow follow) throws Exception {
-        log.info("언팔 요청");
+        log.info("::::: 언팔 요청 :::::");
         log.info(follow.getFollowerId() + " -/-> " + follow.getUserId());
 
 
@@ -160,17 +145,17 @@ public class FollowController {
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    @GetMapping("/follow/count/{profileId}")
-    public ResponseEntity<Map<String, Integer>> countFollow(@PathVariable("profileId") String profileId) throws Exception {
+    // @GetMapping("/follow/count/{profileId}")
+    // public ResponseEntity<Map<String, Integer>> countFollow(@PathVariable("profileId") String profileId) throws Exception {
 
 
-        Map<String, Integer> countFollow =  followService.countFollow(profileId);
+    //     Map<String, Integer> countFollow =  followService.countFollow(profileId);
 
-        log.info("업데이트된 팔로워 수: " + countFollow.get("countFollower"));
-        log.info("업데이트된 팔로잉 수: " + countFollow.get("countFollowing"));
+    //     log.info("업데이트된 팔로워 수: " + countFollow.get("countFollower"));
+    //     log.info("업데이트된 팔로잉 수: " + countFollow.get("countFollowing"));
 
-        return ResponseEntity.ok(countFollow);
-    }
+    //     return ResponseEntity.ok(countFollow);
+    // }
     
     
 }
