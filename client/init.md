@@ -3,6 +3,7 @@
 ## 필수 라이브러리 설치
 npm install react-router-dom
 npm install axios
+npm install js-cookie@^3.0.5
 
 ## sweetalert2
 npm install sweetalert2
