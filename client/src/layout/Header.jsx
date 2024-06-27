@@ -76,7 +76,7 @@ const Header = () => {
       </nav>
 
       {/* <!-- 구분선 --> */}
-      <div class="seperation"></div>
+      <div className="seperation"></div>
     </header>
   )
 }
