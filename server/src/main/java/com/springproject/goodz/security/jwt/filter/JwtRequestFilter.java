@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,10 +21,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
    
+    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
     // 생성자
-    public JwtRequestFilter( JwtTokenProvider jwtTokenProvider ) {
+    // public JwtRequestFilter( JwtTokenProvider jwtTokenProvider ) {
+    //     this.jwtTokenProvider = jwtTokenProvider;
+    // }
+    public JwtRequestFilter( AuthenticationManager authenticationManager,  JwtTokenProvider jwtTokenProvider ) {
+        this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
     }
     

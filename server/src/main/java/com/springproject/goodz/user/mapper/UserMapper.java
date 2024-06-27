@@ -14,7 +14,7 @@ import com.springproject.goodz.user.dto.Users;
 public interface UserMapper {
 
     // 로그인
-    public Users login(String username) throws Exception;
+    public Users login(String username);
 
     // 회원 조회 - id
     public Users select(String username) throws Exception;

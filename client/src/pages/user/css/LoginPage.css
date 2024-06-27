@@ -1,0 +1,50 @@
+.login_container {
+    max-width: 400px;
+    padding: 15px;
+}
+
+.password_input_container {
+    position: relative;
+}
+
+.userLinks a, span, label {
+    color: gray;
+    text-decoration: none;
+}
+
+/* 비밀번호 보이기 버튼 */
+.toggle_password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #ccc; /* 아이콘 색상을 회색으로 설정*/
+}
+
+/* 소셜-카카오 */
+.btn-kakao {
+    background-color: #ffe812;
+    color: black;
+    font-weight: bold;
+    width: 100%;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+/* 소셜-네이버 */
+.btn-naver {
+    background-color: #2db400;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.loginBtn {
+    background-color: #393E46;
+    color: white;
+}
+.socialLogin p {
+    color: gray;
+}

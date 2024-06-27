@@ -54,6 +54,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
     throws AuthenticationException {
         
+        log.info("여기까진 왓니");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
