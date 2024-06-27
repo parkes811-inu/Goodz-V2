@@ -39,7 +39,6 @@ public class SecurityConfig {
     // 스프링 시큐리티 설정 메소드
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-       
         
         // ✅ 인가 설정
         http.authorizeRequests(requests -> requests
@@ -73,6 +72,8 @@ public class SecurityConfig {
                                 .tokenRepository(tokenRepository())
                                 .tokenValiditySeconds(60 * 60 * 24 * 7)
                                 );
+
+        http.csrf(csrf -> csrf.disable()); // CSRF 설정 임시로 해제 6/27 -도희
 
         return http.build();
     }
