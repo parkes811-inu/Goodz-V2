@@ -11,7 +11,7 @@ import com.springproject.goodz.post.dto.Tag;
 public interface TagMapper {
     
     // 상품태그 리스트 조회 - postNo기준(종속된 게시글 기준)
-    public List<Tag> taggedList(int postNo) throws Exception;
+    public List<Tag> tagList(int postNo) throws Exception;
 
     // 상품태그 리스트 조회 - 상품번호 기준
     public List<Post> taggedProduct(int productNo) throws Exception;
