@@ -2,6 +2,12 @@ import './App.css';
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 import Home from './pages/Home';
 import Index from './pages/user/Index';
+import Top from './pages/product/Top';
+import Pants from './pages/product/Pants';
+import Shoes from './pages/product/Shoes';
+import Accessory from './pages/product/Accessory';
+import PostList from './pages/post/PostList';
+import AllProduct from './pages/product/AllProduct';
 import wishlist_products from './pages/user/wishlist_products';
 import BrandListPage from './pages/admin/BrandListPage';
 import LoginPage from './pages/user/LoginPage';
@@ -32,7 +38,15 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/users/login" element={<LoginPage />} />
+      {/* 헤더 접근 링크 */}
+      <Route path="/product/top" element={<Top />} />
+      <Route path="/product/pants" element={<Pants />} />
+      <Route path="/product/shoes" element={<Shoes />} />
+      <Route path="/product/accessory" element={<Accessory />} />
+      <Route path="/styles" element={<PostList />} />
+      <Route path="/product" element={<AllProduct />} />
 
+s
       {/* 어드민만 접근 가능한 곳 */}
       <Route path="/admin/brands" element={
           <ProtectedRoute requiredRole="admin">
@@ -47,14 +61,11 @@ function AppRoutes() {
             <Index />
           </ProtectedRoute>}>
       </Route>
-
       <Route path='/users/wishList/products'
         element={
           <ProtectedRoute requiredRole="user">
             <wishlist_products />
-          </ProtectedRoute>
-        }>
-
+          </ProtectedRoute>}>
       </Route>
 
       {/* 다른 보호된 라우트들을 여기에 추가할 수 있습니다 */}
