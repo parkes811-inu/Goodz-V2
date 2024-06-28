@@ -15,7 +15,7 @@ const LoginContextProvider = ( {children} ) => {
     // 유저 정보
     const [userInfo, setUserInfo] = useState(null)
     // 권한 정보
-    const [roles, setRoles] = useState({isUser : false, isAmdin : false})
+    const [roles, setRoles] = useState({isUser : false, isAdmin : false})
     
     // 페이지 이동
     const navigate = useNavigate();
@@ -139,7 +139,7 @@ const LoginContextProvider = ( {children} ) => {
         // 👩‍💼❌ 유저 정보 초기화
         setUserInfo(null)
         // 👮‍♀️❌ 권한 정보 초기화
-        setRoles(null)
+        setRoles({isUser: false, isAdmin: false})
     }
 
     // 🔐로그인 세팅
@@ -168,16 +168,18 @@ const LoginContextProvider = ( {children} ) => {
         setUserInfo(updatedUserInfo);
 
         // 👮‍♀️권한 정보 세팅
-        const updatedRoles = {isUser: false, isAmdin: false};
+        const updatedRoles = {isUser: false, isAdmin: false};
 
         roleList.forEach( (role) => {
             if (role == 'ROLE_USER') {
                 updatedRoles.isUser = true;        
             }
             if (role == 'ROLE_ADMIN') {
-                updatedRoles.isAmdin = true;        
+                updatedRoles.isAdmin = true;        
             }
         });
+
+        setRoles(updatedRoles);
 
     }
 
@@ -197,7 +199,7 @@ const LoginContextProvider = ( {children} ) => {
     return (
 
         // 컨텍스트 지정 -> value={?, ?}
-        <LoginContext.Provider value={ {isLogin, login, logout} }>
+        <LoginContext.Provider value={ {isLogin, login, logout, roles} }>
             {children}
         </LoginContext.Provider>
 

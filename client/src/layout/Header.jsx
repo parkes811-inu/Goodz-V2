@@ -1,11 +1,20 @@
-import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link } from 'react-router-dom'
-
 import './Common.css'
 import './Header.css'
+import React, { useContext } from 'react'
+import { Link } from 'react-router-dom'
+
+import { LoginContext } from '../contexts/LoginContextProvider';
 
 const Header = () => {
+  // 유저의 상태에 따라서 로그인/로그아웃 표시
+    // LoginContext 가져오기
+    // (state)  isLogin
+    // (function) logout
+
+    // props로 받아서 쓰는게 아니라 useContext로 바로 받아서 씀
+    const {isLogin, logout, roles} = useContext(LoginContext);
+
   return (
     <header>
       <nav className='header_container'>
@@ -43,13 +52,30 @@ const Header = () => {
                 <ul>
                   {/* 관심 */}
                   <li>
-                    <Link to={"/user/wishlist/products"}>관심</Link>
+                    <Link to={"/users/wishlist/products"}>관심</Link>
                   </li>
                   <li>
-                    <Link to="/user">마이페이지</Link>
+                    { roles.isAdmin ? 
+                      <>
+                        <Link to="/admin">관리자페이지</Link>
+                      </>
+                      :
+                      <>
+                        <Link to="/users">마이페이지</Link>
+                      </>
+                    }
                   </li>
                   <li>
-                    <Link to="/user/login">로그인</Link>
+                    {
+                      isLogin ?
+                      <>
+                        <Link onClick={ () => logout() }>로그아웃</Link>
+                      </>
+                      :
+                      <>
+                        <Link to="/users/login">로그인</Link>
+                      </>
+                    }
                   </li>
                 </ul>
               </div>

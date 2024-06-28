@@ -2,11 +2,14 @@ import React, { useContext } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import { LoginContext } from '../../contexts/LoginContextProvider'
+import MainBtn from '../common/MainBtn';
+
 
 const Login = () => {
 
     // LoginContextProvider에서 생성한 컨텍스트를 가져와서 씀
     const { login } = useContext(LoginContext)
+    const text = "로그인";
 
     const onLogin = (e) => {
         e.preventDefault()                      // 기본 이벤트 방지
@@ -43,9 +46,10 @@ const Login = () => {
                             <p className="text-center text-danger">아이디 또는 비밀번호를 잘못 입력했습니다.</p>
                         </th:block> */}
                     </div>
-                    <div className="py-2">
-                        <button type="submit" className="loginBtn btn btn-dark w-100" >로그인</button>
-                    </div>
+                    <MainBtn text={"로그인"} />
+                    {/* <div className="py-2">
+                        <button type="submit" className="mainbtn btn btn-dark w-100" >로그인</button>
+                    </div> */}
 
                     {/* <!-- 자동로그인 / 아이디 저장 --> */}
                     <div className="d-flex justify-content-center">

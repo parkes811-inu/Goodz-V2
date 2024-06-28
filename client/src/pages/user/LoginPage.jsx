@@ -8,7 +8,7 @@ const LoginPage = () => {
   return (
     <>
       <Header />
-      <LoginContainer></LoginContainer>
+        <LoginContainer></LoginContainer>
       <Footer />
     </>
   )
