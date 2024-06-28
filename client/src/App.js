@@ -20,14 +20,14 @@ const ProtectedRoute = ({children, requiredRole}) => {
   const {roles, isLogin} = useContext(LoginContext);
 
   if (!isLogin) {
-    return <Navigate to="/users/login" replace />;
-  }
-
-  if (requiredRole === 'admin' && !roles.isAdmin) {
     return <Navigate to="/" replace />;
   }
 
-  if (requiredRole === 'user' && !roles.isUser) {
+  if (!roles.isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!roles.isUser) {
     return <Navigate to="/" replace />;
   }
 
