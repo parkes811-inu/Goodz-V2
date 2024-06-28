@@ -46,7 +46,6 @@ function AppRoutes() {
       <Route path="/styles" element={<PostList />} />
       <Route path="/product" element={<AllProduct />} />
 
-s
       {/* 어드민만 접근 가능한 곳 */}
       <Route path="/admin/brands" element={
           <ProtectedRoute requiredRole="admin">
