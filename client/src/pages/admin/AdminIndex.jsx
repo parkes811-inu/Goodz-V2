@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import IndexContainer from '../../containers/admin/IndexContainer';
 import { getAdminDashboardData } from '../../apis/admin/admin';
-import Header from '../../layout/Header';
-import Footer from '../../layout/Footer';
+import AdminLayout from '../../layout/AdminLayout';
 
-const Index = () => {
+const AdminIndex = () => {
   const [saleStateCounts, setSaleStateCounts] = useState({});
   const [purchaseStateCounts, setPurchaseStateCounts] = useState({});
 
@@ -22,15 +21,13 @@ const Index = () => {
   }, []);
 
   return (
-    <>
-      <Header />
+    <AdminLayout>
       <IndexContainer 
         saleStateCounts={saleStateCounts} 
         purchaseStateCounts={purchaseStateCounts} 
       />
-      <Footer />
-    </>
+    </AdminLayout>
   );
 };
 
-export default Index;
+export default AdminIndex;

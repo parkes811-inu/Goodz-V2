@@ -30,16 +30,16 @@ const Header = () => {
             {/* 좌측 - 상품 카테고리 */}
             <div className='links-category'>
               <ul>
-                <li>
+                <li className='Header-li'>
                   <Link to={"/product/top"}>상의</Link>
                 </li>
-                <li>
+                <li className='Header-li'>
                   <Link to="/product/pants">하의</Link>
                 </li>
-                <li>
+                <li className='Header-li'>
                   <Link to="/product/shoes">신발</Link>
                 </li>
-                <li>
+                <li className='Header-li'>
                   <Link to="/product/accessory">액세서리</Link>
                 </li>
               </ul>
@@ -51,10 +51,10 @@ const Header = () => {
               <div className='links-user d-flex flex-column align-items-end'>
                 <ul>
                   {/* 관심 */}
-                  <li>
+                  <li className='Header-li'>
                     <Link to={"/users/wishlist/products"}>관심</Link>
                   </li>
-                  <li>
+                  <li className='Header-li'>
                     { roles.isAdmin ? 
                       <>
                         <Link to="/admin">관리자페이지</Link>
@@ -65,7 +65,7 @@ const Header = () => {
                       </>
                     }
                   </li>
-                  <li>
+                  <li className='Header-li'>
                     {
                       isLogin ?
                       <>
@@ -84,13 +84,13 @@ const Header = () => {
               <div className='links-main'>
                 <ul>
                   {/* 관심 */}
-                  <li>
+                  <li className='Header-li'>
                     <Link to={"/"}>HOME</Link>
                   </li>
-                  <li>
+                  <li className='Header-li'>
                     <Link to="/styles">STYLE</Link>
                   </li>
-                  <li>
+                  <li className='Header-li'>
                     <Link to="/product">SHOP</Link>
                   </li>
                 </ul>
