@@ -4,6 +4,8 @@ import Pagination from '../../components/admin/Pagination';
 import BrandSearchForm from '../../components/admin/BrandSearchForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../components/admin/BrandList.css';
+import Header from '../../layout/Header';
+import Footer from '../../layout/Footer';
 
 const BrandListPage = () => {
   const [keyword, setKeyword] = useState('');
@@ -40,11 +42,16 @@ const BrandListPage = () => {
   };
 
   return (
-    <div className="content mt-5">
-      <BrandSearchForm keyword={keyword} setKeyword={setKeyword} />
-      <BrandTable brands={brands} />
-      <Pagination page={page} keyword={keyword} setCurrentPage={setCurrentPage} />
-    </div>
+    <>
+      <Header />
+        <div className="container mt-5">
+          <h2>브랜드 목록</h2>
+          <BrandSearchForm keyword={keyword} setKeyword={setKeyword} />
+          <BrandTable brands={brands} />
+          <Pagination page={page} keyword={keyword} setCurrentPage={setCurrentPage} />
+        </div>
+      <Footer />
+    </>
   );
 };
 
