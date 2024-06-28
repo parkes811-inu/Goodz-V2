@@ -68,7 +68,6 @@ public class AdminController {
     }
 
     // 브랜드 목록 조회
-    // 브랜드 목록 조회
     @GetMapping("/brands")
     public ResponseEntity<Map<String, Object>> brandList(Page page,
                             @RequestParam(value = "page", defaultValue = "1") int pageNumber,
