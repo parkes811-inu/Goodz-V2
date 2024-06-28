@@ -3,6 +3,7 @@ import IndexContainer from '../../containers/admin/IndexContainer';
 import { getAdminDashboardData } from '../../apis/admin/admin';
 import AdminLayout from '../../layout/AdminLayout';
 
+
 const AdminIndex = () => {
   const [saleStateCounts, setSaleStateCounts] = useState({});
   const [purchaseStateCounts, setPurchaseStateCounts] = useState({});
