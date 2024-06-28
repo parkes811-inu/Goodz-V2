@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import BrandTable from '../../components/admin/BrandTable';
 import Pagination from '../../components/admin/Pagination';
 import BrandSearchForm from '../../components/admin/BrandSearchForm';
+import { list } from '../../apis/admin/admin';
+import AdminLayout from '../../layout/AdminLayout';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../components/admin/BrandList.css';
-import Header from '../../layout/Header';
-import Footer from '../../layout/Footer';
 
 const BrandListPage = () => {
   const [keyword, setKeyword] = useState('');
@@ -17,9 +17,8 @@ const BrandListPage = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await fetch(`/admin/brands?keyword=${keyword}&page=${currentPage}&limit=${brandsPerPage}`);
-        const data = await response.json();
-        console.log('Fetched data:', data); // 데이터 확인
+        const response = await list(keyword, currentPage, brandsPerPage);
+        const data = response.data;
         setBrands(data.brandList || []);
         setTotalBrands(data.page.total);
       } catch (error) {
@@ -42,16 +41,14 @@ const BrandListPage = () => {
   };
 
   return (
-    <>
-      <Header />
-        <div className="container mt-5">
-          <h2>브랜드 목록</h2>
-          <BrandSearchForm keyword={keyword} setKeyword={setKeyword} />
-          <BrandTable brands={brands} />
-          <Pagination page={page} keyword={keyword} setCurrentPage={setCurrentPage} />
-        </div>
-      <Footer />
-    </>
+    <AdminLayout>
+      <div className="container mt-5">
+        <h2>브랜드 목록</h2>
+        <BrandSearchForm keyword={keyword} setKeyword={setKeyword} />
+        <BrandTable brands={brands} />
+        <Pagination page={page} keyword={keyword} setCurrentPage={setCurrentPage} />
+      </div>
+    </AdminLayout>
   );
 };
 

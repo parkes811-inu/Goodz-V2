@@ -9,10 +9,10 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 const BrandListContainer = ({ keyword, setKeyword, page, brands, setCurrentPage }) => {
     return (
-      <div>
+      <div className="container mt-5">
         <div className="header">
-          <h2>브랜드 목록</h2>
-      </div>
+        <h2>대시보드</h2>
+        </div>
         <div className="d-flex justify-content-between mt-3 mb-3">
           <BrandSearchForm keyword={keyword} setKeyword={setKeyword} />
           <a href="/admin/add_brand" className="custom-button">
