@@ -6,10 +6,10 @@
 <mapper namespace="com.springproject.goodz.user.mapper.WishListMapper">
 
     <!-- 저장 체크 여부 - id 기준 -->
-    <select id="listById" resultType="int">
-        SELECT count(*)
+    <select id="listById" resultType="Wish">
+        SELECT parent_no;
         FROM wishList
-        WHERE user_id = #{userId} and parent_table = #{parentTable} and parent_no = #{parentNo}
+        WHERE user_id = #{userId} and parent_table = #{parentTable}
     </select>
 
     <!-- 저장 갯수 갱신 -->

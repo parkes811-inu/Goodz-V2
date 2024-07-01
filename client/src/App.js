@@ -6,9 +6,9 @@ import Top from './pages/product/Top';
 import Pants from './pages/product/Pants';
 import Shoes from './pages/product/Shoes';
 import Accessory from './pages/product/Accessory';
-import AllPosts from './pages/post/AllPosts';
 import AllProduct from './pages/product/AllProduct';
-import wishlist_products from './pages/user/wishlist_products';
+import AllPosts from './pages/post/AllPosts';
+import Read from './pages/post/Read';
 import AdminIndex from './pages/admin/AdminIndex';
 import LoginPage from './pages/user/LoginPage';
 import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
@@ -20,7 +20,8 @@ const ProtectedRoute = ({children, requiredRole}) => {
   const {roles, isLogin} = useContext(LoginContext);
 
   if (!isLogin) {
-    return <Navigate to="/" replace />;
+    console.log("권한: " + roles)
+    return <Navigate to="/users/login" replace />;
   }
 
   if (!roles.isAdmin) {
@@ -69,10 +70,12 @@ function AppRoutes() {
       <Route path='/users/wishList/products'
         element={
           <ProtectedRoute requiredRole="user">
-            <wishlist_products />
+            <wishProducts />
           </ProtectedRoute>}>
       </Route>
 
+      {/* post */}
+      <Route path="/styles/:postNo" element={<Read />}></Route>
       {/* 다른 보호된 라우트들을 여기에 추가할 수 있습니다 */}
     </Routes>
   );

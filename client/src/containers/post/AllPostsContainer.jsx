@@ -1,14 +1,26 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useEffect, useState } from 'react';
-import Post from '../../components/post/post';
+import React, { useContext, useEffect, useState } from 'react';
+import Post from '../../components/post/Post';
 import * as post from '../../apis/post/post';
+import * as wish from '../../apis/user/wish';
+import LikeBtn from '../../components/common/LikeBtn';
+import WishBtn from '../../components/common/WishBtn';
+import { LoginContext } from '../../contexts/LoginContextProvider';
 
 const AllPostsContainer = () => {
+    
+    // const {userInfo} = useContext(LoginContext);
+    // const { no, userId, authList } = userInfo;
+    // console.log("유저아이디: " + userId);
 
     /* -----------------state--------------------- */
     const [postList, setPostList] = useState([]);
+    // const [wishList, setWish] = useState([]);
+    // const [LikeList, setLike] = useState([]);
+
+    // const [isWished, setWish]
+
     
-    /* ------------------------------------------- */
     
 
     /* -----------------functions----------------- */
@@ -21,8 +33,15 @@ const AllPostsContainer = () => {
 
         // setPostList(null);   // 빈 게시글 시 화면체크
     }
+
+    // const getWishList = async () => {
+    //     const response = await wish.listById("post");
+    //     const data = await response.data;
+
+    //     setWish(data);
+    //     console.log(data);
+    // }
     
-    /* ------------------------------------------- */
 
     
     /* --------------------Hook-------------------- */
@@ -31,7 +50,6 @@ const AllPostsContainer = () => {
     },[])
 
 
-    /* -------------------------------------------- */
 
     return (
 
@@ -48,7 +66,15 @@ const AllPostsContainer = () => {
                     {/* 게시글이 존재하는 경우 */}
                     <div className="grid">
                         {postList.map( (post) => 
-                            <Post post={post} />
+                            <>
+                                <div className="item">
+                                    <Post post={post} />
+                                    <div class="d-flex justify-content-end column-gap-2 mt-2 px-2" >
+                                        <WishBtn wishCount={99}/>
+                                        <LikeBtn likeCount={99}/>
+                                    </div>
+                                </div>
+                            </>
                         )}   
                     </div>
                 </>

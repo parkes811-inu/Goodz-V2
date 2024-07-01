@@ -31,6 +31,11 @@ public class WishListServiceImpl implements WishListService {
 
         return !ischecked;
     }
+    // public List<Wish> listById(String parentTable, String userId) throws Exception {
+    //     List<Wish> wishList = wishListMapper.listById(parentTable, userId);
+
+    //     return wishList;
+    // }
 
     // 저장 갯수 갱신
     @Override

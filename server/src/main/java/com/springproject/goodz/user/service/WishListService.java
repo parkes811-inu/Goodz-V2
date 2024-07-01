@@ -8,6 +8,7 @@ public interface WishListService {
 
     // 저장 체크 여부 - id 기준
     public boolean listById(Wish wish) throws Exception;
+    // public List<Wish> listById(String parentTable, String userId) throws Exception;
 
     // 저장 갯수 가져오기
     public int countWish(Wish wish) throws Exception;

@@ -1,4 +1,4 @@
--- Active: 1716800736662@@127.0.0.1@3306@goodz
+-- Active: 1719293613121@@127.0.0.1@3306@goodz
 
 -- User 테이블  / 📁 user
 CREATE TABLE `User` (
@@ -174,7 +174,7 @@ CREATE TABLE `Wishlist` (
 	`user_id` VARCHAR(100) NOT NULL,
 	`parent_table` VARCHAR(100) NOT NULL,
 	`parent_no` INT NOT NULL,
-	`created_at` DATE NULL,
+	`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`w_no`),
 	FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) COMMENT='관심';

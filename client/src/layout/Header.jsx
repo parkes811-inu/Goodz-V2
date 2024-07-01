@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Common.css'
-import './Header.css'
+import './css/Common.css'
+import './css/Header.css'
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 

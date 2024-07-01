@@ -105,9 +105,9 @@
                     <th:block th:if="${loginUser.userId == writer.userId}">
                         <!-- 게시글 수정&삭제버튼 -->
                          <div class="udpateDelete" style="align-self: flex-end;">
-                             <a th:href="|/styles/update/${post.postNo}|">수정</a>
-                             <span>|</span>
-                             <a type="button" onclick="deletePost() ">삭제</a>
+                            <a th:href="|/styles/update/${post.postNo}|">수정</a>
+                            <span>|</span>
+                            <a type="button" onclick="deletePost() ">삭제</a>
                          </div>
                     </th:block>
                     <th:block th:if="${loginUser.userId != writer.userId}">

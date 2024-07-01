@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,6 +34,7 @@ import com.springproject.goodz.post.service.PostService;
 import com.springproject.goodz.post.service.TagService;
 import com.springproject.goodz.product.dto.Product;
 import com.springproject.goodz.product.service.ProductService;
+import com.springproject.goodz.user.dto.CustomUser;
 import com.springproject.goodz.user.dto.Users;
 import com.springproject.goodz.user.dto.Wish;
 import com.springproject.goodz.user.service.FollowService;
@@ -100,7 +102,53 @@ public class PostController {
 
         try {
             // 게시글 세팅
+
+            // log.info("::::: customUser :::::");
+            // log.info("customUser : "+ customUser);
+
+            // Users loginUser = customUser.getUser();
+            // log.info("user : " + loginUser);
+
             List<Post> postList = postService.list();
+            
+            /* 좋아요 & 저장 세팅 */
+            // 비 로그인 시, 좋아요 전체 해제
+            // // if (loginUser == null) {
+            // //     for (Post post : postList) {
+            // //         post.setIsLiked("none");
+            // //         post.setIsWishlisted("none");
+            // //     }
+                
+            // //     return new ResponseEntity<>(postList, HttpStatus.OK);
+    
+            // // } else {
+            // //     for (Post post : postList) {
+            // //         // 세션아이디와 게시글 번호 기준으로 좋아요 여부 확인
+            // //         Like like = new Like();
+            // //         like.setUserId(loginUser.getUserId());
+            // //         like.setPostNo(post.getPostNo());
+            // //         boolean isChecked_like = likeService.listById(like);
+                    
+            // //         if (!isChecked_like) {
+            // //             post.setIsLiked("none");
+            // //         } else {
+            // //             post.setIsLiked("solid");
+            // //         }
+    
+            // //         // 세션아이디와 게시글 번호 기준으로 저장 여부 확인
+            // //         Wish wish = new Wish();
+            // //         wish.setUserId(loginUser.getUserId());
+            // //         wish.setParentTable("post");
+            // //         wish.setParentNo(post.getPostNo());
+            // //         boolean isChecked_wishlist = wishListService.listById(wish);
+    
+            // //         if (!isChecked_wishlist) {
+            // //             post.setIsWishlisted("none");
+            // //         } else {
+            // //             post.setIsWishlisted("solid");
+            // //         }
+            // //     }
+            // }
             return new ResponseEntity<>(postList, HttpStatus.OK);
             
         } catch (Exception e) {
@@ -108,53 +156,8 @@ public class PostController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-        // // 세션 정보 세팅
-        // Users loginUser = (Users)session.getAttribute("user");
-        // model.addAttribute("loginUser", loginUser);
-        
-        // /* 좋아요 & 저장 세팅 */
-        // // 비 로그인 시, 좋아요 전체 해제
-        // if (loginUser == null) {
-        //     for (Post post : postList) {
-        //         post.setIsLiked("none");
-        //         post.setIsWishlisted("none");
-        //     }
-        //     model.addAttribute("postList", postList);
-            
-        //     return "/post/list";
-
-        // } else {
-        //     for (Post post : postList) {
-        //         // 세션아이디와 게시글 번호 기준으로 좋아요 여부 확인
-        //         Like like = new Like();
-        //         like.setUserId(loginUser.getUserId());
-        //         like.setPostNo(post.getPostNo());
-        //         boolean isChecked_like = likeService.listById(like);
-                
-        //         if (!isChecked_like) {
-        //             post.setIsLiked("none");
-        //         } else {
-        //             post.setIsLiked("solid");
-        //         }
-
-        //         // 세션아이디와 게시글 번호 기준으로 저장 여부 확인
-        //         Wish wish = new Wish();
-        //         wish.setUserId(loginUser.getUserId());
-        //         wish.setParentTable("post");
-        //         wish.setParentNo(post.getPostNo());
-        //         boolean isChecked_wishlist = wishListService.listById(wish);
-
-        //         if (!isChecked_wishlist) {
-        //             post.setIsWishlisted("none");
-        //         } else {
-        //             post.setIsWishlisted("solid");
-        //         }
 
                 
-        //     }
-        //     model.addAttribute("postList", postList);
-        // }
     }
 
     // 
@@ -170,6 +173,7 @@ public class PostController {
         log.info("::::::" + postNo + "번 게시글 조회요청::::::");
         /* 게시글 조회 */
         Post post = postService.select(postNo);
+        log.info(post.toString());
 
         // /* 상품태그리스트 조회 */
         // List<Product> tempList = post.getTagList();
