@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../admin/css/History.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -25,9 +26,9 @@ const PayTable = ({ userPurchaseList = [] }) => {
             userPurchaseList.map((purchase) => (
               <tr key={purchase.purchase_no}>
                 <th scope="row">
-                  <a href={`/admin/pay_history/detail/${purchase.purchase_no}`} className="text-dark text-decoration-none">
+                  <Link to={`/admin/pay_history/detail/${purchase.purchase_no}`} className="text-dark text-decoration-none">
                     {purchase.purchase_no}
-                  </a>
+                  </Link>
                 </th>
                 <td>{purchase.p_no}</td>
                 <td>{purchase.user_id}</td>

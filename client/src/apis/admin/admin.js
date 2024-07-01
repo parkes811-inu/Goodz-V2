@@ -48,3 +48,10 @@ export const userSaleList = (page = 1, limit = 10) => api.get('/admin/purchase_s
 
 // 유저의 판매 상황 전체 데이터 개수 가져오기
 export const getSalesTotalCount = () => api.get('/api/sales_total_count');
+
+// 브랜드 등록
+export const brandInsert = (formData) => api.post('/admin/brands', formData, {
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+});
