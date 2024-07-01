@@ -1,5 +1,7 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../admin/css/List.css"
+import "../admin/css/List.css";
 
 const ProductTable = ({ products = [] }) => {
   console.log('Products: ', products);
@@ -25,7 +27,11 @@ const ProductTable = ({ products = [] }) => {
               <tr key={product.pno}>
                 <th scope="row">{product.pno}</th>
                 <td>{product.bname}</td>
-                <td>{product.productName}</td>
+                <td>
+                  <Link to={`/admin/product/detail/${product.pno}`} className="text-dark text-decoration-none">
+                    {product.productName}
+                  </Link>
+                </td>
                 <td>{new Date(product.createdAt).toLocaleDateString()}</td>
               </tr>
             ))

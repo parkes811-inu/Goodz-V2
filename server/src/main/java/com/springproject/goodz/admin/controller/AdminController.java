@@ -100,9 +100,17 @@ public class AdminController {
 
     // 브랜드 등록
     @PostMapping("/brands")
-    public ResponseEntity<String> addBrands(@RequestBody Brand brand) throws Exception {
+    public ResponseEntity<String> addBrands(@RequestPart("bName") String bName,
+                                            @RequestPart("logoFile") MultipartFile logoFile) throws Exception {
         log.info("::::::::::::::브랜드 등록 요청::::::::::::::");
-        log.info(brand.toString());
+        log.info("브랜드명: " + bName);
+        log.info("로고 파일: " + logoFile.getOriginalFilename());
+
+        // 여기서 Brand 객체를 생성하고 필요한 처리를 수행합니다
+        Brand brand = new Brand();
+        brand.setBName(bName);
+        // 로고 파일 처리를 추가합니다 (예: 파일 저장 및 경로 설정)
+
         int result = brandService.insert(brand);
         if (result == 0) {
             log.info("::::::::::::::브랜드 등록 처리 중 예외발생::::::::::::::");

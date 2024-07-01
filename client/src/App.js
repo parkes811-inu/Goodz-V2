@@ -17,6 +17,7 @@ import BrandListPage from './pages/admin/BrandListPage';
 import ProductListPage from './pages/admin/ProductListPage';
 import PayPage from './pages/admin/PayPage';
 import PurchasePage from './pages/admin/PurchasePage';
+import BrandInsertPage from './pages/admin/BrandInsertPage';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({children, requiredRole}) => {
@@ -74,6 +75,11 @@ function AppRoutes() {
         <Route path="/admin/purchase_state" element={
           <ProtectedRoute requiredRole="admin">
             <PurchasePage />
+          </ProtectedRoute>
+        }/>
+        <Route path="/admin/add_brand" element={
+          <ProtectedRoute requiredRole="admin">
+            <BrandInsertPage />
           </ProtectedRoute>
         }/>
 
