@@ -6,7 +6,7 @@ const Carousel = () => (
     <div id="productCarousel" className="carousel slide container p-0" data-bs-ride="carousel">
       <div className="carousel-inner">
         <div className="carousel-item active">
-          <img src="/img/main/main1.png" className="d-block w-100" alt="main 1" />
+          <img src="/img/main/main1.png.png" className="d-block w-100" alt="main 1" />
         </div>
         <div className="carousel-item">
           <img src="/img/main/main2.png" className="d-block w-100" alt="main 2" />
