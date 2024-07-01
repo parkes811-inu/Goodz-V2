@@ -15,7 +15,7 @@ ul {
     padding: 0;
 }
 
-li {padding: 10px !important;}
+.Header-li {padding: 10px !important;}
 /* 링크태그의 기본 css 속성 없앰. Link태그는 a로 잡히나봄. */
 a { text-decoration: none; color: black; }
 

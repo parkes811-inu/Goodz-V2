@@ -9,24 +9,25 @@ import Accessory from './pages/product/Accessory';
 import AllPosts from './pages/post/AllPosts';
 import AllProduct from './pages/product/AllProduct';
 import wishlist_products from './pages/user/wishlist_products';
-import BrandListPage from './pages/admin/BrandListPage';
+import AdminIndex from './pages/admin/AdminIndex';
 import LoginPage from './pages/user/LoginPage';
 import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
 import { useContext } from 'react';
+import BrandListPage from './pages/admin/BrandListPage';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({children, requiredRole}) => {
   const {roles, isLogin} = useContext(LoginContext);
 
   if (!isLogin) {
-    return <Navigate to="/users/login" replace />;
-  }
-
-  if (requiredRole === 'admin' && !roles.isAdmin) {
     return <Navigate to="/" replace />;
   }
 
-  if (requiredRole === 'user' && !roles.isUser) {
+  if (!roles.isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!roles.isUser) {
     return <Navigate to="/" replace />;
   }
 
@@ -47,7 +48,12 @@ function AppRoutes() {
       <Route path="/product" element={<AllProduct />} />
 
       {/* 어드민만 접근 가능한 곳 */}
-      <Route path="/admin/brands" element={
+      <Route path="/admin" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminIndex />
+          </ProtectedRoute>
+        }/>
+        <Route path="/admin/brands" element={
           <ProtectedRoute requiredRole="admin">
             <BrandListPage />
           </ProtectedRoute>
