@@ -1,11 +1,12 @@
 import React from 'react';
-import "../admin/Index.css"
+import { Link } from 'react-router-dom';
+import "../admin/css/Index.css"
 
 const IndexCard = ({ title, link, children }) => (
   <div className="card mb-4">
     <div className="card-header d-flex justify-content-between align-items-center">
       <span>{title}</span>
-      <a href={link}>더보기 &gt;</a>
+      <Link to={link}>더보기 &gt;</Link>
     </div>
     <div className="card-body">
       {children}

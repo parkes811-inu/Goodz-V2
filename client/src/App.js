@@ -14,6 +14,9 @@ import LoginPage from './pages/user/LoginPage';
 import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
 import { useContext } from 'react';
 import BrandListPage from './pages/admin/BrandListPage';
+import ProductListPage from './pages/admin/ProductListPage';
+import PayPage from './pages/admin/PayPage';
+import PurchasePage from './pages/admin/PurchasePage';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({children, requiredRole}) => {
@@ -56,6 +59,21 @@ function AppRoutes() {
         <Route path="/admin/brands" element={
           <ProtectedRoute requiredRole="admin">
             <BrandListPage />
+          </ProtectedRoute>
+        }/>
+        <Route path="/admin/products" element={
+          <ProtectedRoute requiredRole="admin">
+            <ProductListPage />
+          </ProtectedRoute>
+        }/>
+         <Route path="/admin/pay_history" element={
+          <ProtectedRoute requiredRole="admin">
+            <PayPage />
+          </ProtectedRoute>
+        }/>
+        <Route path="/admin/purchase_state" element={
+          <ProtectedRoute requiredRole="admin">
+            <PurchasePage />
           </ProtectedRoute>
         }/>
 
