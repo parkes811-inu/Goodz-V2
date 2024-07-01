@@ -1,0 +1,55 @@
+.post img {
+    width: 100%;
+    /* height: 280px; */
+    border-radius: 9px;
+}
+
+/* .post {
+    text-align: center;
+} */
+
+.profile{
+    margin-left: 16px;
+}
+
+.count-like, .count-wish {
+    font-size: medium;
+    margin: 0;
+}
+
+.btn-like, .btn-wish {
+    border: none;
+    background: none;
+}
+* {
+box-sizing: border-box;
+}
+
+.grid {
+columns: 18rem;
+gap: 1rem;
+counter-reset: grid;
+}
+
+.item + .item {
+margin-top: 1rem;
+}
+
+.item {
+break-inside: avoid;
+aspect-ratio: 4 / 3;
+padding: 1rem;
+border-radius: 0.75rem;
+}
+
+.item::before {
+counter-increment: grid;
+}
+
+.item:nth-child(3n) {
+aspect-ratio: 1;
+}
+
+.item:nth-child(3n - 1) {
+aspect-ratio: 2 / 3;
+}

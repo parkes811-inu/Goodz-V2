@@ -1,15 +1,15 @@
 import React from 'react'
-import Header from '../../layout/Header';
-import Footer from '../../layout/Footer';
 import LoginContainer from '../../containers/user/LoginContainer';
+import MainLayout from  '../../layout/MainLayout';
 import './css/LoginPage.css';
 
 const LoginPage = () => {
   return (
     <>
-      <Header />
-        <LoginContainer></LoginContainer>
-      <Footer />
+      <MainLayout>
+        <LoginContainer />
+      </MainLayout>
+
     </>
   )
 }

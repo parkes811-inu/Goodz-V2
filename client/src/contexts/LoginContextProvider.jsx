@@ -16,6 +16,8 @@ const LoginContextProvider = ( {children} ) => {
     const [userInfo, setUserInfo] = useState(null)
     // 권한 정보
     const [roles, setRoles] = useState({isUser : false, isAdmin : false})
+    // 페이지렌더링 지연
+    const [isLoading, setIsLoading] = useState(true);
     
     // 페이지 이동
     const navigate = useNavigate();
@@ -189,11 +191,15 @@ const LoginContextProvider = ( {children} ) => {
     /* ------------------------------------------------------------------ */
     // Mount / Update
     useEffect( () => {
-        // 로그인 체크
-        loginCheck();
-        // 1️⃣ 쿠키에서 jwt를 꺼낸다.
-        // 2️⃣ jwt 있으면, 서버로부터 사용자 정보를 요청해 받아온다.
-        // 3️⃣ 로그인 세팅을 한다. (로그인여부, 사용자정보, 권한정보 등록)
+        const checkLogin = async () => {
+            // 로그인 체크
+            // 1️⃣ 쿠키에서 jwt를 꺼낸다.
+            // 2️⃣ jwt 있으면, 서버로부터 사용자 정보를 요청해 받아온다.
+            // 3️⃣ 로그인 세팅을 한다. (로그인여부, 사용자정보, 권한정보 등록)
+            await loginCheck();
+            setIsLoading(false);
+        };
+        checkLogin();
     }, [])
 
     return (
