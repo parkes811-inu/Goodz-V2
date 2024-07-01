@@ -1,16 +1,17 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../admin/BrandList.css';
+import "../admin/css/List.css"
 
 const BrandTable = ({ brands = [] }) => {
   console.log('Brands:', brands); // 데이터 확인
 
   return (
-    <table className="table">
-      <thead>
+    <div className="container mt-3">
+      <table className="table table-bordered text-center">
+      <thead className="table-dark">
         <tr>
-          <th scope="col" style={{ width: '120px' }}>브랜드 번호</th>
-          <th scope="col" colSpan="4">브랜드명</th>
+          <th scope="col" style={{ width: '120px' , color : 'black'}}>브랜드 번호</th>
+          <th scope="col" colSpan="4" style={{color : 'black'}}>브랜드명</th>
         </tr>
       </thead>
       <tbody className="table-group-divider">
@@ -26,8 +27,9 @@ const BrandTable = ({ brands = [] }) => {
             </tr>
           ))
         )}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   );
 };
 

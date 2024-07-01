@@ -1,5 +1,5 @@
 import React from 'react';
-import "../admin/Index.css"
+import "../admin/css/Index.css"
 
 const IndexStats = ({ stats }) => (
   <div className="stats">
