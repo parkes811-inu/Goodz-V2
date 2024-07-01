@@ -6,7 +6,7 @@ import Top from './pages/product/Top';
 import Pants from './pages/product/Pants';
 import Shoes from './pages/product/Shoes';
 import Accessory from './pages/product/Accessory';
-import PostList from './pages/post/PostList';
+import AllPosts from './pages/post/AllPosts';
 import AllProduct from './pages/product/AllProduct';
 import wishlist_products from './pages/user/wishlist_products';
 import AdminIndex from './pages/admin/AdminIndex';
@@ -44,7 +44,7 @@ function AppRoutes() {
       <Route path="/product/pants" element={<Pants />} />
       <Route path="/product/shoes" element={<Shoes />} />
       <Route path="/product/accessory" element={<Accessory />} />
-      <Route path="/styles" element={<PostList />} />
+      <Route path="/styles" element={<AllPosts />} />
       <Route path="/product" element={<AllProduct />} />
 
       {/* 어드민만 접근 가능한 곳 */}
