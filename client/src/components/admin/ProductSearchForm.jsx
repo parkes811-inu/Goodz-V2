@@ -1,8 +1,9 @@
 import React from 'react';
+import "../admin/css/List.css"
 import AddButton from './AddButton';
-import "../admin/css/List.css";
 
-const BrandSearchForm = ({ keyword, setKeyword }) => {
+
+const ProductSearchForm = ({ keyword, setKeyword }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(`검색어: ${keyword}`);
@@ -16,7 +17,7 @@ const BrandSearchForm = ({ keyword, setKeyword }) => {
           type="text" 
           name="keyword" 
           className="form-control" 
-          placeholder="브랜드명 검색"
+          placeholder="상품명 또는 브랜드명 검색"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
@@ -24,9 +25,10 @@ const BrandSearchForm = ({ keyword, setKeyword }) => {
           <button type="submit" className="btn btn-primary">검색</button>
         </div>
       </div>
-      <AddButton link="/admin/add_brand" />
+      <AddButton link="/admin/add_product" />
     </form>
   );
 };
 
-export default BrandSearchForm;
+export default ProductSearchForm;
+

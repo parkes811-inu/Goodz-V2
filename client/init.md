@@ -7,7 +7,7 @@ npm install js-cookie@^3.0.5
 
 ## sweetalert2
 npm install sweetalert2
-npm install sweetalert2-react-conten
+npm install sweetalert2-react-content
 
 ## 기본 방식의  bootstrap
 npm install bootstrap
