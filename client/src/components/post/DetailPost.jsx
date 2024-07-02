@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Carousel from 'react-bootstrap/Carousel';
 import { Button, Offcanvas } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react'
 import * as cmmt from '../../apis/post/comment';
 import ProfileInfo from '../common/ProfileInfo'
@@ -9,14 +9,19 @@ import WishBtn from '../common/WishBtn';
 import LikeBtn from '../common/LikeBtn';
 import TagItem from './TagItem';
 
-const DetailPost = ({post, fileList, cmmtList}) => {
+
+const DetailPost = ({post, fileList, cmmtList, handleLike, handleWish}) => {
+
+    // 화면전환을 위한 navigate
+    const navigate = useNavigate();
+
     // console.log(fileList);
-    
+    console.log(post);
     console.log(cmmtList);
     
 
     // 🔁 게시글 status
-    const {userId, nickname, profileImgNo, postNo, content, likeCount, wishCount} = post;
+    const {userId, nickname, profileImgNo, postNo, content, likeCount, wishCount, wished, liked} = post;
     
     // 🔁 모달창 status
     const [show, setShow] = useState(false);
@@ -25,7 +30,8 @@ const DetailPost = ({post, fileList, cmmtList}) => {
     const handleShow = () => setShow(true);
 
     // const deleteCmmt = (cmmt.cNo) => console.log(cmmt, cNo)
-    
+
+
 
     // 하드코딩
     const tagCount = 5;
@@ -52,7 +58,7 @@ const DetailPost = ({post, fileList, cmmtList}) => {
 
                 {/* 게시글 이미지 슬라이드*/}
                 <div className="postImgs">
-                    <Carousel className='' style={{ width: '640px', margin: '0 auto'}}>
+                    <Carousel style={{ width: '640px', margin: '0 auto'}}>
                         {fileList.map(file => (
                             <Carousel.Item key={file.no}>
                                 <img src={`/files/${file.no}`} className="d-block w-100 img-fluid rounded-2" alt={`file-${file.no}`} />
@@ -66,9 +72,11 @@ const DetailPost = ({post, fileList, cmmtList}) => {
                     {/* <!-- 소셜버튼들 --> */}
                     <div className="d-flex justify-content-end column-gap-2 px-2">
                         {/* <!-- 저장 --> */}
-                        <WishBtn wishCount={wishCount}/>
+                        {/* <WishBtn wishCount={wishCount}/> */}
+                        <WishBtn wishCount={wishCount} isWished={wished} handleWish={handleWish} postNo={postNo} />
                         {/* <!-- 좋아요 --> */}
-                        <LikeBtn likeCount={likeCount} />
+                        {/* <LikeBtn likeCount={likeCount} /> */}
+                                    <LikeBtn likeCount={likeCount} isLiked={liked} handleLike={handleLike} postNo={postNo}/>
                         {/* <!-- 댓글 --> */}
                         <Button variant="none" onClick={handleShow} className="me-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6" width="26" height="26">
@@ -131,7 +139,7 @@ const DetailPost = ({post, fileList, cmmtList}) => {
 
                             {/* 댓글목록 */}
                             <div className="cmmt_list" id="cmmt_list">
-                                <hr class="mb-2" />
+                                <hr className="mb-2" />
                                 {
                                     !cmmtList ?
                                     <>

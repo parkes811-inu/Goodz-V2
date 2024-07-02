@@ -3,29 +3,25 @@ import React, { useContext, useEffect, useState } from 'react';
 import Post from '../../components/post/Post';
 import * as post from '../../apis/post/post';
 import * as wish from '../../apis/user/wish';
+import * as like from '../../apis/post/like';
 import LikeBtn from '../../components/common/LikeBtn';
 import WishBtn from '../../components/common/WishBtn';
 import { LoginContext } from '../../contexts/LoginContextProvider';
+import { useNavigate } from 'react-router-dom';
 
 const AllPostsContainer = () => {
-    
-    // const {userInfo} = useContext(LoginContext);
-    // const {userId} = userInfo;
-    // const { no, userId, authList } = userInfo;
-    // console.log("유저아이디: " + userId);
 
-    /* -----------------state--------------------- */
+    const navigate = useNavigate();
+
+    // 🔁state
     const [postList, setPostList] = useState([]);
-    // const [wishList, setWish] = useState([]);
-    // const [LikeList, setLike] = useState([]);
 
-    // const [isWished, setWish]
 
-    
-    /* -----------------functions----------------- */
+    // 💨 functions
     const getPostList = async () => {
         
         try {
+            // console.log("게시글 요청")
             const response = await post.list();
             const data = await response.data;
             setPostList(data);
@@ -37,22 +33,126 @@ const AllPostsContainer = () => {
         // setPostList(null);   // 빈 게시글 시 화면체크
     }
     
-    const handleLike = async () =>  {
-        alert('하트!!!!!')
+    /* 💛좋아요 */
+    const handleLike = async (status, userId, postNo) =>  {
+
+        console.log(status, userId, postNo);
+
+        // 👩‍💼❌ 비 로그인 시
+        if (userId == undefined || userId == null) {
+            alert("로그인 후 이용가능합니다. ");
+            let confirm = window.confirm("로그인페이지로 이동 하시겠습니까?");
+
+            if (!confirm) { return; }
+
+            navigate("/users/login");
+            return;
+        }
+
+        // 👩‍💼⭕ 로그인 시
+        // data
+        const likeData = {
+            'userId': userId,
+            'postNo': postNo
+        }
+        // 헤더
+        const headers = {
+            'content-type' : 'application/json'
+        }
+        
+        if (!status) {
+            // 좋아요 등록 (false ➡ true)
+            const response = await like.addLike(likeData, headers);
+            const data = await response.data;
+    
+            // console.log(data);
+            getPostList();
+
+            // if (data === "SUCCESS") {
+            //     alert('좋아요 등록완료');
+            // } else {
+            //     alert('좋아요 등록실패');
+            // }
+            
+        } else {
+            // 좋아요 삭제 (true ➡ false)
+            const response = await like.deleteLike(likeData);
+            const data = await response.data;
+            // console.log(data);
+    
+            getPostList();
+
+            // if (data === "SUCCESS") {
+            //     alert('좋아요 삭제완료');
+            // } else {
+            //     alert('좋아요 삭제실패');
+            // }
+        }
     }
     
-    const handleWish = async () =>  {
-        alert('관심!!!!!')
+    /* 💌 관심 */
+    const handleWish = async (status, userId, postNo) =>  {
+        console.log(status, userId, postNo);
+
+        // 👩‍💼❌ 비 로그인 시
+        if (userId == undefined || userId == null) {
+            alert("로그인 후 이용가능합니다. ");
+            let confirm = window.confirm("로그인페이지로 이동 하시겠습니까?");
+
+            if (!confirm) { return; }
+
+            navigate("/users/login");
+            return;
+        }
+
+        // 👩‍💼⭕ 로그인 시
+        // data
+        const wishData = {
+            'userId': userId,
+            'parentTable': "post",
+            'parentNo': postNo
+        }
+        // 헤더
+        const headers = {
+            'content-type' : 'application/json'
+        }
+        
+        if (!status) {
+            // 관심 등록 (false ➡ true)
+            const response = await wish.addWish(wishData, headers);
+            const data = await response.data;
+            // console.log(data);
+    
+            
+
+            // if (data === "SUCCESS") {
+            //     alert('관심 등록완료');
+            // } else {
+            //     alert('관심 등록실패');
+            // }
+            
+        } else {
+            // 관심 삭제 (true ➡ false)
+            const response = await wish.deleteWish(wishData);
+            const data = await response.data;
+            // console.log(data);
+    
+            // if (data === "SUCCESS") {
+            //     alert('관심 삭제완료');
+            // } else {
+            //     alert('관심 삭제실패');
+            // }
+        }
+
+        getPostList();
     }
                 
-                
-                
+         
     /* --------------------Hook-------------------- */
     useEffect ( () => {
         getPostList();
     },[])
-                
-                
+                     
 
     return (
 
@@ -74,8 +174,8 @@ const AllPostsContainer = () => {
                                 <Post post={post} />
                                 <div className="d-flex justify-content-end column-gap-2 mt-2 px-2">
                                     {/* WishBtn과 LikeBtn 컴포넌트에 handleWish와 handleLike prop을 전달하여 클릭 이벤트를 처리할 수 있습니다 */}
-                                    <WishBtn wishCount={post.wishCount} isWished={post.wished} handleWish={handleWish} />
-                                    <LikeBtn likeCount={post.likeCount} isLiked={post.liked} handleLike={handleLike} />
+                                    <WishBtn wishCount={post.wishCount} isWished={post.wished} handleWish={handleWish} postNo={post.postNo} />
+                                    <LikeBtn likeCount={post.likeCount} isLiked={post.liked} handleLike={handleLike} postNo={post.postNo}/>
                                 </div>
                             </div>
                         ))}
