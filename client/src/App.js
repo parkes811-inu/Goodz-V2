@@ -145,6 +145,8 @@ function AppRoutes() {
       </Route> */}
 
       {/* 다른 보호된 라우트들을 여기에 추가할 수 있습니다 */}
+      <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
+      <Route path="/styles/:postNo" element={<Read />} />
     </Routes>
   );
 }
