@@ -1,5 +1,4 @@
 import React from 'react';
-import "../admin/css/List.css"
 import AddButton from './AddButton';
 
 

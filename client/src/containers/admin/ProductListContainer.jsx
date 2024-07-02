@@ -2,7 +2,7 @@ import React from 'react';
 import ProductSearchForm from '../../components/admin/ProductSearchForm';
 import ProductTable from '../../components/admin/ProductTable';
 import Pagination from '../../components/admin/Pagination';
-import "../../components/admin/List.css"
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 const ProductListContainer = ({ keyword, setKeyword, page, brands, setCurrentPage }) => {

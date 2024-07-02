@@ -1,5 +1,4 @@
 import React from 'react';
-import '../admin/css/History.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PayState = ({ purchaseStateCounts }) => {
