@@ -12,20 +12,20 @@
     font-weight: bold;
 }
 
-.form-group {
+.brand-insert-group {
     margin-top: 25px;
     margin-bottom: 15px;
 }
 
-.form-group label {
+.brand-insert-group label {
     display: block;
     margin-bottom: 5px;
     font-size: 14px;
     font-weight: bold;
 }
 
-.form-group input,
-.form-group select {
+.brand-insert-group input,
+.brand-insert-group select {
     width: 100%;
     max-width: 400px;
     padding: 10px;
@@ -63,10 +63,6 @@
     border-radius: 4px;
     cursor: pointer;
     width: 200px;
-    margin-top: 10px;
-    margin-bottom: 350px;
+    margin-bottom: 400px;
 }
 
-.submit-btn:hover {
-    background-color: #333;
-}

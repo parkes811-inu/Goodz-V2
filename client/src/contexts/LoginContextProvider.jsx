@@ -11,12 +11,14 @@ const LoginContextProvider = ({ children }) => {
     const [isLogin, setLogin] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const [roles, setRoles] = useState({ isUser: false, isAdmin: false });
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [savedUsername, setSavedUsername] = useState(localStorage.getItem('savedUsername') || '');
 
     const navigate = useNavigate();
 
     const loginCheck = async () => {
+
+        // accessToken 쿠키 확인
         const accessToken = Cookies.get("accessToken");
         if (!accessToken) {
             logoutSetting();
@@ -34,13 +36,28 @@ const LoginContextProvider = ({ children }) => {
                 return;
             }
 
-            loginSetting(data, accessToken);
-        } catch (error) {
-            logoutSetting();
+        // data = 👩‍💼사용자 정보
+        data = response.data;   
+        console.log(`data: ${data}`);
+
+        // 에러코드 401: 인증받지않은 사용자
+        if ( data == 'UNAUTHORIZED' || response.status == 401) {
+            console.log(`accessToken(jwt)이 만료되었거나 인증에 실패하였습니다.`);
+            return;
         }
+
+        // 인증 성공 ✅
+        console.log(`accessToken(jwt) 토큰으로 사용자 정보 요청 성공!`);
+
+        // 로그인 세팅
+        loginSetting(data, accessToken);
     }
 
-    const login = async (username, password, rememberMe, rememberId) => {
+     // 🔐로그인
+    const login = async (username, password) => {
+        console.log(`username: ${username}`);
+        console.log(`password: ${password}`);
+
         try {
             const response = await auth.login(username, password);
             const data = response.data;
@@ -107,14 +124,20 @@ const LoginContextProvider = ({ children }) => {
 
     useEffect(() => {
         const checkLogin = async () => {
+            // 로그인 체크
+            // 1️⃣ 쿠키에서 jwt를 꺼낸다.
+            // 2️⃣ jwt 있으면, 서버로부터 사용자 정보를 요청해 받아온다.
+            // 3️⃣ 로그인 세팅을 한다. (로그인여부, 사용자정보, 권한정보 등록)
             await loginCheck();
-            setIsLoading(false);
+            
         };
         checkLogin();
     }, []);
 
     return (
-        <LoginContext.Provider value={{ isLogin, login, logout, roles, userInfo, isLoading, savedUsername }}>
+
+        // 컨텍스트 지정 -> value={?, ?}
+        <LoginContext.Provider value={ {isLogin, login, logout, roles} }>
             {children}
         </LoginContext.Provider>
     );

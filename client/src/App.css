@@ -24,10 +24,27 @@ body {
     margin: 0 auto;
 }
 
-/* .mainbtn {
-    background-color: #393E46;
-    color: white;
-} */
+/* 게시글 상세, */
+.mainContainer {
+    min-height: calc(100vh - 10rem);
+    margin: 0 auto;
+    width: 100%;    /* 이게 없으면 아이템이 작아지면 컨테이너도 작아짐 */
+    max-width: 1000px;
+}
+
+.userMainContainer {
+    padding: 15px;
+    margin: 20px auto 0 auto;
+    min-height: calc(100vh - 10rem);
+    max-width: 800px;
+}
+
+/* 버튼들 */
+/* 관심 */
+.btn-wish {
+    text-decoration: none;
+    color: black;
+}
 
 /* 유저 프로필 사진 -s */
 .profile-img {

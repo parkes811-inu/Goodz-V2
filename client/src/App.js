@@ -1,14 +1,14 @@
 import './App.css';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import Index from './pages/user/Index';
+import UserIndex from './pages/user/Index';
 import Top from './pages/product/Top';
 import Pants from './pages/product/Pants';
 import Shoes from './pages/product/Shoes';
 import Accessory from './pages/product/Accessory';
-import AllPosts from './pages/post/AllPosts';
 import AllProduct from './pages/product/AllProduct';
-import wishlist_products from './pages/user/wishlist_products';
+import AllPosts from './pages/post/AllPosts';
+import Read from './pages/post/Read';
 import AdminIndex from './pages/admin/AdminIndex';
 import LoginPage from './pages/user/LoginPage';
 import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
@@ -25,6 +25,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   const { roles, isLogin } = useContext(LoginContext);
 
   if (!isLogin) {
+    console.log("권한: " + roles)
     return <Navigate to="/users/login" replace />;
   }
 
@@ -85,17 +86,19 @@ function AppRoutes() {
       } />
 
       {/* 로그인된 유저만 접근 가능한 곳 */}
-      <Route path='/users' element={
-        <ProtectedRoute requiredRole="user">
-          <Index />
-        </ProtectedRoute>
-      } />
-      <Route path='/users/wishList/products' element={
-        <ProtectedRoute requiredRole="user">
-          <wishlist_products />
-        </ProtectedRoute>
-      } />
-      <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
+      <Route path='/users'
+        element={
+          <ProtectedRoute requiredRole="user">
+            <Index />
+          </ProtectedRoute>}>
+      </Route>
+      <Route path='/users/wishList/products'
+        element={
+          <ProtectedRoute requiredRole="user">
+            <wishlist_products />
+          </ProtectedRoute>}>
+      </Route>
+
       {/* 다른 보호된 라우트들을 여기에 추가할 수 있습니다 */}
     </Routes>
   );
