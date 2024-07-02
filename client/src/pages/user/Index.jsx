@@ -1,13 +1,15 @@
 import React from 'react'
 import Header from '../../layout/Header'
 import Footer from '../../layout/Footer'
+import IndexContainer from '../../containers/user/IndexContainer'
+import MainLayout from '../../layout/MainLayout'
 
 const Index = () => {
   return (
     <>
-        <Header />
-
-        <Footer />
+      <MainLayout >
+        <IndexContainer />
+      </MainLayout>
     </>
   )
 }

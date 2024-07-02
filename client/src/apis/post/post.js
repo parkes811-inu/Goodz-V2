@@ -4,6 +4,7 @@ import api from "../axios";
 export const list = () => api.get("/styles");
 
 // 게시글 상세
+export const select = (postNo) => api.get(`/styles/${postNo}`);
 
 // 게시글 작성 처리
 

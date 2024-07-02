@@ -75,7 +75,7 @@
         FROM post p
         INNER JOIN user u ON p.user_id = u.user_id
         LEFT JOIN file uf ON u.no = uf.parent_no AND uf.parent_table = 'user'
-        WHERE p.post_no = 1;
+        WHERE p.post_no = #{postno};
         <!-- SELECT p.post_no
              , p.user_id
              , IFNULL((SELECT no from file f where u.no = f.parent_no and f.parent_table = "user"),0) as profileImgNo

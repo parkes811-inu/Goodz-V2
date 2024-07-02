@@ -1,17 +1,3 @@
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-}
-
-.header h2 {
-    font-size: 23px;
-    margin: 0;
-    font-weight: bold;
-}
-
 
 .custom-button {
     color: black;

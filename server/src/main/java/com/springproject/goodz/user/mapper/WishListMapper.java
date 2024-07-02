@@ -10,7 +10,8 @@ import com.springproject.goodz.user.dto.Wish;
 @Mapper
 public interface WishListMapper {
 
-    // 저장 체크 여부 - id 기준
+    // // 저장 체크 여부 - id 기준
+    // // public List<Wish> listById(String parent_table, String userId) throws Exception;
     public int listById(Wish wish) throws Exception;
 
     // 저장 갯수 가져오기
