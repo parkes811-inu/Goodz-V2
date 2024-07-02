@@ -4,6 +4,7 @@ import * as cmmt from '../../apis/post/comment';
 import DetailPost from '../../components/post/DetailPost';
 
 const PostContainer = ({postNo}) => {
+
     console.log("게시글번호: " + postNo);
 
     // 🔁state
@@ -12,6 +13,7 @@ const PostContainer = ({postNo}) => {
     
     // 🔁 댓글관련 status
     const [cmmtList, setCmmtList] = useState([]);
+    
     // 💨이벤트 함수
     const getPost = async () => {
 

@@ -47,6 +47,7 @@ public class LikeController {
      */
     @PostMapping("")
     public ResponseEntity<String> likeOn(@RequestBody Like like) throws Exception {
+        log.info("::::::::LikeController::::::::");
         log.info("좋아요 on 요청");
         log.info("요청게시글: " + like.getPostNo());
 

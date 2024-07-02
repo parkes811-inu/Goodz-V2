@@ -13,9 +13,7 @@ const Read = () => {
 
 
     <MainLayout>
-      {/* <div className="container"> */}
         <PostContainer  postNo={postNo} />
-      {/* </div> */}
     </MainLayout>
   )
 }

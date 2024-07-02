@@ -155,7 +155,7 @@ public class PostController {
                     wish.setParentNo(post.getPostNo());
                     // log.info("{}기준-{}번게시글-{}의 저장조회", "post", post.getPostNo(), loginUser.getUserId());
                     boolean isChecked_wishlist = wishListService.listById(wish);
-                    log.info("isChecked? : " + isChecked_wishlist);
+                    // log.info("isChecked? : " + isChecked_wishlist);
     
                     // if (!isChecked_wishlist) {
                     //     post.setIsWished("none");
