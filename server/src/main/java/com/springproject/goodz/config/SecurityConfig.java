@@ -21,11 +21,11 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import com.springproject.goodz.security.LoginSuccessHandler;
+import com.springproject.goodz.security.jwt.filter.JwtAuthenticationFilter;
+import com.springproject.goodz.security.jwt.filter.JwtRequestFilter;
 import com.springproject.goodz.security.jwt.provider.CustomUserDetailService;
 import com.springproject.goodz.security.jwt.provider.JwtTokenProvider;
 import com.springproject.goodz.user.service.OAuthService;
-import com.springproject.goodz.security.jwt.filter.JwtRequestFilter;
-import com.springproject.goodz.security.jwt.filter.JwtAuthenticationFilter;
 
 import lombok.extern.slf4j.Slf4j;
 
