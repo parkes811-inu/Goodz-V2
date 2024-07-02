@@ -21,6 +21,7 @@ const AllPostsContainer = () => {
     const getPostList = async () => {
         
         try {
+            // console.log("게시글 요청")
             const response = await post.list();
             const data = await response.data;
             setPostList(data);
@@ -146,14 +147,12 @@ const AllPostsContainer = () => {
         getPostList();
     }
                 
-                
-                
+         
     /* --------------------Hook-------------------- */
     useEffect ( () => {
         getPostList();
     },[])
-                
-                
+                     
 
     return (
 

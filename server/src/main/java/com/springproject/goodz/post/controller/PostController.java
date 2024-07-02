@@ -176,7 +176,6 @@ public class PostController {
                 
     }
 
-    // 
     
     /**
      * 게시글 상세
@@ -184,85 +183,85 @@ public class PostController {
      * @throws Exception 
      */
     @GetMapping("/{postNo}")
-    public ResponseEntity<Map<String, Object>> read(@PathVariable("postNo")int postNo, Model model, HttpSession session) throws Exception {
+    public ResponseEntity<Map<String, Object>> read(@PathVariable("postNo")int postNo, @AuthenticationPrincipal CustomUser customUser) throws Exception {
 
         log.info("::::::" + postNo + "번 게시글 조회요청::::::");
         /* 게시글 조회 */
         Post post = postService.select(postNo);
         log.info(post.toString());
-
-        // /* 상품태그리스트 조회 */
-        // List<Product> tempList = post.getTagList();
-        // List<Product> taggedProducts = new ArrayList<>();
-
+        
+        /* 상품태그리스트 조회 */
+        List<Product> tempList = post.getTagList();
+        List<Product> taggedProducts = new ArrayList<>();
+        
         /* 첨부파일 조회 */
         Files file = new Files();
         file.setParentTable("post");
         file.setParentNo(post.getPostNo());
         List<Files> fileList = fileService.listByParent(file);
-
+        
         Map<String, Object> postDetails = new HashMap<>();
         postDetails.put("post", post);
         postDetails.put("fileList", fileList);
-
-        return new ResponseEntity<>(postDetails, HttpStatus.OK);
         
-        // /* 게시글 작성자 정보 세팅 */
+        
+        /* 게시글 작성자 정보 세팅 */
         // Users writer = userService.select(post.getUserId());
-        // model.addAttribute("writer", writer);
-
-        // /* 세션정보 세팅 */
-        // Users loginUser = (Users)session.getAttribute("user");
-        // List<Users> loginUserFollowingList = new ArrayList();
         
+        log.info("::::: 좋아요/관심 세팅을 위한 customUser 조회 중 :::::");
+        log.info("customUser : "+ customUser);
+        Users loginUser = new Users();
+        
+        if (customUser != null) {
+            log.info("로그인 사용자.");
+            loginUser = customUser.getUser();
+        } else {
+            log.info("비로그인 사용자.");
+            
+            log.info("user : " + loginUser);
+        }
+        
+        /* 좋아요 & 저장 세팅 */
+        if (loginUser == null) {
+            // 비 로그인 시, 좋아요 표시 전체 해제
+            log.info("로그인이 되지않은 사용자");
+            
+            post.setLiked(false);
+            post.setWished(false);
+            
+        } else {
+            loginUser = userService.select(loginUser.getUserId());
+            // log.info("로그인유저의 프사번호: " + loginUser.getProfileImgNo());
+            
+            // 로그인 시, 유저가 체크한 좋아요&저장 표시
+            Like like = new Like();
+            like.setUserId(loginUser.getUserId());
+            like.setPostNo(post.getPostNo());
+            boolean isChecked_like = likeService.listById(like);
+            post.setLiked(isChecked_like);
+            
+            // 세션아이디와 게시글 번호 기준으로 저장 여부 확인
+            Wish wish = new Wish();
+            wish.setUserId(loginUser.getUserId());
+            wish.setParentTable("post");
+            wish.setParentNo(post.getPostNo());
+            boolean isChecked_wishlist = wishListService.listById(wish);
+            post.setWished(isChecked_wishlist);
+            
+            // // 세션아이디의 팔로우 목록 가져오기
+            // // 👤 세션계정 세팅 및 팔로잉 목록 가져오기
+            // Map<String, Object> followingDetails = followService.getFollowingDetails(loginUser.getUserId());
+            // loginUserFollowingList = (List<Users>) followingDetails.get("followingList");
 
-        // /* 좋아요 & 저장 세팅 */
-        // if (loginUser == null) {
-        //     // 비 로그인 시, 좋아요 표시 전체 해제
-        //     log.info("로그인이 되지않은 사용자");
-            
-        //     post.setIsLiked("none");
-        //     post.setIsWishlisted("none");
-            
-        // } else {
-        //     loginUser = userService.select(loginUser.getUserId());
-        //     log.info("로그인유저의 프사번호: " + loginUser.getProfileImgNo());
-        //     // 로그인 시, 유저가 체크한 좋아요&저장 표시
-        //     // 세션아이디와 게시글 번호 기준으로 좋아요 여부 확인
-        //     Like like = new Like();
-        //     like.setUserId(loginUser.getUserId());
-        //     like.setPostNo(post.getPostNo());
-        //     boolean isChecked_like = likeService.listById(like);
-        //     if (!isChecked_like) {
-        //         post.setIsLiked("none");
-        //     } else {
-        //         post.setIsLiked("solid");
-        //     }
-            
-        //     // 세션아이디와 게시글 번호 기준으로 저장 여부 확인
-        //     Wish wish = new Wish();
-        //     wish.setUserId(loginUser.getUserId());
-        //     wish.setParentTable("post");
-        //     wish.setParentNo(post.getPostNo());
-        //     boolean isChecked_wishlist = wishListService.listById(wish);
-        //     if (!isChecked_wishlist) {
-        //         post.setIsWishlisted("none");
-        //     } else {
-        //         post.setIsWishlisted("solid");
-        //     }
-        //     // 세션아이디의 팔로우 목록 가져오기
-        //     // 👤 세션계정 세팅 및 팔로잉 목록 가져오기
-        //     Map<String, Object> followingDetails = followService.getFollowingDetails(loginUser.getUserId());
-        //     loginUserFollowingList = (List<Users>) followingDetails.get("followingList");
-
-        // }
-            
+        }
+        
         // model.addAttribute("loginUserFollowingList", loginUserFollowingList);
         // model.addAttribute("loginUser", loginUser);
         // model.addAttribute("post", post);
         // return "/post/read";
+        return new ResponseEntity<>(postDetails, HttpStatus.OK);
     }
-            
+    
     // /**
     //  * 게시글 등록 페이지
     //  * @return
