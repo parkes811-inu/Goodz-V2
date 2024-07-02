@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../admin/css/History.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PayTable = ({ userPurchaseList = [] }) => {

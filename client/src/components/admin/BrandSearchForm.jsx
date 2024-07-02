@@ -1,6 +1,5 @@
 import React from 'react';
 import AddButton from './AddButton';
-import "../admin/css/List.css";
 
 const BrandSearchForm = ({ keyword, setKeyword }) => {
   const handleSubmit = (e) => {

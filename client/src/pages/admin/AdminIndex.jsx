@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import IndexContainer from '../../containers/admin/IndexContainer';
 import { getAdminDashboardData } from '../../apis/admin/admin';
 import AdminLayout from '../../layout/AdminLayout';
+import '../../components/admin/css/Index.css'
 
 
 const AdminIndex = () => {
