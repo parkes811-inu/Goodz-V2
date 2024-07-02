@@ -1,0 +1,21 @@
+.comment_container {
+    margin: 10px 15px 0 15px;
+}
+.addCmmtBtn, .btn-cmmt-update, .btn-cmmt-delete{
+    border: none;
+    outline:none !important;
+    box-shadow:none !important;
+}
+.udpateDelete a {
+    color: black;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.modal-cmmt {
+    width: 500px;
+}

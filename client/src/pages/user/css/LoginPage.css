@@ -7,7 +7,7 @@
     position: relative;
 }
 
-.userLinks a, span, label {
+.userLinks a, .userLinks span, .userLinks label {
     color: gray;
     text-decoration: none;
 }

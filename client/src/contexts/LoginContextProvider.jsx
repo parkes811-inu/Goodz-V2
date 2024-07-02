@@ -17,7 +17,7 @@ const LoginContextProvider = ( {children} ) => {
     // 권한 정보
     const [roles, setRoles] = useState({isUser : false, isAdmin : false})
     // 페이지렌더링 지연
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     
     // 페이지 이동
     const navigate = useNavigate();
@@ -26,6 +26,7 @@ const LoginContextProvider = ( {children} ) => {
     /* -----------------------⬇ [functions] ⬇---------------------------- */
     // 🔐✅로그인 체크
     const loginCheck = async () => {
+        setIsLoading(true);
 
         // accessToken 쿠키 확인
         const accessToken = Cookies.get("accessToken");
@@ -77,6 +78,8 @@ const LoginContextProvider = ( {children} ) => {
 
         // 로그인 세팅
         loginSetting(data, accessToken);
+        setIsLoading(false);
+        console.log("tq: "+ isLoading)
     }
 
      // 🔐로그인
@@ -196,8 +199,9 @@ const LoginContextProvider = ( {children} ) => {
             // 1️⃣ 쿠키에서 jwt를 꺼낸다.
             // 2️⃣ jwt 있으면, 서버로부터 사용자 정보를 요청해 받아온다.
             // 3️⃣ 로그인 세팅을 한다. (로그인여부, 사용자정보, 권한정보 등록)
+            console.log("LoginContextProvider useEffect 작동")
             await loginCheck();
-            setIsLoading(false);
+            
         };
         checkLogin();
     }, [])
@@ -205,7 +209,7 @@ const LoginContextProvider = ( {children} ) => {
     return (
 
         // 컨텍스트 지정 -> value={?, ?}
-        <LoginContext.Provider value={ {isLogin, login, logout, roles} }>
+        <LoginContext.Provider value={ {isLogin, login, logout, roles, userInfo} }>
             {children}
         </LoginContext.Provider>
 

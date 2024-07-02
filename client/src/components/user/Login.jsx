@@ -21,7 +21,7 @@ const Login = () => {
     }
 
   return (
-    <div className="container">
+    // <div className="container">
         <div className="mainContainer">
             <div className="login_container mx-auto my-5 border rounded-3">
                 {/* <!-- 로고 --> */}
@@ -89,7 +89,7 @@ const Login = () => {
 
             </div>
         </div>
-    </div>
+    // </div>
   )
 }
 

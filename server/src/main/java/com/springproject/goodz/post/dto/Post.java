@@ -20,8 +20,8 @@ public class Post {
 
     private int likeCount;              // 좋아요 갯수
     private int wishCount;              // 저장 갯수
-    private String isLiked;             // 좋아요 체크 여부 -> 'fill' / 'none'
-    private String isWishlisted;        // 저장 체크 여부   -> 'fill' / 'none'
+    private boolean isLiked;             // 좋아요 체크 여부 -> 'fill' / 'none'
+    private boolean isWished;        // 저장 체크 여부   -> 'fill' / 'none'
 
     private List<Product> tagList;      // 게시글에 종속된 상품태그
     
