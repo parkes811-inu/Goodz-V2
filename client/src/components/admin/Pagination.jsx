@@ -1,8 +1,19 @@
 import React from 'react';
-import "../admin/BrandList.css"
-import 'bootstrap/dist/css/bootstrap.min.css'
+import "../admin/css/Pagination.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Pagination = ({ page, keyword, setCurrentPage }) => {
+const Pagination = ({ currentPage, totalItems, itemsPerPage, setCurrentPage }) => {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const page = {
+    first: 1,
+    prev: currentPage > 1 ? currentPage - 1 : 1,
+    start: 1,
+    end: totalPages,
+    page: currentPage,
+    next: currentPage < totalPages ? currentPage + 1 : totalPages,
+    last: totalPages,
+  };
+
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };

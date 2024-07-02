@@ -1,0 +1,32 @@
+.footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .footer .left,
+  .footer .links,
+  .footer .right {
+    margin-bottom: 20px;
+  }
+  
+  .footer .left img,
+  .footer .social-icons img {
+    height: 30px;
+  }
+  
+  .footer .social-icons a {
+    margin: 0 10px;
+  }
+  
+  .footer .link-wrapper a,
+  .footer .link-wrapper button {
+    display: block;
+    margin: 5px 0;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: auto;
+  }
+  

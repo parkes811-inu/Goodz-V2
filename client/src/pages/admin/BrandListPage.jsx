@@ -5,7 +5,7 @@ import BrandSearchForm from '../../components/admin/BrandSearchForm';
 import { list } from '../../apis/admin/admin';
 import AdminLayout from '../../layout/AdminLayout';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../components/admin/BrandList.css';
+import '../../components/admin/css/List.css';
 
 const BrandListPage = () => {
   const [keyword, setKeyword] = useState('');
@@ -29,24 +29,20 @@ const BrandListPage = () => {
     fetchBrands();
   }, [keyword, currentPage]);
 
-  const totalPages = Math.ceil(totalBrands / brandsPerPage);
-  const page = {
-    first: 1,
-    prev: currentPage > 1 ? currentPage - 1 : 1,
-    start: 1,
-    end: totalPages,
-    page: currentPage,
-    next: currentPage < totalPages ? currentPage + 1 : totalPages,
-    last: totalPages
-  };
-
   return (
     <AdminLayout>
       <div className="container mt-5">
+      <div className="header">
         <h2>브랜드 목록</h2>
+      </div>
         <BrandSearchForm keyword={keyword} setKeyword={setKeyword} />
         <BrandTable brands={brands} />
-        <Pagination page={page} keyword={keyword} setCurrentPage={setCurrentPage} />
+        <Pagination 
+          currentPage={currentPage} 
+          totalItems={totalBrands} 
+          itemsPerPage={brandsPerPage} 
+          setCurrentPage={setCurrentPage} 
+        />
       </div>
     </AdminLayout>
   );
