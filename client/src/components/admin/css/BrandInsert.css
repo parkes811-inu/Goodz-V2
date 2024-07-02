@@ -1,0 +1,68 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.header h2 {
+    font-size: 23px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.brand-insert-group {
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.brand-insert-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.brand-insert-group input,
+.brand-insert-group select {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+.custom-file-input {
+    display: none;
+}
+
+.custom-file-label {
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.custom-file-label:hover {
+    background-color: #f0f0f0;
+}
+
+.submit-btn {
+    background-color: #555;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 200px;
+    margin-bottom: 400px;
+}
+

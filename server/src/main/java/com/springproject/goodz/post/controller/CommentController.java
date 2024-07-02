@@ -58,7 +58,7 @@ public class CommentController {
      * @throws Exception
      */
     @GetMapping("/{postNo}")
-    public String list(@PathVariable("postNo") int postNo, Model model, HttpSession session) throws Exception {
+    public ResponseEntity<?> list(@PathVariable("postNo") int postNo, Model model, HttpSession session) throws Exception {
 
         List<Comment> cmmtList = cmmtservice.list(postNo);
 
@@ -70,15 +70,9 @@ public class CommentController {
 
         // 
         // model.addAttribute("loginUser", loginUser);
-        /* 세션정보 세팅 */
-        Users loginUser = (Users)session.getAttribute("user");
-        if (loginUser != null) {
-            loginUser = userService.select(loginUser.getUserId());
-        }
-        model.addAttribute("loginUser", loginUser);
         
-        model.addAttribute("cmmtList", cmmtList);
-        return "/post/cmmt/list";
+        // model.addAttribute("cmmtList", cmmtList);
+        return new ResponseEntity<>(cmmtList, HttpStatus.OK);
     }
 
     /**

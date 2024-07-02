@@ -2,17 +2,16 @@ import React from 'react';
 import BrandSearchForm from '../../components/admin/BrandSearchForm';
 import BrandTable from '../../components/admin/BrandTable';
 import Pagination from '../../components/admin/Pagination';
-import "../../components/admin/BrandList.css"
+import "../../components/admin/List.css"
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 
 const BrandListContainer = ({ keyword, setKeyword, page, brands, setCurrentPage }) => {
     return (
+      <>
       <div className="container mt-5">
-        <div className="header">
-        <h2>대시보드</h2>
-        </div>
+      
         <div className="d-flex justify-content-between mt-3 mb-3">
           <BrandSearchForm keyword={keyword} setKeyword={setKeyword} />
           <a href="/admin/add_brand" className="custom-button">
@@ -26,6 +25,7 @@ const BrandListContainer = ({ keyword, setKeyword, page, brands, setCurrentPage 
         </div>
         <Pagination page={page} keyword={keyword} setCurrentPage={setCurrentPage} />
       </div>
+      </>
     );
   };
   

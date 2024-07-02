@@ -1,12 +1,12 @@
 import React from 'react';
-import "../admin/BrandList.css"
-
+import AddButton from './AddButton';
+import "../admin/css/List.css";
 
 const BrandSearchForm = ({ keyword, setKeyword }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(`검색어: ${keyword}`);
-    // 실제 검색 요청 로직을 추가합니다.
+
   };
 
   return (
@@ -24,9 +24,9 @@ const BrandSearchForm = ({ keyword, setKeyword }) => {
           <button type="submit" className="btn btn-primary">검색</button>
         </div>
       </div>
+      <AddButton link="/admin/add_brand" />
     </form>
   );
 };
 
 export default BrandSearchForm;
-

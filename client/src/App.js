@@ -1,38 +1,44 @@
 import './App.css';
-import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import Index from './pages/user/Index';
+import UserIndex from './pages/user/Index';
 import Top from './pages/product/Top';
 import Pants from './pages/product/Pants';
 import Shoes from './pages/product/Shoes';
 import Accessory from './pages/product/Accessory';
-import AllPosts from './pages/post/AllPosts';
 import AllProduct from './pages/product/AllProduct';
-import wishlist_products from './pages/user/wishlist_products';
+import AllPosts from './pages/post/AllPosts';
+import Read from './pages/post/Read';
 import AdminIndex from './pages/admin/AdminIndex';
 import LoginPage from './pages/user/LoginPage';
 import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
 import { useContext } from 'react';
 import BrandListPage from './pages/admin/BrandListPage';
+import ProductListPage from './pages/admin/ProductListPage';
+import PayPage from './pages/admin/PayPage';
+import PurchasePage from './pages/admin/PurchasePage';
+import BrandInsertPage from './pages/admin/BrandInsertPage';
+import OAuth2RedirectHandler from './components/user/OAuth2RedirectHandler';
 
 // 보호된 라우트를 위한 컴포넌트
-const ProtectedRoute = ({children, requiredRole}) => {
-  const {roles, isLogin} = useContext(LoginContext);
+const ProtectedRoute = ({ children, requiredRole }) => {
+  const { roles, isLogin } = useContext(LoginContext);
 
   if (!isLogin) {
+    console.log("권한: " + roles)
+    return <Navigate to="/users/login" replace />;
+  }
+
+  if (requiredRole === 'admin' && !roles.isAdmin) {
     return <Navigate to="/" replace />;
   }
 
-  if (!roles.isAdmin) {
-    return <Navigate to="/" replace />;
-  }
-
-  if (!roles.isUser) {
+  if (requiredRole === 'user' && !roles.isUser) {
     return <Navigate to="/" replace />;
   }
 
   return children;
-}
+};
 
 function AppRoutes() {
   return (
@@ -49,15 +55,35 @@ function AppRoutes() {
 
       {/* 어드민만 접근 가능한 곳 */}
       <Route path="/admin" element={
-          <ProtectedRoute requiredRole="admin">
-            <AdminIndex />
-          </ProtectedRoute>
-        }/>
-        <Route path="/admin/brands" element={
-          <ProtectedRoute requiredRole="admin">
-            <BrandListPage />
-          </ProtectedRoute>
-        }/>
+        <ProtectedRoute requiredRole="admin">
+          <AdminIndex />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/brands" element={
+        <ProtectedRoute requiredRole="admin">
+          <BrandListPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/products" element={
+        <ProtectedRoute requiredRole="admin">
+          <ProductListPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/pay_history" element={
+        <ProtectedRoute requiredRole="admin">
+          <PayPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/purchase_state" element={
+        <ProtectedRoute requiredRole="admin">
+          <PurchasePage />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/add_brand" element={
+        <ProtectedRoute requiredRole="admin">
+          <BrandInsertPage />
+        </ProtectedRoute>
+      } />
 
       {/* 로그인된 유저만 접근 가능한 곳 */}
       <Route path='/users'
@@ -77,7 +103,6 @@ function AppRoutes() {
     </Routes>
   );
 }
-
 
 function App() {
   return (
