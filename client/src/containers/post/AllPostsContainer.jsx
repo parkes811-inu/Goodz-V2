@@ -9,7 +9,8 @@ import { LoginContext } from '../../contexts/LoginContextProvider';
 
 const AllPostsContainer = () => {
     
-    // const {userInfo} = useContext(LoginContext);
+    const {userInfo} = useContext(LoginContext);
+    const {userId} = userInfo;
     // const { no, userId, authList } = userInfo;
     // console.log("유저아이디: " + userId);
 
@@ -21,29 +22,40 @@ const AllPostsContainer = () => {
     // const [isWished, setWish]
 
     
+
+    const handleLike = () => {
+
+    }
     
 
     /* -----------------functions----------------- */
     const getPostList = async () => {
 
-        const response = await post.list();
-        const data = await response.data;
-
-        setPostList(data);
+        try {
+            const response = await post.list();
+            const data = await response.data;
+            setPostList(data);
+            
+        } catch (error) {
+            console.error('게시글을 가져오는 중 오류 발생:', error);
+        }
 
         // setPostList(null);   // 빈 게시글 시 화면체크
     }
 
-    // const getWishList = async () => {
-    //     const response = await wish.listById("post");
-    //     const data = await response.data;
-
-    //     setWish(data);
-    //     console.log(data);
+    // const handleLike = async (status, userId, postNo) =>  {
+    //     try {
+    //         isLiked
+    //         const data =  {
+    //             userId: userId,
+    //             postNo: postNo
+    //         }
+    //     } catch (error) {
+            
+    //     }
     // }
     
 
-    
     /* --------------------Hook-------------------- */
     useEffect ( () => {
         getPostList();
@@ -68,10 +80,10 @@ const AllPostsContainer = () => {
                         {postList.map( (post) => 
                             <>
                                 <div className="item">
-                                    <Post post={post} />
-                                    <div class="d-flex justify-content-end column-gap-2 mt-2 px-2" >
-                                        <WishBtn wishCount={99}/>
-                                        <LikeBtn likeCount={99}/>
+                                    <Post post={post}  key={post.no}/>
+                                    <div className="d-flex justify-content-end column-gap-2 mt-2 px-2" >
+                                        <WishBtn wishCount={post.wishCount} isWished={post.wished}/>
+                                        <LikeBtn likeCount={post.likeCount} isLiked={post.liked}/>
                                     </div>
                                 </div>
                             </>

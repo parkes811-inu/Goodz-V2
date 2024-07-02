@@ -1,7 +1,7 @@
 import './App.css';
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 import Home from './pages/Home';
-import Index from './pages/user/Index';
+import UserIndex from './pages/user/Index';
 import Top from './pages/product/Top';
 import Pants from './pages/product/Pants';
 import Shoes from './pages/product/Shoes';
@@ -63,9 +63,10 @@ function AppRoutes() {
       {/* 로그인된 유저만 접근 가능한 곳 */}
       <Route path='/users'
         element={
-          <ProtectedRoute requiredRole="user">
-            <Index />
-          </ProtectedRoute>}>
+          // <ProtectedRoute requiredRole="user">
+            <UserIndex />
+          // </ProtectedRoute>
+          }>
       </Route>
       <Route path='/users/wishList/products'
         element={

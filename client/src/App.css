@@ -32,6 +32,13 @@ body {
     max-width: 1000px;
 }
 
+.userMainContainer {
+    padding: 15px;
+    margin: 20px auto 0 auto;
+    min-height: calc(100vh - 10rem);
+    max-width: 800px;
+}
+
 /* 버튼들 */
 /* 관심 */
 .btn-wish {
