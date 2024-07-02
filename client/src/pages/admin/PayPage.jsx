@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { userPurchaseList } from '../../apis/admin/admin';
 import AdminLayout from '../../layout/AdminLayout';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../components/admin/css/History.css';
+
 import PayListContainer from '../../containers/admin/PayListContainer';
 
 const PayPage = () => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../admin/css/List.css"
 
 const BrandTable = ({ brands = [] }) => {
   console.log('Brands:', brands); // 데이터 확인

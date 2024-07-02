@@ -1,15 +1,16 @@
 import React from 'react'
+import UserLayout from  '../../layout/UserLayout';
+import Wishlist_productsContainer from '../../containers/user/Wishlist_productsContainer';
 
-import UserLayout from '../../layout/UserLayout';
-const wishlist_products = () => {
-  return (
-  <>
-    <UserLayout>
 
-    <div>wishlist_products</div>
-    </UserLayout>
-  </>
-  )
-}
+const Wishlist_Products = () => {
+    return (
+      <>
+          <UserLayout>
+            <Wishlist_productsContainer />
+          </UserLayout>
+      </>
+    )
+  }
 
-export default wishlist_products
+export default Wishlist_Products

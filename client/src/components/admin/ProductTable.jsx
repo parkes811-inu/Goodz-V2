@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../admin/css/List.css";
+
 
 const ProductTable = ({ products = [] }) => {
   console.log('Products: ', products);

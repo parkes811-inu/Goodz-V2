@@ -2,7 +2,6 @@ import React from 'react';
 import BrandSearchForm from '../../components/admin/BrandSearchForm';
 import BrandTable from '../../components/admin/BrandTable';
 import Pagination from '../../components/admin/Pagination';
-import "../../components/admin/List.css"
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 

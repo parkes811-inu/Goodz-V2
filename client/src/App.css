@@ -24,6 +24,7 @@ body {
     margin: 0 auto;
 }
 
+
 /* 게시글 상세, */
 .mainContainer {
     min-height: calc(100vh - 10rem);
@@ -64,4 +65,18 @@ body {
     /* width: 100%; */
     /* height: 100%; */
     object-fit: cover; /* 이미지 비율을 유지하면서 컨테이너에 맞춤 */
+}
+
+.pagetitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.pagetitle p {
+    font-size: 23px;
+    margin: 0;
+    font-weight: bold;
 }

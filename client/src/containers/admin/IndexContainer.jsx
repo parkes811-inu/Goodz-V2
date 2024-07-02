@@ -22,8 +22,8 @@ const DashboardContainer = ({ saleStateCounts, purchaseStateCounts }) => {
   return (
     <>
     <div className="container mt-5">
-    <div className="header">
-        <h2>대시보드</h2>
+    <div className="pagetitle">
+        <p>대시보드</p>
     </div>
 
       <IndexCard title="매입 현황" link="/admin/purchase_state">
