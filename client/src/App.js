@@ -19,6 +19,7 @@ import PayPage from './pages/admin/PayPage';
 import PurchasePage from './pages/admin/PurchasePage';
 import BrandInsertPage from './pages/admin/BrandInsertPage';
 import OAuth2RedirectHandler from './components/user/OAuth2RedirectHandler';
+import Index from './components/user/Index';
 import MyPage from './pages/user/MyPage';
 import Purchase from './pages/user/Purchase';
 import Sales from './pages/user/Sales';
@@ -26,6 +27,7 @@ import Wishlist_Products from './pages/user/Wishlist_Products';
 import Manage_Info from './pages/user/Manage_Info';
 import Address from './pages/user/Address';
 import Account from './pages/user/Account';
+
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {

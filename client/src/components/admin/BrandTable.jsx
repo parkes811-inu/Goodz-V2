@@ -6,9 +6,9 @@ const BrandTable = ({ brands = [] }) => {
 
   return (
     <div className="container mt-3">
-      <table className="table table-bordered text-center">
-      <thead className="table-dark">
-        <tr>
+      <table className="table">
+      <thead>
+        <tr style={{ textAlign: "center" }}>
           <th scope="col" style={{ width: '120px' , color : 'black'}}>브랜드 번호</th>
           <th scope="col" colSpan="4" style={{color : 'black'}}>브랜드명</th>
         </tr>
@@ -20,7 +20,7 @@ const BrandTable = ({ brands = [] }) => {
           </tr>
         ) : (
           brands.map((brand) => (
-            <tr key={brand.bNo}> 
+            <tr key={brand.bNo} style={{ textAlign: "center" }}> 
               <th scope="row">{brand.bNo}</th> 
               <td>{brand.bName}</td> 
             </tr>
