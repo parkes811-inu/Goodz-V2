@@ -4,10 +4,13 @@ import ProfileInfo from '../common/ProfileInfo';
 import { Link } from 'react-router-dom';
 
 const Post = ({post}) => {
-  console.log(post);
+
+  // console.log(post);
   // console.log("좋아요: " + post.liked);
   // console.log("저장: " + post.wished);
+
   const {nickname, profileImgNo, fileNo, postNo} = post;
+  
   return (
     <>
             

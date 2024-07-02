@@ -68,7 +68,7 @@ const LoginContextProvider = ( {children} ) => {
         console.log(`data: ${data}`);
 
         // 에러코드 401: 인증받지않은 사용자
-        if ( data == 'UNAUTHORIZED' || response.status == 401) {
+        if ( data === 'UNAUTHORIZED' || response.status === 401) {
             console.log(`accessToken(jwt)이 만료되었거나 인증에 실패하였습니다.`);
             return;
         }
@@ -170,6 +170,7 @@ const LoginContextProvider = ( {children} ) => {
 
         // 👩‍💼유저 정보 세팅
         const updatedUserInfo = {no, userId, roleList};
+        console.log(updatedUserInfo);
         setUserInfo(updatedUserInfo);
 
         // 👮‍♀️권한 정보 세팅
