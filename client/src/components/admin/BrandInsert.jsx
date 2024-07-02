@@ -4,8 +4,8 @@ import "../admin/css/BrandInsert.css";
 // 브랜드 등록 폼 컴포넌트
 const BrandInsert = ({ onSubmit }) => {
     return (
-      <form id="add_brand-form" onSubmit={onSubmit} enctype="multipart/form-data">
-        <div className="form-group">
+      <form id="add_brand-form" onSubmit={onSubmit} encType="multipart/form-data">
+        <div className="brand-insert-group">
           <label htmlFor="brand-name">브랜드명</label>
           <input
             type="text"
@@ -16,7 +16,7 @@ const BrandInsert = ({ onSubmit }) => {
             required
           />
         </div>
-        <div className="form-group">
+        <div className="brand-insert-group">
           <label htmlFor="brand-logo">브랜드 로고</label>
           <input
             id="file"

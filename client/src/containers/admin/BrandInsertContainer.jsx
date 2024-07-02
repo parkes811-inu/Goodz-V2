@@ -12,6 +12,7 @@ const BrandInsertContainer = () => {
       // 브랜드 등록 API 호출
       const response = await brandInsert(formData);
       console.log('브랜드 등록 성공:', response.data);
+      console.log("response : " + response);
     } catch (error) {
       console.error('브랜드 등록 실패:', error);
     }
