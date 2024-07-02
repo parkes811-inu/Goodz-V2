@@ -89,6 +89,8 @@ public class SecurityConfig {
         http.oauth2Login(oauth2Login -> oauth2Login
                 .loginPage("/login")
                 .successHandler(authenticationSuccessHandler())
+                .userInfoEndpoint()
+                //.userService(customUserDetailService)
         );
         
         // ✅ 사용자 정의 인증 설정
@@ -177,7 +179,7 @@ public class SecurityConfig {
      */
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new LoginSuccessHandler();
+        return new LoginSuccessHandler(jwtTokenProvider);
     }
 
     @Bean
