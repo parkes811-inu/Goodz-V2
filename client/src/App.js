@@ -19,6 +19,13 @@ import PayPage from './pages/admin/PayPage';
 import PurchasePage from './pages/admin/PurchasePage';
 import BrandInsertPage from './pages/admin/BrandInsertPage';
 import OAuth2RedirectHandler from './components/user/OAuth2RedirectHandler';
+import MyPage from './pages/user/MyPage';
+import Purchase from './pages/user/Purchase';
+import Sales from './pages/user/Sales';
+import Wishlist_Products from './pages/user/Wishlist_Products';
+import Manage_Info from './pages/user/Manage_Info';
+import Address from './pages/user/Address';
+import Account from './pages/user/Account';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -88,16 +95,54 @@ function AppRoutes() {
       {/* 로그인된 유저만 접근 가능한 곳 */}
       <Route path='/users'
         element={
-          <ProtectedRoute requiredRole="user">
-            <Index />
-          </ProtectedRoute>}>
+          // <ProtectedRoute requiredRole="users">
+              <MyPage />
+          // </ProtectedRoute>
+        }>
       </Route>
-      <Route path='/users/wishList/products'
+      <Route path="/users/purchase" element={
+          // <ProtectedRoute requiredRole="user">
+              <Purchase />
+          // </ProtectedRoute>
+        }/>
+      <Route path="/users/sales" element={
+          // <ProtectedRoute requiredRole="user">
+              <Sales />
+          // </ProtectedRoute>
+        }/>
+      <Route path="/users/wishList/products" element={
+          // <ProtectedRoute requiredRole="user">
+              <Wishlist_Products />
+          // </ProtectedRoute>
+        }/>
+      <Route path="/users/wishList/posts" element={
+          // <ProtectedRoute requiredRole="user">
+              <Wishlist_Products />
+          // </ProtectedRoute>
+        }/>
+        <Route path="/users/manage_info" element={
+          // <ProtectedRoute requiredRole="user">
+              <Manage_Info />
+          // </ProtectedRoute>
+        }/>
+        <Route path="/users/address" element={
+          // <ProtectedRoute requiredRole="user">
+              <Address />
+          // </ProtectedRoute>
+        }/>
+          <Route path="/users/account" element={
+          // <ProtectedRoute requiredRole="user">
+              <Account />
+          // </ProtectedRoute>
+        }/>
+
+
+      {/* <Route path='/users/wishList/products'
         element={
           <ProtectedRoute requiredRole="user">
             <wishlist_products />
           </ProtectedRoute>}>
-      </Route>
+      </Route> */}
 
       {/* 다른 보호된 라우트들을 여기에 추가할 수 있습니다 */}
     </Routes>

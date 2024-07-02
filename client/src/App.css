@@ -24,6 +24,7 @@ body {
     margin: 0 auto;
 }
 
+
 /* 게시글 상세, */
 .mainContainer {
     min-height: calc(100vh - 10rem);
