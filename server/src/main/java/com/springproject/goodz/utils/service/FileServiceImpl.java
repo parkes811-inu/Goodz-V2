@@ -113,9 +113,10 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public boolean upload(Files file, String dir) throws Exception {
+        log.info("file: " + file);
+
         uploadPath = "C:/upload"; // 이거 지우면 반복업로드할때 163행이 반복되어서 경로 이상해짐
 
-        log.info("file: " + file);
 
         file.setParentTable(dir);     
 
@@ -138,6 +139,7 @@ public class FileServiceImpl implements FileService {
             fileDir.mkdirs();
         }
 
+        // 파일 이름 설정 및 파일 경로 생성
         String fileName = UUID.randomUUID().toString() + "_" + originName;
         String filePath = fileDirPath + File.separator + fileName;
         uploadPath +=  "/" + dir;
@@ -151,6 +153,7 @@ public class FileServiceImpl implements FileService {
         //File uploadFile = new File(filePath);
         FileCopyUtils.copy(fileData, uploadFile);
 
+        // 파일 정보 설정
         file.setFileName(fileName);
         file.setOriginName(originName);
         file.setParentTable(dir);

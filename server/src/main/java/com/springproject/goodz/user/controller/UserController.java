@@ -101,7 +101,7 @@ public class UserController {
 
         // 인증된 사용자 정보 
         if( user != null ) {
-            log.info("인증됫슴요~");
+            log.info("인증성공");
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
 

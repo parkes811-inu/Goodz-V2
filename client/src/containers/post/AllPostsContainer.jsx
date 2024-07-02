@@ -1,37 +1,58 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useEffect, useState } from 'react';
-import Post from '../../components/post/post';
+import React, { useContext, useEffect, useState } from 'react';
+import Post from '../../components/post/Post';
 import * as post from '../../apis/post/post';
+import * as wish from '../../apis/user/wish';
+import LikeBtn from '../../components/common/LikeBtn';
+import WishBtn from '../../components/common/WishBtn';
+import { LoginContext } from '../../contexts/LoginContextProvider';
 
 const AllPostsContainer = () => {
+    
+    // const {userInfo} = useContext(LoginContext);
+    // const {userId} = userInfo;
+    // const { no, userId, authList } = userInfo;
+    // console.log("유저아이디: " + userId);
 
     /* -----------------state--------------------- */
     const [postList, setPostList] = useState([]);
-    
-    /* ------------------------------------------- */
-    
+    // const [wishList, setWish] = useState([]);
+    // const [LikeList, setLike] = useState([]);
 
+    // const [isWished, setWish]
+
+    
     /* -----------------functions----------------- */
     const getPostList = async () => {
-
-        const response = await post.list();
-        const data = await response.data;
-
-        setPostList(data);
-
+        
+        try {
+            const response = await post.list();
+            const data = await response.data;
+            setPostList(data);
+            
+        } catch (error) {
+            console.error('게시글을 가져오는 중 오류 발생:', error);
+        }
+        
         // setPostList(null);   // 빈 게시글 시 화면체크
     }
     
-    /* ------------------------------------------- */
-
+    const handleLike = async () =>  {
+        alert('하트!!!!!')
+    }
     
+    const handleWish = async () =>  {
+        alert('관심!!!!!')
+    }
+                
+                
+                
     /* --------------------Hook-------------------- */
     useEffect ( () => {
         getPostList();
     },[])
-
-
-    /* -------------------------------------------- */
+                
+                
 
     return (
 
@@ -47,10 +68,19 @@ const AllPostsContainer = () => {
                 <>
                     {/* 게시글이 존재하는 경우 */}
                     <div className="grid">
-                        {postList.map( (post) => 
-                            <Post post={post} />
-                        )}   
+                        {postList.map(post => (
+                            <div className="item" key={post.no}>
+                                {/* Post 컴포넌트에 key prop을 전달할 필요는 없습니다 */}
+                                <Post post={post} />
+                                <div className="d-flex justify-content-end column-gap-2 mt-2 px-2">
+                                    {/* WishBtn과 LikeBtn 컴포넌트에 handleWish와 handleLike prop을 전달하여 클릭 이벤트를 처리할 수 있습니다 */}
+                                    <WishBtn wishCount={post.wishCount} isWished={post.wished} handleWish={handleWish} />
+                                    <LikeBtn likeCount={post.likeCount} isLiked={post.liked} handleLike={handleLike} />
+                                </div>
+                            </div>
+                        ))}
                     </div>
+
                 </>
             }
         </div>

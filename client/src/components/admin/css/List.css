@@ -1,27 +1,3 @@
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-}
-
-.header h2 {
-    font-size: 23px;
-    margin: 0;
-    font-weight: bold;
-}
-
-
-
-
-.mt-3 {
-    margin-top: 1rem;
-}
-
-.mb-3 {
-    margin-bottom: 1rem;
-}
 
 .custom-button {
     color: black;

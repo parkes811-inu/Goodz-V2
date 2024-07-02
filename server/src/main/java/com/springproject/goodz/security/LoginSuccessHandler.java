@@ -1,7 +1,7 @@
 package com.springproject.goodz.security;
 
 import java.io.IOException;
-
+import java.util.Collections;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import com.springproject.goodz.security.jwt.provider.JwtTokenProvider;
 import com.springproject.goodz.user.dto.CustomUser;
 import com.springproject.goodz.user.dto.SocialUser;
 import com.springproject.goodz.user.dto.Users;
@@ -25,6 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public LoginSuccessHandler(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     /**
      * 인증 성공 시 실행되는 메소드
      */
@@ -71,6 +78,14 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         Users user = customUser.getUser();
         if (user != null) session.setAttribute("user", user);
 
-        super.onAuthenticationSuccess(request, response, authentication);
+        // JWT 토큰 생성
+        int userNo = customUser.getUser().getNo(); // Users 객체에서 userNo를 가져옵니다.
+        String token = jwtTokenProvider.createToken(userNo, customUser.getUsername(), Collections.singletonList("ROLE_USER"));
+
+        // 클라이언트로 리디렉션 시 토큰을 포함하여 전달
+        String redirectUrl = "http://localhost:3000/oauth2/redirect?token=" + token;
+        response.sendRedirect(redirectUrl);
+
+        //super.onAuthenticationSuccess(request, response, authentication);
     }
 }

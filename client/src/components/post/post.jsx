@@ -3,16 +3,20 @@ import React from 'react'
 import ProfileInfo from '../common/ProfileInfo';
 import { Link } from 'react-router-dom';
 
-const post = ({post}) => {
-  console.log(post);
+const Post = ({post}) => {
+
+  // console.log(post);
+  // console.log("좋아요: " + post.liked);
+  // console.log("저장: " + post.wished);
+
   const {nickname, profileImgNo, fileNo, postNo} = post;
+  
   return (
     <>
-        <div className="item">
             
             <div className="py-2">
                 {/* 프로필정보 */}
-                <ProfileInfo nickname={nickname} profileImgNo={profileImgNo}/>
+                <ProfileInfo nickname={nickname} profileImgNo={profileImgNo} size=""/>
             </div>
 
             <div className="post">
@@ -22,9 +26,8 @@ const post = ({post}) => {
                 </Link>
             </div>
 
-        </div>
     </>
   )
 }
 
-export default post
+export default Post

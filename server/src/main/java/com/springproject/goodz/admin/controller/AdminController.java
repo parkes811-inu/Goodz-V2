@@ -106,19 +106,26 @@ public class AdminController {
         log.info("브랜드명: " + bName);
         log.info("로고 파일: " + logoFile.getOriginalFilename());
 
-        // 여기서 Brand 객체를 생성하고 필요한 처리를 수행합니다
+        // Brand 객체 생성 및 설정
         Brand brand = new Brand();
         brand.setBName(bName);
-        // 로고 파일 처리를 추가합니다 (예: 파일 저장 및 경로 설정)
+        brand.setLogoFile(logoFile);
 
-        int result = brandService.insert(brand);
-        if (result == 0) {
-            log.info("::::::::::::::브랜드 등록 처리 중 예외발생::::::::::::::");
-            return new ResponseEntity<>("Error while adding brand", HttpStatus.INTERNAL_SERVER_ERROR);
+        // 브랜드 및 파일 정보 삽입
+        try {
+            int result = brandService.insert(brand);
+            if (result == 0) {
+                log.info("::::::::::::::브랜드 등록 처리 중 예외 발생::::::::::::::");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while adding brand");
+            }
+        } catch (Exception e) {
+            log.error("서버 오류 발생: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error occurred: " + e.getMessage());
         }
-        return new ResponseEntity<>("Brand added successfully", HttpStatus.CREATED);
-    }
 
+        return ResponseEntity.status(HttpStatus.CREATED).body("Brand added successfully");
+    }
+    
     // 제품 목록 조회
     @GetMapping("/products")
     public ResponseEntity<Map<String, Object>> productList(Page page,

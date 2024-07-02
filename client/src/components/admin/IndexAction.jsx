@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import "../admin/css/Index.css"
 
 const IndexAction = ({ link, label }) => (
   <div className="col-md-6 d-flex justify-content-center">

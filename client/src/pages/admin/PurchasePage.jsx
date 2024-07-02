@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { userSaleList } from '../../apis/admin/admin';
 import AdminLayout from '../../layout/AdminLayout';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../components/admin/css/History.css';
 import PurchaseListContainer from '../../containers/admin/PurchaseListContainer';
 
 const PurchasePage = () => {
