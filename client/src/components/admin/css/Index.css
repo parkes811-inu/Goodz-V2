@@ -1,19 +1,4 @@
 
-.card {
-    border-radius: 0 !important; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-}
-
-.card-header a {
-    color: #666;
-    font-size: 14px;
-    text-decoration: none;
-}
-
-.card-header a:hover {
-    color: #333;
-}
-
 .stats {
     display: flex;
     justify-content: center;

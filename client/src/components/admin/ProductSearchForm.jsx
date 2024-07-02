@@ -10,8 +10,8 @@ const ProductSearchForm = ({ keyword, setKeyword }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-inline">
-      <div className="input-group">
+    <form onSubmit={handleSubmit} className="form-inline" style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="input-group" style={{ width: '300px' }}>
         <input 
           type="text" 
           name="keyword" 
@@ -21,7 +21,7 @@ const ProductSearchForm = ({ keyword, setKeyword }) => {
           onChange={(e) => setKeyword(e.target.value)}
         />
         <div className="input-group-append">
-          <button type="submit" className="btn btn-primary">검색</button>
+          <button type="submit" className="btn btn-dark">검색</button>
         </div>
       </div>
       <AddButton link="/admin/add_product" />
