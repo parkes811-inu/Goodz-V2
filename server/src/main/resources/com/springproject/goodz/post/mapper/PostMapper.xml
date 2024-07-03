@@ -67,15 +67,6 @@
 
     <!-- 게시글 상세 조회 - /styles/게시글번호  -->
     <select id="select" resultMap="postMap">
-        SELECT p.post_no
-            , p.user_id
-            , u.nickname
-            , COALESCE(uf.no, 0) as profileImgNo
-            , p.content
-        FROM post p
-        INNER JOIN user u ON p.user_id = u.user_id
-        LEFT JOIN file uf ON u.no = uf.parent_no AND uf.parent_table = 'user'
-        WHERE p.post_no = #{postno};
         <!-- SELECT p.post_no
              , p.user_id
              , IFNULL((SELECT no from file f where u.no = f.parent_no and f.parent_table = "user"),0) as profileImgNo
@@ -86,7 +77,36 @@
         FROM post p
         LEFT OUTER JOIN tag t ON p.post_no = t.post_no
         INNER JOIN user u on p.user_id = u.user_id
-        WHERE p.post_no = 1; -->
+        WHERE p.post_no = #{postno}; -->
+        SELECT 
+            p.post_no,
+            p.user_id,
+            u.nickname,
+            COALESCE(f.no, 0) AS profileImgNo,
+            p.content,
+            COALESCE(l.likeCount, 0) AS likeCount,
+            COALESCE(w.wishCount, 0) AS wishCount,
+            t.p_no AS product_no
+        FROM post p
+        INNER JOIN user u ON p.user_id = u.user_id
+        LEFT JOIN (
+                    SELECT parent_no, no
+                    FROM file
+                    WHERE parent_table = 'user'
+                ) f ON u.no = f.parent_no
+        LEFT JOIN (
+                    SELECT post_no, COUNT(*) AS likeCount
+                    FROM `like`
+                    GROUP BY post_no
+                ) l ON p.post_no = l.post_no
+        LEFT JOIN (
+                    SELECT parent_no, COUNT(*) AS wishCount
+                    FROM wishlist
+                    WHERE parent_table = 'post'
+                    GROUP BY parent_no
+                ) w ON p.post_no = w.parent_no
+        LEFT JOIN tag t ON p.post_no = t.post_no
+        WHERE p.post_no = #{postno};
     </select>
 
 

@@ -21,10 +21,10 @@ public class WishListServiceImpl implements WishListService {
     // 저장 체크 여부 - id 기준
     @Override
     public boolean listById(Wish wish) throws Exception {
-        log.info("::::::::::WishListServiceImpl::::::::::");
-        log.info("조회할 wish정보: " + wish.toString());
+        // log.info("::::::::::WishListServiceImpl::::::::::");
+        // log.info("조회할 wish정보: " + wish.toString());
         int result = wishListMapper.listById(wish);
-        log.info("결과: " + result);
+        // log.info("결과: " + result);
 
         boolean ischecked = false; // 체크여부 off -> false / on -> true
 
