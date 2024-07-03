@@ -184,30 +184,54 @@ public class PostController {
      */
     @GetMapping("/{postNo}")
     public ResponseEntity<Map<String, Object>> read(@PathVariable("postNo")int postNo, @AuthenticationPrincipal CustomUser customUser) throws Exception {
+        
+        Map<String, Object> postDetails = new HashMap<>();  // return으로 넘겨줄 값
 
         log.info("::::::" + postNo + "번 게시글 조회요청::::::");
-        /* 게시글 조회 */
+
+        /* 📄 게시글 조회 */
         Post post = postService.select(postNo);
         log.info(post.toString());
         
-        /* 상품태그리스트 조회 */
+        /* 🔗 상품태그리스트 조회 */
         List<Product> tempList = post.getTagList();
         List<Product> taggedProducts = new ArrayList<>();
+
+        log.info("::::태그된 상품 정보::::");
+        if (!tempList.isEmpty()) {
+            for (Product product : tempList) {
+                int productno = product.getPNo();
+                Product taggedProduct = productService.getProductBypNo(productno);
+
+                // 상품 대표이미지 가져오기
+                Files file = new Files();
+                file.setParentTable(taggedProduct.getCategory());
+                file.setParentNo(taggedProduct.getPNo());
+                Files mainImg = fileService.selectMainImg(file);
+                // 대표 이미지 번호 저장
+                taggedProduct.setMainImgNo(mainImg.getNo());
+                
+                // 태그 리스트에 저장
+                taggedProducts.add(taggedProduct);
+
+                log.info(taggedProduct.toString());
+            }
+        }
+        postDetails.put("tagList", taggedProducts);
+        postDetails.put("tagCount", taggedProducts.size());
         
-        /* 첨부파일 조회 */
+        
+        /* 💾 첨부파일 조회 */
         Files file = new Files();
         file.setParentTable("post");
         file.setParentNo(post.getPostNo());
         List<Files> fileList = fileService.listByParent(file);
         
-        Map<String, Object> postDetails = new HashMap<>();
         postDetails.put("post", post);
         postDetails.put("fileList", fileList);
         
         
-        /* 게시글 작성자 정보 세팅 */
-        // Users writer = userService.select(post.getUserId());
-        
+        /* 👩‍💼 조회하는 유저 세팅 */
         log.info("::::: 좋아요/관심 세팅을 위한 customUser 조회 중 :::::");
         log.info("customUser : "+ customUser);
         // Users loginUser = new Users();
@@ -221,7 +245,7 @@ public class PostController {
         }
         log.info("user : " + loginUser);
         
-        /* 좋아요 & 저장 세팅 */
+        /* 💛💌 좋아요 & 저장 세팅 */
         if (loginUser == null) {
             // 비 로그인 시, 좋아요 표시 전체 해제
             log.info("로그인이 되지않은 사용자");

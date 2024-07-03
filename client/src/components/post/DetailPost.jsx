@@ -3,16 +3,21 @@ import Carousel from 'react-bootstrap/Carousel';
 import { Button, Offcanvas } from 'react-bootstrap';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import React, { useContext, useEffect, useState } from 'react'
-import * as cmmt from '../../apis/post/comment';
 import ProfileInfo from '../common/ProfileInfo'
 import WishBtn from '../common/WishBtn';
 import LikeBtn from '../common/LikeBtn';
-import TagItem from './TagItem';
+import TagItem from  './TagItem';
 import { LoginContext } from '../../contexts/LoginContextProvider';
 
 
-const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish, onInsertCmmt, onDeleteCmmt}) => {
+const DetailPost = ({postDetail, hadleFunctions, onInsertCmmt, onDeleteCmmt}) => {
 
+    // 🔎 props
+    const {post, fileList, cmmtList, countCmmt, tagList, tagCount} = postDetail;
+    const {handleLike, handleWish} = hadleFunctions
+    const {nickname, profileImgNo, postNo, content, likeCount, wishCount, wished, liked} = post;
+
+    // console.log(tagList);
     // 화면전환을 위한 navigate
     const navigate = useNavigate();
 
@@ -30,11 +35,9 @@ const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish
     // console.log(post);
     // console.log(cmmtList);
 
-    // 🔁 게시글 status
-    const {nickname, profileImgNo, postNo, content, likeCount, wishCount, wished, liked} = post;
-    
     // 🔁 모달창 status
     const [show, setShow] = useState(false);
+
     // 💨 모달창 function
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -80,13 +83,9 @@ const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish
 
         onDeleteCmmt(cNo);
     }
+
+    // const tagged = []
     
-    // const deleteCmmt = (cmmt.cNo) => console.log(cmmt, cNo)
-
-    // 하드코딩
-    const tagCount = 5;
-    const taggedProducts = [];
-
     return (
         <>
             <div className="mainContainer" style={{width: '640px'}}>
@@ -102,7 +101,7 @@ const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish
                         <Link type="button" onClick={`deletePost(${postNo})`}>삭제</Link>
                         
                         {/* 타인 게시글 -> 팔로우/팔로잉 */}
-                        <button type="button" className="followBtn btn btn-dark btn-sm" id="follow" onClick="updateFollow(this)" data-profileId={`${userId}`}>팔로우</button>
+                        <button type="button" className="followBtn btn btn-dark btn-sm" id="follow">팔로우</button>
                     </div>
                 </div>
 
@@ -143,9 +142,11 @@ const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish
                 {/* <!-- 상품태그 영역 --> */}
                 <div className="productTags">
                     <div className="product_title text-start mt-5">
-                        <span>상품 태그 <span>{tagCount}</span>개</span>
+                        <div className="mb-2">
+                            <span>상품 태그 <span>{tagCount}</span>개</span>
+                        </div>
                         <div className="product_list_area mb-5">
-                            {!taggedProducts ?
+                            {!tagList || tagList.length === 0 ?
                                 <>
                                     <h5 className="text-body-tertiary text-center">태그된 상품이 없습니다.</h5>
                                 </>
@@ -153,10 +154,12 @@ const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish
                                 <>
                                     <ul className="product_list row row-cols-1 row-cols-sm-2 row-cols-md-4 p-0 m-0">
                                         {/* <!-- [DB] 게시글에 포함된 상품태그 불러옴 --> */}
-                                        {taggedProducts.map((product) => {
-                                            <li className="product_item text-start p-0">
-                                                <TagItem product={product}/>
-                                            </li>
+                                        {tagList.map((product) => {
+                                            return (
+                                                <li className="product_item text-start p-0">
+                                                    <TagItem product={product} />
+                                                </li>
+                                            )
                                         })}
                                     </ul>
                                 </>
