@@ -20,6 +20,7 @@ import PurchasePage from './pages/admin/PurchasePage';
 import BrandInsertPage from './pages/admin/BrandInsertPage';
 import OAuth2RedirectHandler from './components/user/OAuth2RedirectHandler';
 import Index from './components/user/Index';
+import ProductInsertPage from './pages/admin/ProductInsertPage';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -83,6 +84,11 @@ function AppRoutes() {
       <Route path="/admin/add_brand" element={
         <ProtectedRoute requiredRole="admin">
           <BrandInsertPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/add_product" element={
+        <ProtectedRoute requiredRole="admin">
+          <ProductInsertPage />
         </ProtectedRoute>
       } />
 
