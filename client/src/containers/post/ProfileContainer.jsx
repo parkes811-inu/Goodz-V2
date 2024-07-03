@@ -5,8 +5,8 @@ import * as follow from '../../apis/post/follow';
 import * as post from '../../apis/post/post';
 import * as like from '../../apis/post/like';
 import * as wish from '../../apis/user/wish';
-import BtnFollow from './BtnFollow';
-import BtnFollowing from './BtnFollowing';
+import BtnFollow from '../../components/post/BtnFollow';
+import BtnFollowing from '../../components/post/BtnFollowing';
 import BtnWish from  '../../components/common/BtnWish';
 import BtnLike from  '../../components/common/BtnLike';
 import { Button } from 'react-bootstrap';
@@ -63,6 +63,8 @@ const ProfileContainer = ({nickname}) => {
         const response =  await follow.followerList(userId);
         const data = response.data;
         console.log(data);
+
+        setFollowers(data);
     }
     const getFollowings = async (userId) => {
         if (userId === undefined || userId == null) {
@@ -72,6 +74,8 @@ const ProfileContainer = ({nickname}) => {
         const response =  await follow.followingList(userId);
         const data = response.data;
         console.log(data);
+
+        setFollowings(data);
     }
 
 
@@ -84,7 +88,7 @@ const ProfileContainer = ({nickname}) => {
         console.log(status, userId, postNo);
 
         // 👩‍💼❌ 비 로그인 시
-        if (userId == undefined || userId == null) {
+        if (userId === undefined || userId == null) {
             alert("로그인 후 이용가능합니다. ");
             let confirm = window.confirm("로그인페이지로 이동 하시겠습니까?");
 
@@ -109,30 +113,17 @@ const ProfileContainer = ({nickname}) => {
             // 좋아요 등록 (false ➡ true)
             const response = await like.addLike(likeData, headers);
             const data = await response.data;
-    
-            // console.log(data);
-            getPostList();
+            console.log(data);
 
-            // if (data === "SUCCESS") {
-            //     alert('좋아요 등록완료');
-            // } else {
-            //     alert('좋아요 등록실패');
-            // }
-            
         } else {
             // 좋아요 삭제 (true ➡ false)
             const response = await like.deleteLike(likeData);
             const data = await response.data;
-            // console.log(data);
+            console.log(data);
     
-            getPostList();
-
-            // if (data === "SUCCESS") {
-            //     alert('좋아요 삭제완료');
-            // } else {
-            //     alert('좋아요 삭제실패');
-            // }
+            
         }
+        getPostList();
     }
     
     /* 💌 관심 */
@@ -140,7 +131,7 @@ const ProfileContainer = ({nickname}) => {
         console.log(status, userId, postNo);
 
         // 👩‍💼❌ 비 로그인 시
-        if (userId == undefined || userId == null) {
+        if (userId === undefined || userId == null) {
             alert("로그인 후 이용가능합니다. ");
             let confirm = window.confirm("로그인페이지로 이동 하시겠습니까?");
 
@@ -166,27 +157,13 @@ const ProfileContainer = ({nickname}) => {
             // 관심 등록 (false ➡ true)
             const response = await wish.addWish(wishData, headers);
             const data = await response.data;
-            // console.log(data);
+            console.log(data);
     
-            
-
-            // if (data === "SUCCESS") {
-            //     alert('관심 등록완료');
-            // } else {
-            //     alert('관심 등록실패');
-            // }
-            
         } else {
             // 관심 삭제 (true ➡ false)
             const response = await wish.deleteWish(wishData);
             const data = await response.data;
-            // console.log(data);
-    
-            // if (data === "SUCCESS") {
-            //     alert('관심 삭제완료');
-            // } else {
-            //     alert('관심 삭제실패');
-            // }
+            console.log(data);
         }
 
         getPostList();
@@ -247,10 +224,10 @@ const ProfileContainer = ({nickname}) => {
                         {/* <!-- 팔로워/팔로잉 정보 --> */}
                         <div className="followInfo d-flex text-start">
                             <Button onClick={() => setMFollower(true)} className='btn ps-0 pe-2 py-0'><span>팔로워 {followers.length}</span></Button>
-                            <ModalFollow show={mFollower} onHide={() => setMFollower(false)} title={"팔로워"} />
+                            <ModalFollow show={mFollower} onHide={() => setMFollower(false)} title={"팔로워"} followList={followers}/>
                             <span className="text-body-tertiary ">|</span>
                             <Button onClick={() => setMFollowing(true)} className='btn ps-2 py-0'><span>팔로잉 {followings.length}</span></Button>
-                            <ModalFollow show={mFollowing} onHide={() => setMFollowing(false)} title={"팔로잉"}/>
+                            <ModalFollow show={mFollowing} onHide={() => setMFollowing(false)} title={"팔로잉"} followList={followings} />
                         </div>
 
                     </div>

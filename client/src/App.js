@@ -22,7 +22,7 @@ import OAuth2RedirectHandler from './components/user/OAuth2RedirectHandler';
 import MyPage from './pages/user/MyPage';
 import Purchase from './pages/user/Purchase';
 import Sales from './pages/user/Sales';
-import Wishlist_Products from './pages/user/Wishlist_Products';
+import Wishlist_Products from './pages/user/Wishlist_products';
 import Wishlist_Posts from './pages/user/Wishlist_Posts';
 import Manage_Info from './pages/user/Manage_Info';
 import Address from './pages/user/Address';
