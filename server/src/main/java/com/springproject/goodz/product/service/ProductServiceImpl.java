@@ -69,20 +69,26 @@ public class ProductServiceImpl implements ProductService {
     public int insert(Product product, int mainImgIndex) throws Exception {
         log.info("상품 등록 처리 진행중...");
 
+        // 상품 등록
         int result = productMapper.insert(product);
-
         int pNo = product.getPNo();
+
         if (result > 0 && pNo > 0) {
             log.info("상품 등록 처리 완료, pNo: " + pNo);
 
+            // 상품 옵션 등록
             List<ProductOption> options = product.getOptions();
             if (options != null && !options.isEmpty()) {
                 for (ProductOption option : options) {
                     option.setPNo(pNo);
                     productOptionMapper.insertProductOption(option);
+                    log.info("옵션 등록 완료: " + option);
                 }
+            } else {
+                log.warn("상품 옵션이 비어있거나 null입니다.");
             }
 
+            // 파일 업로드 처리
             List<MultipartFile> requestFiles = product.getProductFiles();
             if (requestFiles != null && !requestFiles.isEmpty()) {
                 for (int i = 0; i < requestFiles.size(); i++) {
@@ -109,11 +115,11 @@ public class ProductServiceImpl implements ProductService {
                             fileService.upload(fileInfo, product.getCategory());
                             log.info("상품 파일 처리 완료: " + file.getOriginalFilename());
                         } catch (Exception e) {
-                            log.error("파일 업로드에 실패하였습니다.", e);
-                            throw new Exception("파일 업로드에 실패하였습니다.", e);
+                            log.error("파일 업로드에 실패하였습니다. 파일명: " + file.getOriginalFilename(), e);
+                            throw new Exception("파일 업로드에 실패하였습니다. 파일명: " + file.getOriginalFilename(), e);
                         }
                     } else {
-                        log.warn("파일이 비어있거나 null입니다.");
+                        log.warn("파일이 비어있거나 null입니다. 인덱스: " + i);
                     }
                 }
             } else {
