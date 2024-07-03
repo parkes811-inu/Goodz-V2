@@ -20,7 +20,7 @@ function ProductImages({ product, setProduct }) {
                    max="10" onChange={handleImageChange}/>
             <span id="passwordHelpInline" className="form-text">최대 10장</span>
             <div id="imagePreview" style={{ height: '100%', padding: '15px' }}>
-                {product.images.map((file, index) => (
+                {/* {product.images.map((file, index) => (
                     <img
                         key={index}
                         src={URL.createObjectURL(file)}
@@ -28,7 +28,7 @@ function ProductImages({ product, setProduct }) {
                         onClick={() => selectMainImage(index)}
                         style={{ width: '100px', height: '100px', cursor: 'pointer', border: product.mainImgIndex === index ? '2px solid red' : 'none' }}
                     />
-                ))}
+                ))} */}
             </div>
             <input type="hidden" id="representativeImage" name="mainImgIndex" value={product.mainImgIndex} />
         </div>
