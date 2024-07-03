@@ -19,7 +19,6 @@ import PayPage from './pages/admin/PayPage';
 import PurchasePage from './pages/admin/PurchasePage';
 import BrandInsertPage from './pages/admin/BrandInsertPage';
 import OAuth2RedirectHandler from './components/user/OAuth2RedirectHandler';
-import Index from './components/user/Index';
 import MyPage from './pages/user/MyPage';
 import Purchase from './pages/user/Purchase';
 import Sales from './pages/user/Sales';
@@ -28,6 +27,7 @@ import Wishlist_Posts from './pages/user/Wishlist_Posts';
 import Manage_Info from './pages/user/Manage_Info';
 import Address from './pages/user/Address';
 import Account from './pages/user/Account';
+import ProfilePage from './pages/post/ProfilePage';
 
 import ProductInsertPage from './pages/admin/ProductInsertPage';
 
@@ -155,7 +155,10 @@ function AppRoutes() {
 
       {/* 다른 보호된 라우트들을 여기에 추가할 수 있습니다 */}
       <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
+
+      {/* styles */}
       <Route path="/styles/:postNo" element={<Read />} />
+      <Route path='/styles/user/:nickname' element={<ProfilePage />}/>
     </Routes>
   );
 }

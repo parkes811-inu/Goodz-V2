@@ -25,7 +25,7 @@ public class Follow {
      * 김도희의 팔로워 김구라, 김준현
      * => userId = "김도희" followerId = "김구라" / userId = "김도희" followerId = "김준현"
      * 
-     * 김도희의 팔로잉 목록
+     * 김도희의 팔로잉 목록 (김도희가 follower인 데이터)
      * => userId = "김태희" followerId = "김도희" /  userId="백지영" followerId = "김도희"
      */
 }
