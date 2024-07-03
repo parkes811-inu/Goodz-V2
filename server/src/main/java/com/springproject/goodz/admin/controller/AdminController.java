@@ -221,7 +221,7 @@ public class AdminController {
             for (ProductOption option : options) {
                 option.setPNo(pNo);
                 productService.insertProductOption(option);
-                productService.makeHistory(pNo, option.getSize(), option.getOptionPrice());
+                // productService.makeHistory(pNo, option.getSize(), option.getOptionPrice());
             }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.INTERNAL_SERVER_ERROR);

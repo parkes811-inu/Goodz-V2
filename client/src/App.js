@@ -66,39 +66,39 @@ function AppRoutes() {
 
       {/* 어드민만 접근 가능한 곳 */}
       <Route path="/admin" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <AdminIndex />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/brands" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <BrandListPage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/products" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <ProductListPage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/pay_history" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <PayPage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/purchase_state" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <PurchasePage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/add_brand" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <BrandInsertPage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/add_product" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <ProductInsertPage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
 
       {/* 로그인된 유저만 접근 가능한 곳 */}

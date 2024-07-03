@@ -78,6 +78,7 @@ public class ProductServiceImpl implements ProductService {
 
             // 상품 옵션 등록
             List<ProductOption> options = product.getOptions();
+            log.info(options.toString());
             if (options != null && !options.isEmpty()) {
                 for (ProductOption option : options) {
                     option.setPNo(pNo);
