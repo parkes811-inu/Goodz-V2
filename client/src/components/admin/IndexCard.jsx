@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import "../admin/css/Index.css"
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const IndexCard = ({ title, link, children }) => (
   <div className="card mb-4">

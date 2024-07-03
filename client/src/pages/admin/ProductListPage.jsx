@@ -5,7 +5,6 @@ import ProductSearchForm from '../../components/admin/ProductSearchForm';
 import { productList } from '../../apis/admin/admin';
 import AdminLayout from '../../layout/AdminLayout';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../components/admin/css/List.css';
 
 const ProductListPage = () => {
   const [keyword, setKeyword] = useState('');
@@ -31,8 +30,8 @@ const ProductListPage = () => {
   return (
     <AdminLayout>
       <div className="container mt-5">
-        <div className="header">
-          <h2>상품 목록</h2>
+        <div className="pagetitle">
+          <p>상품 목록</p>
         </div>
         <ProductSearchForm keyword={keyword} setKeyword={setKeyword} />
         <ProductTable products={products} />
