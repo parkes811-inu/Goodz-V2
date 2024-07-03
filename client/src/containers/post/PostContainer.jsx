@@ -35,7 +35,7 @@ const PostContainer = ({postNo}) => {
             setFileList(fileList);
             
         } catch (error) {
-            console.log('댓글 작성 처리 중 에러발생');
+            console.log('게시글 조회 중 에러발생');
             console.log(error);
         }
     }
@@ -55,7 +55,7 @@ const PostContainer = ({postNo}) => {
             console.log(data);
             
         } catch (error) {
-            console.log('댓글 작성 처리 중 에러발생');
+            console.log('댓글 조회 중 에러발생');
             console.log(error);
         }
 
@@ -86,6 +86,27 @@ const PostContainer = ({postNo}) => {
             console.log(error);
         }
     } 
+
+    // 댓글 삭제
+    const onDeleteCmmt = async(cNo) => {
+        // console.log("삭제할 댓글번호: " + cNo);
+        try {
+            const response = await cmmtApi.deleteCmmt(cNo);
+            const data = response.data;
+            console.log(data);
+            // if (data === 'SUCCESS') {
+            //     alert("댓글 삭제 성공!");
+            // } else {
+            //     alert("댓글 삭제 실패!ㅜㅜ");
+            // }
+            getCmmtList();
+            
+        } catch (error) {
+            console.log('댓글 삭제 처리 중 에러발생');
+            console.log(error);
+        }
+
+    }
 
     /* 소셜 관련 function */
     /* 💛좋아요 */
@@ -210,7 +231,7 @@ const PostContainer = ({postNo}) => {
 
   return (
     <>
-        <DetailPost post={post} fileList={fileList} cmmtList={cmmtList} countCmmt={countCmmt} handleLike={handleLike} handleWish={handleWish} onInsertCmmt={onInsertCmmt} />
+        <DetailPost post={post} fileList={fileList} cmmtList={cmmtList} countCmmt={countCmmt} handleLike={handleLike} handleWish={handleWish} onInsertCmmt={onInsertCmmt} onDeleteCmmt={onDeleteCmmt} />
     </>
   )
 }
