@@ -109,7 +109,7 @@ public class PostController {
 
             log.info("::::: 좋아요/관심 세팅을 위한 customUser 조회 중 :::::");
             log.info("customUser : "+ customUser);
-            Users loginUser = new Users();
+            Users loginUser = null;
 
             if (customUser != null) {
                 log.info("로그인 사용자.");
@@ -210,16 +210,16 @@ public class PostController {
         
         log.info("::::: 좋아요/관심 세팅을 위한 customUser 조회 중 :::::");
         log.info("customUser : "+ customUser);
-        Users loginUser = new Users();
+        // Users loginUser = new Users();
+        Users loginUser = null;
         
         if (customUser != null) {
             log.info("로그인 사용자.");
             loginUser = customUser.getUser();
         } else {
             log.info("비로그인 사용자.");
-            
-            log.info("user : " + loginUser);
         }
+        log.info("user : " + loginUser);
         
         /* 좋아요 & 저장 세팅 */
         if (loginUser == null) {
@@ -230,6 +230,7 @@ public class PostController {
             post.setWished(false);
             
         } else {
+            log.info("로그인된 사용자");
             loginUser = userService.select(loginUser.getUserId());
             // log.info("로그인유저의 프사번호: " + loginUser.getProfileImgNo());
             

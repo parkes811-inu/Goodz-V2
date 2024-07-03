@@ -2,26 +2,36 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Carousel from 'react-bootstrap/Carousel';
 import { Button, Offcanvas } from 'react-bootstrap';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import * as cmmt from '../../apis/post/comment';
 import ProfileInfo from '../common/ProfileInfo'
 import WishBtn from '../common/WishBtn';
 import LikeBtn from '../common/LikeBtn';
 import TagItem from './TagItem';
+import { LoginContext } from '../../contexts/LoginContextProvider';
 
 
-const DetailPost = ({post, fileList, cmmtList, handleLike, handleWish}) => {
+const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish, onInsertCmmt}) => {
 
     // 화면전환을 위한 navigate
     const navigate = useNavigate();
 
+    // 유저 정보
+  const {userInfo} = useContext(LoginContext);
+  let userId;
+
+  // 👩‍💼⭕ 유저 로그인
+  if (userInfo) {
+    userId = userInfo.userId;
+    // console.log("유저아이디: " + userId);
+  }
+
     // console.log(fileList);
-    console.log(post);
-    console.log(cmmtList);
-    
+    // console.log(post);
+    // console.log(cmmtList);
 
     // 🔁 게시글 status
-    const {userId, nickname, profileImgNo, postNo, content, likeCount, wishCount, wished, liked} = post;
+    const {nickname, profileImgNo, postNo, content, likeCount, wishCount, wished, liked} = post;
     
     // 🔁 모달창 status
     const [show, setShow] = useState(false);
@@ -29,8 +39,36 @@ const DetailPost = ({post, fileList, cmmtList, handleLike, handleWish}) => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    // const deleteCmmt = (cmmt.cNo) => console.log(cmmt, cNo)
+    /* 🔁 댓글 status */
+    const [inputCmmt, setComment] = useState('');
+    
+    /* 💨 댓글 function */
+    const handleInputCmmt = (e) => {
+        setComment(e.target.value)
+        // console.log(e.target.value);
+    }
 
+    const insertCmmt = () => {
+
+        // 댓글 처리 전 확인사항
+        // 1️⃣ 로그인된 사용자인지 확인
+        if (userId == undefined || userId == null) {
+            alert("로그인 후 이용가능합니다. ");
+            let confirm = window.confirm("로그인페이지로 이동 하시겠습니까?");
+            if (!confirm) { return; }   // No
+            navigate("/users/login");   // Yes
+            return;
+        }
+
+        // 2️⃣ 빈칸인지 확인
+        if (inputCmmt == '') {
+            alert('내용을 입력해주세요.');
+        }
+        // alert(inputCmmt);
+        onInsertCmmt(userId, postNo, inputCmmt);
+    }
+    
+    // const deleteCmmt = (cmmt.cNo) => console.log(cmmt, cNo)
 
 
     // 하드코딩
@@ -70,19 +108,17 @@ const DetailPost = ({post, fileList, cmmtList, handleLike, handleWish}) => {
                 {/* 게시글 버튼들 */}
                 <div className="social_contents mt-2">
                     {/* <!-- 소셜버튼들 --> */}
-                    <div className="d-flex justify-content-end column-gap-2 px-2">
+                    <div className="d-flex justify-content-end column-gap-2">
                         {/* <!-- 저장 --> */}
-                        {/* <WishBtn wishCount={wishCount}/> */}
                         <WishBtn wishCount={wishCount} isWished={wished} handleWish={handleWish} postNo={postNo} />
                         {/* <!-- 좋아요 --> */}
-                        {/* <LikeBtn likeCount={likeCount} /> */}
-                                    <LikeBtn likeCount={likeCount} isLiked={liked} handleLike={handleLike} postNo={postNo}/>
+                        <LikeBtn likeCount={likeCount} isLiked={liked} handleLike={handleLike} postNo={postNo}/>
                         {/* <!-- 댓글 --> */}
-                        <Button variant="none" onClick={handleShow} className="me-2">
+                        <Button variant="none" onClick={handleShow} className="p-0">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6" width="26" height="26">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
                             </svg>
-                            <span className="count" id="countCmmt"></span>
+                            <span className="count">{countCmmt}</span>
                         </Button>
                     </div>
                 </div>
@@ -131,9 +167,9 @@ const DetailPost = ({post, fileList, cmmtList, handleLike, handleWish}) => {
                                 <form method="post" className="d-flex align-items-center">
                                     <div className="ms-3">
                                         <input type="hidden" name="userId" id="cmmt_writer" value={userId} />
-                                        <input type="text" name="comment" id="cmmt_content" className="form-control bg-light border-secondary-subtle rounded-4" placeholder="댓글을 입력하세요." style={{width:'330px'}}/>
+                                        <input type="text" name="comment" id="cmmt_content" value={inputCmmt} onChange={handleInputCmmt} className="form-control bg-light border-secondary-subtle rounded-4" placeholder="댓글을 입력하세요." style={{width:'330px'}}/>
                                     </div>
-                                    <button type="button" className="addCmmtBtn btn rounded-0 p-0 ms-3" onClick="insertCmmt()">등록</button>
+                                    <button type="button" className="addCmmtBtn btn rounded-0 p-0 ms-3" onClick={insertCmmt}>등록</button>
                                 </form>
                             </div>
 

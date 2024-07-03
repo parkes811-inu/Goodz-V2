@@ -13,4 +13,4 @@ const Wishlist_Products = () => {
     )
   }
 
-export default Wishlist_Products
+export default Wishlist_Products 
