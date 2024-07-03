@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { LoginContext } from '../../contexts/LoginContextProvider';
 
-const LikeBtn = ({likeCount, isLiked, handleLike, postNo}) => {
+const BtnLike = ({likeCount, isLiked, handleLike, postNo}) => {
 
   // 유저 정보
   const {userInfo} = useContext(LoginContext);
@@ -26,4 +26,4 @@ const LikeBtn = ({likeCount, isLiked, handleLike, postNo}) => {
   )
 }
 
-export default LikeBtn
+export default BtnLike

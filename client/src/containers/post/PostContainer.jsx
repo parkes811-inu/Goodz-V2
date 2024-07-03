@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const PostContainer = ({postNo}) => {
 
-    console.log("게시글번호: " + postNo);
+    // console.log("게시글번호: " + postNo);
     const navigate = useNavigate();
 
     // 🔁state
@@ -148,7 +148,7 @@ const PostContainer = ({postNo}) => {
             const response = await like.addLike(likeData, headers);
             const data = await response.data;
     
-            // console.log(data);
+            console.log(data);
             
             // if (data === "SUCCESS") {
             //     alert('좋아요 등록완료');
@@ -176,7 +176,7 @@ const PostContainer = ({postNo}) => {
         console.log(status, userId, postNo);
         
         // 👩‍💼❌ 비 로그인 시
-        if (userId == undefined || userId == null) {
+        if (userId === undefined || userId == null) {
             alert("로그인 후 이용가능합니다. ");
             let confirm = window.confirm("로그인페이지로 이동 하시겠습니까?");
             
@@ -202,7 +202,7 @@ const PostContainer = ({postNo}) => {
             // 관심 등록 (false ➡ true)
             const response = await wish.addWish(wishData, headers);
             const data = await response.data;
-            // console.log(data);
+            console.log(data);
             
             
             
@@ -229,7 +229,7 @@ const PostContainer = ({postNo}) => {
     }
             
     /* 🔎 props */
-    const postDetail = {post, fileList, cmmtList, countCmmt, cmmtList, tagList, tagCount};
+    const postDetail = {post, fileList, countCmmt, cmmtList, tagList, tagCount};
     const hadleFunctions = {handleLike, handleWish};
     
     // ❓ Hook
@@ -240,8 +240,8 @@ const PostContainer = ({postNo}) => {
     
     return (
         <>
-        <DetailPost postDetail={postDetail} hadleFunctions={hadleFunctions} onInsertCmmt={onInsertCmmt} onDeleteCmmt={onDeleteCmmt} />
-    </>
+            <DetailPost postDetail={postDetail} hadleFunctions={hadleFunctions} onInsertCmmt={onInsertCmmt} onDeleteCmmt={onDeleteCmmt} />
+        </>
   )
 }
 

@@ -560,35 +560,43 @@ public class PostController {
      * 유저 프로필
      */
     @GetMapping("/user/@{nickname}")
-    public String usersStyle(@PathVariable("nickname") String nickname, Model model, HttpSession session) throws Exception {
+    public ResponseEntity<?> usersStyle(@PathVariable("nickname") String nickname, @AuthenticationPrincipal CustomUser customUser) throws Exception {
         log.info("::::::::::postController::::::::::");
-        log.info(nickname + "의 프로필로 이동중...");
-        
-        // 프로필 유저
-        Users requested = userService.selectByNickname(nickname);
+        log.info(nickname + "의 프로필 조회요청...");
 
+        Map<String, Object> response = new HashMap<>();
         
-        // 로그인된 user의 정보를 가져옴
-        Users loginUser= (Users)session.getAttribute("user");  
-        List<Users> loginUserFollowingList = new ArrayList();  
+        /* 프로필 유저 */
+        Users requested = userService.selectByNickname(nickname);
 
         /* 게시글 조회 */
         List<Post> postList = postService.selectById(requested.getUserId());
+
+        // 로그인 유저
+        Users loginUser = null;
+        log.info("customUser : "+ customUser);
+        if (customUser != null) {
+            log.info("로그인 사용자.");
+            loginUser = customUser.getUser();
+        } else {
+            log.info("비로그인 사용자.");
+        }
+        log.info("user : " + loginUser);
+
+        // 로그인된 user의 팔로잉 정보
+        List<Users> loginUserFollowingList = new ArrayList();  
 
         // 비 로그인 시, 좋아요 표시, 전체 해제
         if (loginUser == null) {
             log.info("로그인이 되지않은 사용자");
             
             for (Post post : postList) {
-                // post.setIsLiked("none");
-                // post.setIsWished("none");
                 post.setLiked(false);
                 post.setWished(false);
             }
             
-            // 로그인 시, 유저가 체크한 좋아요 표시
+        // 로그인 시, 유저가 체크한 좋아요 표시
         } else {
-            
             for (Post post : postList) {
                 // 세션아이디와 게시글 번호 기준으로 좋아요 여부 확인
                 Like like = new Like();
@@ -597,10 +605,8 @@ public class PostController {
                 boolean isChecked_like = likeService.listById(like);
                 
                 if (!isChecked_like) {
-                    // post.setIsLiked("none");
                     post.setLiked(false);
                 } else {
-                    // post.setIsLiked("solid");
                     post.setLiked(true);
                 }
 
@@ -625,14 +631,12 @@ public class PostController {
             log.info(loginUserFollowingList.toString());
             log.info(requested.toString());
         }
-        
-        model.addAttribute("loginUserFollowingList", loginUserFollowingList);
-        model.addAttribute("requested", requested);
-        model.addAttribute("loginUser", loginUser);
-        model.addAttribute("postList", postList);
+
+        response.put("postList", postList);
+        response.put("profileUser", requested);
         
 
-        return "/post/user/profile";
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/nickname={nickname}")
