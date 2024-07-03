@@ -88,7 +88,7 @@ const Login = () => {
                     </form>
 
                     <div className="userLinks text-center my-3">
-                        <Link to="/user/signup">회원가입</Link> <span>|</span> <Link to="/user/findID">아이디 찾기</Link> <span>|</span> <Link to="/user/findPW">비밀번호 찾기</Link>
+                        <Link to="/users/signup">회원가입</Link> <span>|</span> <Link to="/users/findID">아이디 찾기</Link> <span>|</span> <Link to="/users/findPW">비밀번호 찾기</Link>
                     </div>
 
                     <hr className="mt-4" />

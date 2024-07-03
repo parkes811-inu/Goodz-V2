@@ -11,6 +11,7 @@ import AllPosts from './pages/post/AllPosts';
 import Read from './pages/post/Read';
 import AdminIndex from './pages/admin/AdminIndex';
 import LoginPage from './pages/user/LoginPage';
+import SingUp from './pages/user/SingUp';
 import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
 import { useContext } from 'react';
 import BrandListPage from './pages/admin/BrandListPage';
@@ -24,6 +25,7 @@ import MyPage from './pages/user/MyPage';
 import Purchase from './pages/user/Purchase';
 import Sales from './pages/user/Sales';
 import Wishlist_Products from './pages/user/Wishlist_Products';
+import Wishlist_Posts from './pages/user/Wishlist_Posts';
 import Manage_Info from './pages/user/Manage_Info';
 import Address from './pages/user/Address';
 import Account from './pages/user/Account';
@@ -54,6 +56,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/users/login" element={<LoginPage />} />
+      <Route path="/users/signup" element={<SingUp />} />
       {/* 헤더 접근 링크 */}
       <Route path="/product/top" element={<Top />} />
       <Route path="/product/pants" element={<Pants />} />
@@ -119,7 +122,7 @@ function AppRoutes() {
         }/>
       <Route path="/users/wishList/posts" element={
           // <ProtectedRoute requiredRole="user">
-              <Wishlist_Products />
+              <Wishlist_Posts />
           // </ProtectedRoute>
         }/>
         <Route path="/users/manage_info" element={
@@ -138,13 +141,6 @@ function AppRoutes() {
           // </ProtectedRoute>
         }/>
 
-
-      {/* <Route path='/users/wishList/products'
-        element={
-          <ProtectedRoute requiredRole="user">
-            <wishlist_products />
-          </ProtectedRoute>}>
-      </Route> */}
 
       {/* 다른 보호된 라우트들을 여기에 추가할 수 있습니다 */}
       <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
