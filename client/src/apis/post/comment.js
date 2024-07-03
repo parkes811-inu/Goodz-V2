@@ -7,4 +7,5 @@ export const list = (postNo) => api.get(`/cmmt/${postNo}`)
 export const insert = (data, headers) => api.post(`/cmmt`, data, headers);
 
 // 댓글 삭제
+export const deleteCmmt = (cNo) => api.delete(`/cmmt/${cNo}`);
 

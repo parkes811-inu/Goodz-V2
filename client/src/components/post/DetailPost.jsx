@@ -11,20 +11,20 @@ import TagItem from './TagItem';
 import { LoginContext } from '../../contexts/LoginContextProvider';
 
 
-const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish, onInsertCmmt}) => {
+const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish, onInsertCmmt, onDeleteCmmt}) => {
 
     // 화면전환을 위한 navigate
     const navigate = useNavigate();
 
     // 유저 정보
-  const {userInfo} = useContext(LoginContext);
-  let userId;
+    const {userInfo} = useContext(LoginContext);
+    let userId;
 
-  // 👩‍💼⭕ 유저 로그인
-  if (userInfo) {
-    userId = userInfo.userId;
-    // console.log("유저아이디: " + userId);
-  }
+    // 👩‍💼⭕ 유저 로그인
+    if (userInfo) {
+        userId = userInfo.userId;
+        // console.log("유저아이디: " + userId);
+    }
 
     // console.log(fileList);
     // console.log(post);
@@ -48,6 +48,7 @@ const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish
         // console.log(e.target.value);
     }
 
+    // 댓글 작성 처리
     const insertCmmt = () => {
 
         // 댓글 처리 전 확인사항
@@ -66,10 +67,21 @@ const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish
         }
         // alert(inputCmmt);
         onInsertCmmt(userId, postNo, inputCmmt);
+
+        setComment('');
+    }
+
+    // 댓글 삭제 처리
+    const deleteCmmt = (cNo) => {
+        // alert("삭제할 댓글번호: " + cNo);
+        // ✅ 삭제여부 더블체크
+        let confirm = window.confirm("정말로 삭제하시겠습니까?");
+        if (!confirm) { return; }   // No
+
+        onDeleteCmmt(cNo);
     }
     
     // const deleteCmmt = (cmmt.cNo) => console.log(cmmt, cNo)
-
 
     // 하드코딩
     const tagCount = 5;
@@ -166,7 +178,7 @@ const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish
                                 <img src={`/files/${profileImgNo}`} className="profile-img-m" alt="프로필 이미지" />
                                 <form method="post" className="d-flex align-items-center">
                                     <div className="ms-3">
-                                        <input type="hidden" name="userId" id="cmmt_writer" value={userId} />
+                                        {/* <input type="hidden" name="userId" id="cmmt_writer" value={userId} /> */}
                                         <input type="text" name="comment" id="cmmt_content" value={inputCmmt} onChange={handleInputCmmt} className="form-control bg-light border-secondary-subtle rounded-4" placeholder="댓글을 입력하세요." style={{width:'330px'}}/>
                                     </div>
                                     <button type="button" className="addCmmtBtn btn rounded-0 p-0 ms-3" onClick={insertCmmt}>등록</button>
@@ -187,12 +199,18 @@ const DetailPost = ({post, fileList, cmmtList, countCmmt, handleLike, handleWish
                                         <div className="comment px-1">
                                             {cmmtList.map((cmmt, index) => (
                                                 <div key={index}>
-                                                    <p style={{ fontWeight: 'bold', fontSize: 'small' }} className="mb-2">{cmmt.nickname}</p>
+                                                    <div className="d-flex justify-content-between">
+                                                        <span style={{ fontWeight: 'bold', fontSize: 'small' }} className="mb-2">{cmmt.nickname}</span>
+                                                        {
+                                                            cmmt.userId == userId ?
+                                                            // comment.java상 cNo가 맞는데 cno로 매핑되는 오류 있음.
+                                                            <button type="button" className="btn-cmmt-delete btn text-body-tertiary" onClick={() => deleteCmmt(cmmt.cno)}>삭제</button>
+                                                            :
+                                                            <></>
+                                                        }
+                                                    </div>
                                                     <input type="hidden" name="userId" value={cmmt.userId} />
                                                     <p className="m-0">{cmmt.comment}</p>
-                                                    <div className="d-flex justify-content-end">
-                                                        <button type="button" className="btn-cmmt-delete btn p-0 text-body-tertiary" style={{ fontSize: 'small', width: '40px' }}>삭제</button>
-                                                    </div>
                                                     <hr className="mb-2 mt-1" />
                                                 </div>
                                             ))}
