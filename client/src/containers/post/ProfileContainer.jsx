@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from 'react-router-dom';
+import * as follow from '../../apis/post/follow';
 import * as post from '../../apis/post/post';
 import * as like from '../../apis/post/like';
 import * as wish from '../../apis/user/wish';
@@ -28,7 +29,7 @@ const ProfileContainer = ({nickname}) => {
     
     // 🔁 프로필 유저
     const [profileUser, setProfileUser] = useState({});
-    const [folloers, setFollowers] = useState([]);
+    const [followers, setFollowers] = useState([]);
     const [followings, setFollowings] = useState([]);
     const [postList, setPostList] = useState([]);
 
@@ -39,8 +40,8 @@ const ProfileContainer = ({nickname}) => {
             // console.log("게시글 요청")
             const response = await post.setProfile(nickname);
             const data = await response.data;
-            console.log(data.profileUser);
-            console.log(data.postList);
+            // console.log(data.profileUser);
+            // console.log(data.postList);
             setProfileUser(data.profileUser);
             setPostList(data.postList);
             
@@ -49,9 +50,32 @@ const ProfileContainer = ({nickname}) => {
         }
     }
 
-    // 🔁 팔로우/팔로잉 모달
+    /* 🔁 팔로우/팔로잉 모달 */
     const [mFollower, setMFollower] = useState(false);
     const [mFollowing, setMFollowing] = useState(false);
+
+    /* 💨 팔로우/팔로잉 + 게시글 functions */
+    const getFollowers = async (userId) => {
+        if (userId === undefined || userId == null) {
+            console.log("조회할 아이디가 존재하지않습니다. - 비로그인")
+            return;
+        }
+        const response =  await follow.followerList(userId);
+        const data = response.data;
+        console.log(data);
+    }
+    const getFollowings = async (userId) => {
+        if (userId === undefined || userId == null) {
+            console.log("조회할 아이디가 존재하지않습니다. - 비로그인")
+            return;
+        }
+        const response =  await follow.followingList(userId);
+        const data = response.data;
+        console.log(data);
+    }
+
+
+
 
 
     /* 💛좋아요 */
@@ -171,7 +195,17 @@ const ProfileContainer = ({nickname}) => {
     // ❓ Hook
     useEffect ( () => {
         getPostList();
+        // getFollowers(profileUser.userId);   // 프로필 계정의 팔로워 조회
+        // getFollowings(profileUser.userId);  // 프로필 계정의 팔로잉 조회
+        // getFollowings(viewer)               // 조회하는 계정의 팔로잉 조회
+        
     },[])
+
+    useEffect( () => {
+        getFollowers(profileUser.userId);   // 프로필 계정의 팔로워 조회
+        getFollowings(profileUser.userId);  // 프로필 계정의 팔로잉 조회
+        getFollowings(viewer)               // 조회하는 계정의 팔로잉 조회
+    }, [postList])
 
 
     // 🔎 props
@@ -212,7 +246,7 @@ const ProfileContainer = ({nickname}) => {
 
                         {/* <!-- 팔로워/팔로잉 정보 --> */}
                         <div className="followInfo d-flex text-start">
-                            <Button onClick={() => setMFollower(true)} className='btn ps-0 pe-2 py-0'><span>팔로워 {folloers.length}</span></Button>
+                            <Button onClick={() => setMFollower(true)} className='btn ps-0 pe-2 py-0'><span>팔로워 {followers.length}</span></Button>
                             <ModalFollow show={mFollower} onHide={() => setMFollower(false)} title={"팔로워"} />
                             <span className="text-body-tertiary ">|</span>
                             <Button onClick={() => setMFollowing(true)} className='btn ps-2 py-0'><span>팔로잉 {followings.length}</span></Button>
@@ -263,8 +297,8 @@ const ProfileContainer = ({nickname}) => {
                                 </Link>
                                 {/* <!--[DB] 스크랩 & 하트 --> */}
                                 <div className="d-flex justify-content-end column-gap-2 mt-2 px-2">
-                                <BtnWish wishCount={post.wishCount} isWished={post.wished} handleWish={handleWish} postNo={post.postNo} />
-                                <BtnLike likeCount={post.likeCount} isLiked={post.liked} handleLike={handleLike} postNo={post.postNo}/>
+                                    <BtnWish wishCount={post.wishCount} isWished={post.wished} handleWish={handleWish} postNo={post.postNo} />
+                                    <BtnLike likeCount={post.likeCount} isLiked={post.liked} handleLike={handleLike} postNo={post.postNo}/>
                                 </div>
                             </div>
                         </div>
