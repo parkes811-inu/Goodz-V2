@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MainBtn from '../common/MainBtn';
 import { Link } from 'react-router-dom';
@@ -40,6 +40,19 @@ const FindId = () => {
     }
   };
 
+  const [name, setName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+
+  const handleInputName = (e) => {
+    setName(e.target.value);
+    //console.log(e.target.value);
+  }
+
+  const handleInputPhoneNumber = (e) => {
+    setPhoneNumber(e.target.value);
+  }
+
   return (
     <div className="mainContainer">
       <div className="justify-content-center my-5 mx-auto border rounded-3" style={{ maxWidth: '400px', padding: '15px' }}>
@@ -59,10 +72,10 @@ const FindId = () => {
             {/* 예시: <input type="hidden" name="_csrf" id="csrf" value={_csrf.token} /> */}
             <div className="form-group">
               <label htmlFor="user_name">이름*</label>
-              <input type="text" className="form-control" id="user_name" placeholder="이름을 입력해주세요." />
+              <input type="text" className="form-control" id="user_name" placeholder="이름을 입력해주세요." value={name} onChange={handleInputName} />
               <br />
               <label htmlFor="phone_number">휴대폰 번호*</label>
-              <input type="text" className="form-control" id="phone_number" placeholder="'-'를 제외한 휴대폰 번호를 입력해주세요." />
+              <input type="text" className="form-control" id="phone_number" placeholder="'-'를 제외한 휴대폰 번호를 입력해주세요." value={phoneNumber} onChange={handleInputPhoneNumber} />
             </div>
             <Link to={`/users/signup2`}>
               <MainBtn text={"아이디 찾기"}/>
