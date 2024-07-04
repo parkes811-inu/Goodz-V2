@@ -9,9 +9,6 @@ import com.springproject.goodz.user.dto.Users;
 
 @Mapper
 public interface FollowMapper {
-    
-    // 팔로워 여부 조회
-    public int isFollower(Follow follow) throws Exception;
 
     // 팔로워 조회
     public List<Follow> followerList(String userId) throws Exception;

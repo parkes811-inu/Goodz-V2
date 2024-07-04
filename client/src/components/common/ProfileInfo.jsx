@@ -3,12 +3,6 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import './css/ProfileInfo.css'
 
-// export const ProfileInfo = () => {
-//   return (
-//     <div>ProfileInfo</div>
-//   )
-// }
-
 const ProfileInfo = ({nickname, profileImgNo, size}) => {
   return (
     <>

@@ -5,12 +5,16 @@ import ProductDetails from '../../components/admin/ProductDetails';
 import ProductOptions from '../../components/admin/ProductOptions';
 import ProductImages from '../../components/admin/ProductImages';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 
 const shoeSizes = [220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280];
 const clothingSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'FREE'];
 const elseSize = ['FREE'];
 
 function ProductInsertContainer() {
+
+    const navigate = useNavigate();
+
     const [product, setProduct] = useState({
         productName: '',
         price: '',
@@ -24,6 +28,7 @@ function ProductInsertContainer() {
 
     const [brandListAll, setBrandListAll] = useState([]);
 
+    // 전체 브랜드 목록 가져옴
     useEffect(() => {
         const fetchAllBrands = async () => {
             try {
@@ -38,64 +43,79 @@ function ProductInsertContainer() {
         fetchAllBrands();
     }, []);
 
+    // 카테고리 변경 시, 사이즈 종류 변경됨.
     useEffect(() => {
         populateSizes(product.category);
     }, [product.category]);
 
+
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-    
+
+        // ⭐ 상품등록을 위해 formData 세팅
         const formData = new FormData();
         formData.append('productName', product.productName);
         formData.append('price', product.price);
         formData.append('brand', product.brand);
         formData.append('category', product.category);
         formData.append('mainImgIndex', product.mainImgIndex);
-    
+        
+        // ⭐ ProductImages 컴포넌트에서 가져온 이미지배열을 가져와서 foreach돌려서 갯수대로 append해줌
         product.images.forEach((image, index) => {
             formData.append('productFiles', image);
         });
-    
+        
+        
+        // ⭐ ProductOptions 컴포넌트에서 가져온 옵션배열을 가져와서 foreach돌려서 옵션입력란 행 갯수만큼 반복하여 append
         product.options.forEach((option, index) => {
     
             formData.append('sizes', option.size);
-            formData.append('optionPrices', option.optionPrice); // 이 값이 undefined인지 확인
-            formData.append('stockQuantities', option.stockQuantity); // 이 값이 undefined인지 확인
+            // formData.append('optionPrices', option.optionPrice);
+            formData.append('optionPrices', option.price);
+            // formData.append('stockQuantities', option.stockQuantity);
+            formData.append('stockQuantities', option.stock);
             formData.append('status', option.status);
         });
-    
-        // 폼 데이터 디버깅
-        for (let pair of formData.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
-        }
-    
+        
+        console.log(...formData.entries());  // formData 확인을 위한 코드
+        // console.log(formData);
+
         try {
-            // 순차적으로 실행
-            const productResponse = await registerProduct(formData);
-            console.log('Product registered successfully:', productResponse.data);
-    
+            // ⭐ 상품등록 먼저 진행 ➡️ Product 테이블에 데이터 추가됨
+            const response = await registerProduct(formData);
+            console.log('Product registered successfully:', response.data);
+
             // Register product options after the product has been successfully created
-            for (const option of product.options) {
-                const optionData = {
-                    pNo: productResponse.data.pNo,  // Assuming the product ID is returned in the response
-                    size: option.size,
-                    optionPrice: option.optionPrice,
-                    stockQuantity: option.stockQuantity,
-                    status: option.status
-                };
-                await registerProductOption(optionData);
-                console.log("optionData", optionData);
-            }
-    
-            // fileInsert를 마지막에 실행
-            const fileResponse = await fileInsert(formData);
-            console.log('Files inserted successfully:', fileResponse.data);
-    
+            // ⭐ 자바스크립트 반복문!! product.options의 각 요소 하나하나 반복돌림! (배열요소 순회해서 작업수행한다고 함.)
+            // ⭐ 반복문 돌려서 상품 옵션 각각을 추가함. (ex: s-100원-10개-판매중 => 한 세트)
+            // for (const option of product.options) {
+            //     const optionData = {
+            //         pNo: response.data.pNo,  // Assuming the product ID is returned in the response
+            //         size: option.size,
+            //         // optionPrice: option.optionPrice, // ⭐ ProductOptions 컴포넌트 안에 options의 구조랑 맞아야해!!
+            //         optionPrice: option.price,
+            //         // stockQuantity: option.stockQuantity,// ⭐ ProductOptions 컴포넌트 안에 options의 구조랑 맞아야해!!
+            //         stockQuantity: option.stock,
+            //         status: option.status
+            //     };
+                
+            //     // ⭐ 상품옵션 등록 진행 ➡️ product_option 테이블에 데이터 추가됨
+            //     // ⭐ 근데 여기 
+            //     await registerProductOption(optionData);
+            // }
+
+            navigate('/admin/products');
+
+             // fileInsert를 마지막에 실행
+             const fileResponse = await fileInsert(formData);
+             console.log('Files inserted successfully:', fileResponse.data);
+
         } catch (error) {
             console.error('There was an error registering the product:', error);
         }
     };
-    
+
+    // 카테고리 선택에 따라 사이즈 종류 변화주는 메서드
     const populateSizes = (category) => {
         if (category === 'shoes') {
             setProduct(prev => ({ ...prev, sizes: shoeSizes }));

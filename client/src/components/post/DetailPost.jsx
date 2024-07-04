@@ -4,8 +4,8 @@ import { Button, Offcanvas } from 'react-bootstrap';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import React, { useContext, useEffect, useState } from 'react'
 import ProfileInfo from '../common/ProfileInfo'
-import WishBtn from '../common/WishBtn';
-import LikeBtn from '../common/LikeBtn';
+import BtnWish from '../common/BtnWish';
+import BtnLike from '../common/BtnLike';
 import TagItem from  './TagItem';
 import { LoginContext } from '../../contexts/LoginContextProvider';
 
@@ -121,9 +121,9 @@ const DetailPost = ({postDetail, hadleFunctions, onInsertCmmt, onDeleteCmmt}) =>
                     {/* <!-- 소셜버튼들 --> */}
                     <div className="d-flex justify-content-end column-gap-2">
                         {/* <!-- 저장 --> */}
-                        <WishBtn wishCount={wishCount} isWished={wished} handleWish={handleWish} postNo={postNo} />
+                        <BtnWish wishCount={wishCount} isWished={wished} handleWish={handleWish} postNo={postNo} />
                         {/* <!-- 좋아요 --> */}
-                        <LikeBtn likeCount={likeCount} isLiked={liked} handleLike={handleLike} postNo={postNo}/>
+                        <BtnLike likeCount={likeCount} isLiked={liked} handleLike={handleLike} postNo={postNo}/>
                         {/* <!-- 댓글 --> */}
                         <Button variant="none" onClick={handleShow} className="p-0">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6" width="26" height="26">

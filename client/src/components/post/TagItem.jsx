@@ -2,10 +2,10 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 
 const TagItem = ({product}) => {
-    console.log(product);
+    // console.log(product);
     // DTO와 대소문자 다르게 매핑되는 오류 있음
     const{pno, mainImgNo, bname, productName} = product;
-    console.log(pno, mainImgNo, bname, productName)
+    // console.log(pno, mainImgNo, bname, productName)
 
     return (
         <>

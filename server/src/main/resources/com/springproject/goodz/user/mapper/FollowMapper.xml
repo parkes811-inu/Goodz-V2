@@ -5,14 +5,6 @@
 
 <mapper namespace="com.springproject.goodz.user.mapper.FollowMapper">
 
-
-    <!-- 팔로워 여부 조회 -->
-    <select id="isFollower">
-        SELECT *
-        FROM follow
-        WHERE user_id = #{userId} and follower_id = #{followerId}
-    </select>
-
     <!-- 팔로워 조회 -->
     <select id="followerList" resultType="follow">
         SELECT *
