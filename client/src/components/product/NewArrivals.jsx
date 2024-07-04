@@ -22,7 +22,7 @@ const NewArrivals = ({ newArrivalsList }) => {
                 <div className="card border-0">
                   <p>{product.pNo}</p> {/* 프로덕트 번호를 출력 */}
                   <div className="card-body">
-                    <a href={`/product/${product.pno}`}>
+                    <a href={`/product/detail/${product.pno}`}>
                       <img src={`/files/${product.pno}`} alt="상품 이미지" className="rounded-4 w-100" />
                     </a>
                     <div className="card-text py-2">

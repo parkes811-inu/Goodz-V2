@@ -31,6 +31,8 @@ import ProfilePage from './pages/post/ProfilePage';
 
 import ProductInsertPage from './pages/admin/ProductInsertPage';
 import ProductContextProvider from './contexts/product/ProductContextProvider';
+import ProductDetailPage from './pages/product/ProductDetailPage';
+import ProductDetailContextProvider from './contexts/product/ProductDetailContextProvider';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -58,9 +60,6 @@ function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/users/login" element={<LoginPage />} />
       {/* 헤더 접근 링크 */}
-      {/* <Route path="/product/top" element={<Top />} />
-      <Route path="/product/pants" element={<Pants />} />
-      <Route path="/product/shoes" element={<Shoes />} /> */}
       <Route path="/product/top" element={
         <ProductContextProvider endpoint="/product/top">
           <Top />
@@ -76,21 +75,22 @@ function AppRoutes() {
           <Shoes />
         </ProductContextProvider>
       } />
-      {/* <Route path="/product/accessory" element={<Accessory />} /> */}
       <Route path="/product/accessory" element={
         <ProductContextProvider endpoint="/product/accessory">
           <Accessory />
         </ProductContextProvider>
       } />
       <Route path="/styles" element={<AllPosts />} />
-      {/* <Route path="/product" element={<AllProduct />} /> */}
       <Route path="/product" element={
         <ProductContextProvider endpoint="/product/shop">
           <AllProduct />
         </ProductContextProvider>
       } />
-
-
+      <Route path="/product/detail/:pNo" element={
+        <ProductDetailContextProvider endpoint="/product/detail/:pNo">
+          <ProductDetailPage />
+        </ProductDetailContextProvider>
+      } />
       {/* 어드민만 접근 가능한 곳 */}
       <Route path="/admin" element={
         // <ProtectedRoute requiredRole="admin">
@@ -172,14 +172,6 @@ function AppRoutes() {
           // </ProtectedRoute>
         }/>
 
-
-      {/* <Route path='/users/wishList/products'
-        element={
-          <ProtectedRoute requiredRole="user">
-            <wishlist_products />
-          </ProtectedRoute>}>
-      </Route> */}
-
       {/* 다른 보호된 라우트들을 여기에 추가할 수 있습니다 */}
       <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
 
@@ -194,9 +186,7 @@ function App() {
   return (
     <BrowserRouter>
       <LoginContextProvider>
-        <ProductContextProvider>
-          <AppRoutes />
-        </ProductContextProvider>
+        <AppRoutes />
       </LoginContextProvider>
     </BrowserRouter>
   );

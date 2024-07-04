@@ -7,7 +7,7 @@ const ProductCard = ({ product }) => {
     <div className="col">
       <div className="card border-0">
         <div className="card-body">
-          <a href={`/product/${product.pno}`}>
+          <a href={`/product/detail/${product.pno}`}>
             <img src={`/files/${product.pno}`} alt="상품 이미지" className="rounded-4 w-100" />
           </a>
           <div className="card-text py-2">
