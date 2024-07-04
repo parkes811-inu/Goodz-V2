@@ -83,3 +83,27 @@ export const registerProduct = (formData) => api.post('/admin/products', formDat
 // 상품 옵션 등록
 // export const registerProductOption = (productOptionData) => api.post('/admin/product_options', productOptionData);
 export const registerProductOption = (productOptionData) => api.post('/admin/product_options', productOptionData);
+
+// 유저가 판매한 번호 기준 단일조회
+// export const userSale = (s_no) => api.get(`/admin/purchase/${s_no}`);
+export const userSale = (sNo) => {
+  console.log(`Making API call to /admin/purchase/${sNo}`); // 디버깅 로그 추가
+  return api.get(`/admin/purchase/${sNo}`);
+};
+// 유저가 판매한 상품 상태 업데이트
+export const updateUserSaleState = (sNo, saleState) => api.post(`/admin/purchase/update`, { sNo, saleState });
+
+// 판매 완료 시 상품 옵션의 재고 수량 증가
+export const incrementStockQuantity = (pNo, size) => api.put(`/admin/product_option/increment`, { pNo, size });
+
+// 정산 완료에서 다른 상태로 변경 시 상품 옵션의 재고 수량 감소
+export const decrementStockQuantity = (pNo, size) => api.put(`/admin/product_option/decrement`, { pNo, size });
+
+// 사이즈 존재 여부 확인
+export const checkProductOptionExists = (pNo, size) => api.post('/admin/product_option/check', { pNo, size });
+
+// 새로운 사이즈 추가
+export const insertProductOption = (pNo, size, optionPrice) => api.post('/admin/product_option', { pNo, size, optionPrice });
+
+// initial_price 가져오기
+export const getInitialPrice = (pNo) => api.get(`/admin/product/${pNo}/initial_price`);

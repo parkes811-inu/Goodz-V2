@@ -30,6 +30,7 @@ import Account from './pages/user/Account';
 import ProfilePage from './pages/post/ProfilePage';
 
 import ProductInsertPage from './pages/admin/ProductInsertPage';
+import PurchaseDetailPage from './pages/admin/PurchaseDetailPage';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -100,6 +101,16 @@ function AppRoutes() {
           <ProductInsertPage />
         // </ProtectedRoute>
       } />
+
+    <Route path="/admin/purchase/:saleNo" element={
+        // <ProtectedRoute requiredRole="admin">
+          <PurchaseDetailPage />
+        // </ProtectedRoute>
+      } />
+
+
+
+
 
       {/* 로그인된 유저만 접근 가능한 곳 */}
       <Route path='/users'
