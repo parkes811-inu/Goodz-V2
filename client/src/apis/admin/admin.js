@@ -81,4 +81,5 @@ export const brandInsert = (formData) => api.post('/admin/brands', formData, {
 export const registerProduct = (formData) => api.post('/admin/products', formData);
 
 // 상품 옵션 등록
+// export const registerProductOption = (productOptionData) => api.post('/admin/products', productOptionData);
 export const registerProductOption = (productOptionData) => api.post('/admin/product_options', productOptionData);
