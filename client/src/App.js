@@ -21,7 +21,6 @@ import PayPage from './pages/admin/PayPage';
 import PurchasePage from './pages/admin/PurchasePage';
 import BrandInsertPage from './pages/admin/BrandInsertPage';
 import OAuth2RedirectHandler from './components/user/OAuth2RedirectHandler';
-import Index from './components/user/Index';
 import MyPage from './pages/user/MyPage';
 import Purchase from './pages/user/Purchase';
 import Sales from './pages/user/Sales';
@@ -30,11 +29,13 @@ import Wishlist_Posts from './pages/user/Wishlist_Posts';
 import Manage_Info from './pages/user/Manage_Info';
 import Address from './pages/user/Address';
 import Account from './pages/user/Account';
+import ProfilePage from './pages/post/ProfilePage';
 import FindId from './pages/user/FindId';
 import FindPW from './pages/user/FindPW';
 import ChangePW from './pages/user/changePW';
 import Add_address from './pages/user/Add_address';
-
+import ProductInsertPage from './pages/admin/ProductInsertPage';
+import PurchaseDetailPage from './pages/admin/PurchaseDetailPage';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -78,35 +79,50 @@ function AppRoutes() {
 
       {/* 어드민만 접근 가능한 곳 */}
       <Route path="/admin" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <AdminIndex />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/brands" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <BrandListPage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/products" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <ProductListPage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/pay_history" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <PayPage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/purchase_state" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <PurchasePage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
       <Route path="/admin/add_brand" element={
-        <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin">
           <BrandInsertPage />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       } />
+      <Route path="/admin/add_product" element={
+        // <ProtectedRoute requiredRole="admin">
+          <ProductInsertPage />
+        // </ProtectedRoute>
+      } />
+
+    <Route path="/admin/purchase/:saleNo" element={
+        // <ProtectedRoute requiredRole="admin">
+          <PurchaseDetailPage />
+        // </ProtectedRoute>
+      } />
+
+
+
+
 
       {/* 로그인된 유저만 접근 가능한 곳 */}
       <Route path='/users'
@@ -168,7 +184,10 @@ function AppRoutes() {
 
       {/* 다른 보호된 라우트들을 여기에 추가할 수 있습니다 */}
       <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
+
+      {/* styles */}
       <Route path="/styles/:postNo" element={<Read />} />
+      <Route path='/styles/user/:nickname' element={<ProfilePage />}/>
     </Routes>
   );
 }

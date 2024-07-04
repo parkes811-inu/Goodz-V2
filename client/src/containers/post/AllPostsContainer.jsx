@@ -4,8 +4,8 @@ import Post from '../../components/post/Post';
 import * as post from '../../apis/post/post';
 import * as wish from '../../apis/user/wish';
 import * as like from '../../apis/post/like';
-import LikeBtn from '../../components/common/LikeBtn';
-import WishBtn from '../../components/common/WishBtn';
+import BtnLike from '../../components/common/BtnLike';
+import BtnWish from '../../components/common/BtnWish';
 import { LoginContext } from '../../contexts/LoginContextProvider';
 import { useNavigate } from 'react-router-dom';
 
@@ -170,17 +170,15 @@ const AllPostsContainer = () => {
                     <div className="grid">
                         {postList.map(post => (
                             <div className="item" key={post.no}>
-                                {/* Post 컴포넌트에 key prop을 전달할 필요는 없습니다 */}
                                 <Post post={post} />
                                 <div className="d-flex justify-content-end column-gap-2 mt-2 px-2">
-                                    {/* WishBtn과 LikeBtn 컴포넌트에 handleWish와 handleLike prop을 전달하여 클릭 이벤트를 처리할 수 있습니다 */}
-                                    <WishBtn wishCount={post.wishCount} isWished={post.wished} handleWish={handleWish} postNo={post.postNo} />
-                                    <LikeBtn likeCount={post.likeCount} isLiked={post.liked} handleLike={handleLike} postNo={post.postNo}/>
+                                    {/* BtnWish와 BtnLike 컴포넌트에 handleWish와 handleLike prop을 전달하여 클릭 이벤트를 처리가능 */}
+                                    <BtnWish wishCount={post.wishCount} isWished={post.wished} handleWish={handleWish} postNo={post.postNo} />
+                                    <BtnLike likeCount={post.likeCount} isLiked={post.liked} handleLike={handleLike} postNo={post.postNo}/>
                                 </div>
                             </div>
                         ))}
                     </div>
-
                 </>
             }
         </div>

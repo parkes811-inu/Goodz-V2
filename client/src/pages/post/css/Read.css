@@ -19,3 +19,9 @@
 .modal-cmmt {
     width: 500px;
 }
+
+.btn-cmmt-delete {
+    font-size: small;
+    width: 40px;
+    padding: 0
+}

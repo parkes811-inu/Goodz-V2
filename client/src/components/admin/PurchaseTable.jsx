@@ -25,7 +25,7 @@ const PurchaseTable = ({ userSaleList = [] }) => {
             userSaleList.map((sales) => (
               <tr key={sales.s_no} style={{ textAlign: "center" }}>
                 <th scope="row">
-                  <a href={`/admin/purchase/detail/${sales.s_no}`} className="text-dark text-decoration-none">
+                  <a href={`/admin/purchase/${sales.s_no}`} className="text-dark text-decoration-none">
                     {sales.s_no}
                   </a>
                 </th>

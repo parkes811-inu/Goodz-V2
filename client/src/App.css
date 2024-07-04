@@ -25,7 +25,6 @@ body {
 }
 
 
-/* 게시글 상세, */
 .mainContainer {
     min-height: calc(100vh - 10rem);
     margin: 0 auto;
@@ -45,6 +44,17 @@ body {
 .btn-wish {
     text-decoration: none;
     color: black;
+}
+/* 팔로우 */
+.followBtn {
+    height: 30px;
+    margin: auto 0;
+}
+/* followBtn 클래스를 가진 모든 버튼의 hover 효과 없애기 */
+.followBtn:hover {
+    background-color: inherit !important;
+    border-color: inherit !important;
+    color: inherit !important;
 }
 
 /* 유저 프로필 사진 -s */
@@ -66,6 +76,28 @@ body {
     /* height: 100%; */
     object-fit: cover; /* 이미지 비율을 유지하면서 컨테이너에 맞춤 */
 }
+.profile-img-lg {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* 둥근 모서리 */
+    overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
+}
+
+/* 팔로우/팔로잉 */
+.follower, .following {
+    font-weight: bold;
+}
+.followInfo button {
+    background: none;
+    color: #393E46;
+    border: none;
+}
+.followInfo button:hover, .followInfo button:active {
+    background-color: inherit !important; /* 현재 배경색 유지 */
+    color: inherit !important; /* 현재 텍스트 색상 유지 */
+    
+}
+
 
 .pagetitle {
     display: flex;

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springproject.goodz.admin.service.AdminService;
 import com.springproject.goodz.pay.dto.Purchase;
 import com.springproject.goodz.product.dto.Brand;
@@ -89,6 +90,23 @@ public class AdminController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+
+
+    // 브랜드 목록 전체조회
+    @GetMapping("/brands/all")
+    public ResponseEntity<Map<String, Object>> brandList() throws Exception {
+        List<Brand> brandList = brandService.list();
+
+        // 데이터 확인을 위해 로그 추가
+        brandList.forEach(brand -> log.info("Brand: bNo={}, bName={}", brand.getBNo(), brand.getBName()));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("brandList", brandList);
+        log.info("Response data: {}", response); // 데이터 확인
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
     
     
 
@@ -160,34 +178,50 @@ public class AdminController {
     // 제품 등록
     @PostMapping("/products")
     public ResponseEntity<String> addProducts(
-        @RequestBody Product product, 
-        @RequestParam("productFiles") List<MultipartFile> productFiles, 
-        @RequestParam("sizes") List<String> sizes, 
-        @RequestParam("optionPrices") List<Integer> optionPrices, 
-        @RequestParam("stockQuantities") List<Integer> stockQuantities, 
-        @RequestParam("status") List<String> status,
+        @RequestParam("productName") String productName,
+        @RequestParam("price") int price,
+        @RequestParam("brand") String brand,
         @RequestParam("category") String category,
-        @RequestParam("price") int price, 
-        @RequestParam(value = "mainImgIndex", required = false, defaultValue = "-1") int mainImgIndex) throws Exception {
+        @RequestParam(value = "mainImgIndex", required = false, defaultValue = "-1") int mainImgIndex,
+        @RequestParam("productFiles") List<MultipartFile> productFiles,
+        @RequestParam("sizes") List<String> sizes,
+        @RequestParam("optionPrices") List<Integer> optionPrices,
+        @RequestParam("stockQuantities") List<Integer> stockQuantities,
+        @RequestParam("status") List<String> status) throws Exception {
+
+        // Product 객체 수동 생성 및 값 설정
+        Product product = new Product();
+        product.setProductName(productName);
+        product.setInitialPrice(price);
+        product.setBName(brand); // Brand를 bName 필드로 설정
+        product.setCategory(category);
+        product.setMainImgNo(mainImgIndex);
+        product.setProductFiles(productFiles);
+
+        List<ProductOption> options = new ArrayList<>();
+        for (int i = 0; i < sizes.size(); i++) {
+            ProductOption option = new ProductOption();
+            option.setSize(sizes.get(i));
+            option.setOptionPrice(optionPrices.get(i));
+            option.setStockQuantity(stockQuantities.get(i));
+            option.setStatus(status.get(i));
+            options.add(option);
+        }
+        product.setOptions(options);
+
         log.info("::::::::::::::상품 등록 요청::::::::::::::");
         log.info(product.toString());
-        product.setCategory(category);
-        product.setInitialPrice(price);
-        product.setProductFiles(productFiles); // 파일 리스트를 설정합니다.
+
         int result = productService.insert(product, mainImgIndex);
-        if(result > 0) {
+
+        if (result > 0) {
             int pNo = product.getPNo();
+
             // 옵션 등록
-            for (int i = 0; i < sizes.size(); i++) {
-                ProductOption option = new ProductOption();
-                option.setPNo(pNo); // set the generated product number
-                option.setSize(sizes.get(i));
-                option.setOptionPrice(optionPrices.get(i));
-                option.setStockQuantity(stockQuantities.get(i));
-                option.setStatus(status.get(i));
-                productService.insertProductOption(option);
-                // priceHistory에 사이즈 별 가격 최초 등록
-                productService.makeHistory(pNo, sizes.get(i), optionPrices.get(i));
+            for (ProductOption option : options) {
+                option.setPNo(pNo);
+                // productService.insertProductOption(option);
+                productService.makeHistory(pNo, option.getSize(), option.getOptionPrice());
             }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -222,12 +256,16 @@ public class AdminController {
     @GetMapping("/purchase/{sNo}")
     public ResponseEntity<Map<String, Object>> purchaseDetail(@PathVariable("sNo") int sNo) throws Exception {
         Map<String, Object> saleDetail = adminService.userSale(sNo);
+        log.info(Map.of("saleDetail", saleDetail).toString());
         return new ResponseEntity<>(Map.of("saleDetail", saleDetail), HttpStatus.OK);
     }
 
     // 유저의 단일 판매 내역 상태 변경
     @PutMapping("/purchase/update")
-    public ResponseEntity<String> updateSaleState(@RequestParam("sNo") int sNo, @RequestParam("saleState") String saleState) throws Exception {
+    public ResponseEntity<String> updateSaleState(@RequestBody Map<String, Object> request) throws Exception {
+        int sNo = (int) request.get("sNo");
+        String saleState = (String) request.get("saleState");
+
         // 현재 판매 내역 가져오기
         Map<String, Object> saleDetail = adminService.userSale(sNo);
         String currentSaleState = (String) saleDetail.get("saleState");
@@ -250,7 +288,6 @@ public class AdminController {
         adminService.updateUserSaleState(sNo, saleState);
         return new ResponseEntity<>("Sale state updated successfully", HttpStatus.OK);
     }
-
     // 거래 내역 
     @GetMapping("/pay_history")
     public ResponseEntity<Map<String, Object>> pay_history(Page page,
