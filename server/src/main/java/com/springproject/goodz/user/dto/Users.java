@@ -26,8 +26,10 @@ public class Users {
     private List<UserAuth> authList;
     private List<Users> followList;     // 팔로워/팔로잉 목록
 
-    private int countFollower;          // 팔로워 수
-    private int countFollowing;         // 팔로잉 수
+    private boolean isFollowed = false;         // 팔로우 여부 체크
+
+    // private int countFollower;          // 팔로워 수
+    // private int countFollowing;         // 팔로잉 수
 
     public Users() {
         
