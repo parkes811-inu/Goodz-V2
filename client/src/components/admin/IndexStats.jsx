@@ -1,5 +1,6 @@
 import React from 'react';
-import "../admin/css/Index.css"
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const IndexStats = ({ stats }) => (
   <div className="stats">

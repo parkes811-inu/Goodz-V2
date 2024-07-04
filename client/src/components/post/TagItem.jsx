@@ -2,17 +2,20 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 
 const TagItem = ({product}) => {
-    const{pNo, mainImgNo, bName, productName} = product;
+    // console.log(product);
+    // DTO와 대소문자 다르게 매핑되는 오류 있음
+    const{pno, mainImgNo, bname, productName} = product;
+    // console.log(pno, mainImgNo, bname, productName)
 
     return (
         <>
             {/* <!-- 상품 이미지 --> */}
-            <Link href={`/product/detail/${pNo}`} className="product_link" style="text-decoration: none; text-decoration-line: none;">
-                <img src={`/files/${mainImgNo}`} className="product_img"  alt="상품이미지" />
+            <Link to={`/product/detail/${pno}`} className="product_link">
+                <img src={`/files/${mainImgNo}`} className="product_img"  alt="상품이미지" style={{width:'100px', height:'100px'}}/>
                 {/* <!-- 상품정보 --> */}
                 <div className="product_desc text-black mb-2">
-                    <p className="product_brand m-0  fw-semibold" style="font-size: medium;" >{bName}</p>s
-                    <p className="product_name m-0" style="font-size: small;">{productName}</p>
+                    <p className="product_brand m-0  fw-semibold" style={{fontSize: 'medium'}} >{bname}</p>
+                    <p className="product_name m-0" style={{fontSize: 'small'}}>{productName}</p>
                 </div>
             </Link>
         </>

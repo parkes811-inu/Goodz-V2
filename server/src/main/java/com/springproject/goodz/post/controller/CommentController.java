@@ -68,11 +68,14 @@ public class CommentController {
             cmmt.setNickname(user.getNickname());
         }
 
-        // 
+        Map<String, Object> result = new HashMap<>();
+        result.put("cmmtList", cmmtList);
+        result.put("countCmmt", cmmtList.size());
+
         // model.addAttribute("loginUser", loginUser);
         
         // model.addAttribute("cmmtList", cmmtList);
-        return new ResponseEntity<>(cmmtList, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**

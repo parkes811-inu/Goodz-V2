@@ -1,30 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "../admin/css/List.css";
+
 
 const ProductTable = ({ products = [] }) => {
   console.log('Products: ', products);
 
   return (
     <div className="container mt-3">
-      <table className="table table-bordered text-center">
-        <thead className="table-dark">
-          <tr>
+      <table className="table">
+        <thead>
+          <tr style={{ textAlign: "center" }}>
             <th scope="col" style={{ width: '10%', color: 'black' }}>상품 번호</th>
             <th scope="col" style={{ width: '30%', color: 'black' }}>브랜드명</th>
             <th scope="col" style={{ width: '30%', color: 'black' }}>상품명</th>
             <th scope="col" style={{ width: '30%', color: 'black' }}>등록일자</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="table-group-divider">
           {products.length === 0 ? (
             <tr>
               <td colSpan="4" align="center">조회된 상품이 없습니다.</td>
             </tr>
           ) : (
             products.map((product) => (
-              <tr key={product.pno}>
+              <tr key={product.pno} style={{ textAlign: "center" }}>
                 <th scope="row">{product.pno}</th>
                 <td>{product.bname}</td>
                 <td>

@@ -5,7 +5,7 @@ import BrandSearchForm from '../../components/admin/BrandSearchForm';
 import { list } from '../../apis/admin/admin';
 import AdminLayout from '../../layout/AdminLayout';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../components/admin/css/List.css';
+
 
 const BrandListPage = () => {
   const [keyword, setKeyword] = useState('');
@@ -32,8 +32,8 @@ const BrandListPage = () => {
   return (
     <AdminLayout>
       <div className="container mt-5">
-      <div className="header">
-        <h2>브랜드 목록</h2>
+      <div className="pagetitle">
+        <p>브랜드 목록</p>
       </div>
         <BrandSearchForm keyword={keyword} setKeyword={setKeyword} />
         <BrandTable brands={brands} />

@@ -1,5 +1,4 @@
 import React from 'react';
-import '../admin/css/History.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PurchaseTable = ({ userSaleList = [] }) => {
@@ -8,8 +7,8 @@ const PurchaseTable = ({ userSaleList = [] }) => {
     <div className="divider">
       <table className="table">
         <thead>
-          <tr>
-            <th scope="col">판매번호</th>
+          <tr style={{ textAlign: "center" }}>
+            <th scope="col" >판매번호</th>
             <th scope="col">상품번호</th>
             <th scope="col">유저ID</th>
             <th scope="col">운송장번호</th>
@@ -24,7 +23,7 @@ const PurchaseTable = ({ userSaleList = [] }) => {
             </tr>
           ) : (
             userSaleList.map((sales) => (
-              <tr key={sales.s_no}>
+              <tr key={sales.s_no} style={{ textAlign: "center" }}>
                 <th scope="row">
                   <a href={`/admin/purchase/detail/${sales.s_no}`} className="text-dark text-decoration-none">
                     {sales.s_no}

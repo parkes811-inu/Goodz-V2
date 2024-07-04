@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../admin/css/History.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PayTable = ({ userPurchaseList = [] }) => {
@@ -9,7 +8,7 @@ const PayTable = ({ userPurchaseList = [] }) => {
     <div className="divider">
       <table className="table">
         <thead>
-          <tr>
+          <tr style={{ textAlign: "center" }}>
             <th scope="col">구매번호</th>
             <th scope="col">상품번호</th>
             <th scope="col">유저ID</th>
@@ -24,7 +23,7 @@ const PayTable = ({ userPurchaseList = [] }) => {
             </tr>
           ) : (
             userPurchaseList.map((purchase) => (
-              <tr key={purchase.purchase_no}>
+              <tr key={purchase.purchase_no} style={{ textAlign: "center" }}>
                 <th scope="row">
                   <Link to={`/admin/pay_history/detail/${purchase.purchase_no}`} className="text-dark text-decoration-none">
                     {purchase.purchase_no}
@@ -37,7 +36,7 @@ const PayTable = ({ userPurchaseList = [] }) => {
                       purchase.purchase_state === 'ready_to_ship' ? '배송대기' :
                       purchase.purchase_state === 'shipping' ? '배송중' :
                       purchase.purchase_state === 'delivered' ? '배송완료' : '취소'}</td>
-                <td>{new Date(purchase.orderedAt).toLocaleDateString()}</td>
+                <td>{new Date(purchase.ordered_at).toLocaleDateString()}</td>
               </tr>
             ))
           )}

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springproject.goodz.admin.service.AdminService;
 import com.springproject.goodz.pay.dto.Purchase;
 import com.springproject.goodz.product.dto.Brand;
@@ -89,6 +90,23 @@ public class AdminController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+
+
+    // 브랜드 목록 전체조회
+    @GetMapping("/brands/all")
+    public ResponseEntity<Map<String, Object>> brandList() throws Exception {
+        List<Brand> brandList = brandService.list();
+
+        // 데이터 확인을 위해 로그 추가
+        brandList.forEach(brand -> log.info("Brand: bNo={}, bName={}", brand.getBNo(), brand.getBName()));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("brandList", brandList);
+        log.info("Response data: {}", response); // 데이터 확인
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
     
     
 
@@ -106,19 +124,26 @@ public class AdminController {
         log.info("브랜드명: " + bName);
         log.info("로고 파일: " + logoFile.getOriginalFilename());
 
-        // 여기서 Brand 객체를 생성하고 필요한 처리를 수행합니다
+        // Brand 객체 생성 및 설정
         Brand brand = new Brand();
         brand.setBName(bName);
-        // 로고 파일 처리를 추가합니다 (예: 파일 저장 및 경로 설정)
+        brand.setLogoFile(logoFile);
 
-        int result = brandService.insert(brand);
-        if (result == 0) {
-            log.info("::::::::::::::브랜드 등록 처리 중 예외발생::::::::::::::");
-            return new ResponseEntity<>("Error while adding brand", HttpStatus.INTERNAL_SERVER_ERROR);
+        // 브랜드 및 파일 정보 삽입
+        try {
+            int result = brandService.insert(brand);
+            if (result == 0) {
+                log.info("::::::::::::::브랜드 등록 처리 중 예외 발생::::::::::::::");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while adding brand");
+            }
+        } catch (Exception e) {
+            log.error("서버 오류 발생: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error occurred: " + e.getMessage());
         }
-        return new ResponseEntity<>("Brand added successfully", HttpStatus.CREATED);
-    }
 
+        return ResponseEntity.status(HttpStatus.CREATED).body("Brand added successfully");
+    }
+    
     // 제품 목록 조회
     @GetMapping("/products")
     public ResponseEntity<Map<String, Object>> productList(Page page,
@@ -153,34 +178,50 @@ public class AdminController {
     // 제품 등록
     @PostMapping("/products")
     public ResponseEntity<String> addProducts(
-        @RequestBody Product product, 
-        @RequestParam("productFiles") List<MultipartFile> productFiles, 
-        @RequestParam("sizes") List<String> sizes, 
-        @RequestParam("optionPrices") List<Integer> optionPrices, 
-        @RequestParam("stockQuantities") List<Integer> stockQuantities, 
-        @RequestParam("status") List<String> status,
+        @RequestParam("productName") String productName,
+        @RequestParam("price") int price,
+        @RequestParam("brand") String brand,
         @RequestParam("category") String category,
-        @RequestParam("price") int price, 
-        @RequestParam(value = "mainImgIndex", required = false, defaultValue = "-1") int mainImgIndex) throws Exception {
+        @RequestParam(value = "mainImgIndex", required = false, defaultValue = "-1") int mainImgIndex,
+        @RequestPart("productFiles") List<MultipartFile> productFiles,
+        @RequestParam("sizes") List<String> sizes,
+        @RequestParam("optionPrices") List<Integer> optionPrices,
+        @RequestParam("stockQuantities") List<Integer> stockQuantities,
+        @RequestParam("status") List<String> status) throws Exception {
+
+        // Product 객체 수동 생성 및 값 설정
+        Product product = new Product();
+        product.setProductName(productName);
+        product.setInitialPrice(price);
+        product.setBName(brand); // Brand를 bName 필드로 설정
+        product.setCategory(category);
+        product.setMainImgNo(mainImgIndex);
+        product.setProductFiles(productFiles);
+
+        List<ProductOption> options = new ArrayList<>();
+        for (int i = 0; i < sizes.size(); i++) {
+            ProductOption option = new ProductOption();
+            option.setSize(sizes.get(i));
+            option.setOptionPrice(optionPrices.get(i));
+            option.setStockQuantity(stockQuantities.get(i));
+            option.setStatus(status.get(i));
+            options.add(option);
+        }
+        product.setOptions(options);
+
         log.info("::::::::::::::상품 등록 요청::::::::::::::");
         log.info(product.toString());
-        product.setCategory(category);
-        product.setInitialPrice(price);
-        product.setProductFiles(productFiles); // 파일 리스트를 설정합니다.
+
         int result = productService.insert(product, mainImgIndex);
-        if(result > 0) {
+
+        if (result > 0) {
             int pNo = product.getPNo();
+
             // 옵션 등록
-            for (int i = 0; i < sizes.size(); i++) {
-                ProductOption option = new ProductOption();
-                option.setPNo(pNo); // set the generated product number
-                option.setSize(sizes.get(i));
-                option.setOptionPrice(optionPrices.get(i));
-                option.setStockQuantity(stockQuantities.get(i));
-                option.setStatus(status.get(i));
+            for (ProductOption option : options) {
+                option.setPNo(pNo);
                 productService.insertProductOption(option);
-                // priceHistory에 사이즈 별 가격 최초 등록
-                productService.makeHistory(pNo, sizes.get(i), optionPrices.get(i));
+                // productService.makeHistory(pNo, option.getSize(), option.getOptionPrice());
             }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.INTERNAL_SERVER_ERROR);

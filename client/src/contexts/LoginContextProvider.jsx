@@ -33,7 +33,6 @@ const LoginContextProvider = ({ children }) => {
                 logoutSetting();
                 return;
             }
-
             loginSetting(data, accessToken);
         } catch (error) {
             logoutSetting();
@@ -96,10 +95,12 @@ const LoginContextProvider = ({ children }) => {
         setLogin(true);
         setUserInfo({ no, userId, roleList });
 
+
         const updatedRoles = { isUser: false, isAdmin: false };
         roleList.forEach(role => {
             if (role === 'ROLE_USER') updatedRoles.isUser = true;
             if (role === 'ROLE_ADMIN') updatedRoles.isAdmin = true;
+
         });
 
         setRoles(updatedRoles);
