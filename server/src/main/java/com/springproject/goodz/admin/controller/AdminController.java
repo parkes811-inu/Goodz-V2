@@ -183,7 +183,7 @@ public class AdminController {
         @RequestParam("brand") String brand,
         @RequestParam("category") String category,
         @RequestParam(value = "mainImgIndex", required = false, defaultValue = "-1") int mainImgIndex,
-        @RequestPart("productFiles") List<MultipartFile> productFiles,
+        @RequestParam("productFiles") List<MultipartFile> productFiles,
         @RequestParam("sizes") List<String> sizes,
         @RequestParam("optionPrices") List<Integer> optionPrices,
         @RequestParam("stockQuantities") List<Integer> stockQuantities,
