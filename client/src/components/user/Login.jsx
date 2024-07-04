@@ -19,6 +19,9 @@ const Login = () => {
     }
 
     const handleSocialLogin = (provider) => {
+        setRememberId(false); // 소셜 로그인 시 rememberId 초기화
+        setUserId(''); // 소셜 로그인 시 userId 초기화
+        localStorage.setItem("rememberMe", false);
         // http://localhost:3000/login/oauth2/code/kakao
         window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
     };

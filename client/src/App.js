@@ -30,6 +30,7 @@ import Account from './pages/user/Account';
 import ProfilePage from './pages/post/ProfilePage';
 
 import ProductInsertPage from './pages/admin/ProductInsertPage';
+import ProductContextProvider from './contexts/product/ProductContextProvider';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -57,12 +58,38 @@ function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/users/login" element={<LoginPage />} />
       {/* 헤더 접근 링크 */}
-      <Route path="/product/top" element={<Top />} />
+      {/* <Route path="/product/top" element={<Top />} />
       <Route path="/product/pants" element={<Pants />} />
-      <Route path="/product/shoes" element={<Shoes />} />
-      <Route path="/product/accessory" element={<Accessory />} />
+      <Route path="/product/shoes" element={<Shoes />} /> */}
+      <Route path="/product/top" element={
+        <ProductContextProvider endpoint="/product/top">
+          <Top />
+        </ProductContextProvider>
+      } />
+      <Route path="/product/pants" element={
+        <ProductContextProvider endpoint="/product/pants">
+          <Pants />
+        </ProductContextProvider>
+      } />
+      <Route path="/product/shoes" element={
+        <ProductContextProvider endpoint="/product/shoes">
+          <Shoes />
+        </ProductContextProvider>
+      } />
+      {/* <Route path="/product/accessory" element={<Accessory />} /> */}
+      <Route path="/product/accessory" element={
+        <ProductContextProvider endpoint="/product/accessory">
+          <Accessory />
+        </ProductContextProvider>
+      } />
       <Route path="/styles" element={<AllPosts />} />
-      <Route path="/product" element={<AllProduct />} />
+      {/* <Route path="/product" element={<AllProduct />} /> */}
+      <Route path="/product" element={
+        <ProductContextProvider endpoint="/product/shop">
+          <AllProduct />
+        </ProductContextProvider>
+      } />
+
 
       {/* 어드민만 접근 가능한 곳 */}
       <Route path="/admin" element={
@@ -167,7 +194,9 @@ function App() {
   return (
     <BrowserRouter>
       <LoginContextProvider>
-        <AppRoutes />
+        <ProductContextProvider>
+          <AppRoutes />
+        </ProductContextProvider>
       </LoginContextProvider>
     </BrowserRouter>
   );
