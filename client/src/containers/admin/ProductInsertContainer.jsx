@@ -7,9 +7,9 @@ import ProductImages from '../../components/admin/ProductImages';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 
-const shoeSizes = [220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280];
-const clothingSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'FREE'];
-const elseSize = ['FREE'];
+const shoeSizes = ['선택', 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280];
+const clothingSizes = ['선택', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'FREE'];
+const elseSize = ['선택', 'FREE'];
 
 function ProductInsertContainer() {
 
@@ -105,7 +105,7 @@ function ProductInsertContainer() {
             // }
 
             navigate('/admin/products');
-
+            
              // fileInsert를 마지막에 실행
              const fileResponse = await fileInsert(formData);
              console.log('Files inserted successfully:', fileResponse.data);
