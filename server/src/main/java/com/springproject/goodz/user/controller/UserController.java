@@ -2,6 +2,7 @@ package com.springproject.goodz.user.controller;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -331,12 +332,12 @@ public class UserController {
         return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
 
-    @GetMapping("/findID")
-    public String findID() {
-        return "/user/findID";
-    }
+    // @GetMapping("/findID")
+    // public String findID() {
+    //     return "/user/findID";
+    // }
 
-    @PostMapping("/findID")
+    @GetMapping("/findID")
     public ResponseEntity<String> findId(@RequestBody Users user) {
         String phone = user.getPhoneNumber();
         String name = user.getUsername();
@@ -437,82 +438,85 @@ public class UserController {
             }
     }
 
+    /**
+     * 유저 마이페이지 구매내역 세팅
+     */
     @GetMapping("/purchase")
-    public String purchase(Model model) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserName = authentication.getName();
-        Users user = userService.findUserByUsername(currentUserName);
+    public ResponseEntity<?> purchase(@AuthenticationPrincipal CustomUser customUser) throws Exception {
 
-        if (user == null) {
-            log.error("User not found for username: " + currentUserName);
-            return "redirect:/user/login";
-        } else {
-            model.addAttribute("user", user);
-        }
+        // 로그인 유저 세팅
+        log.info("{}님의 구매내역 조회중...", customUser.getUser().getUserId());
+        Users user = userService.select(customUser.getUsername());
+        log.info("조회할 유저정보: {}", user);
 
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            
-            List<Purchase> purchases = payService.findPurchasesByUserId(currentUserName);
+        Map<String, Object> result = new HashMap<>();
 
-            List<Purchase> pendingPurchases = new ArrayList<>();
-            List<Purchase> paidPurchases = new ArrayList<>();
-            List<Purchase> readyPurchases = new ArrayList<>();
-            List<Purchase> shippingPurchases = new ArrayList<>();
-            List<Purchase> deliveredPurchases = new ArrayList<>();
-            List<Purchase> cancelledPurchases = new ArrayList<>();
+        List<Purchase> purchases = payService.findPurchasesByUserId(user.getUserId());
 
-            for (Purchase purchase : purchases) {
-                // 상품 정보 설정
-                Product product = productService.getProductBypNo(purchase.getPNo());
-                purchase.setProductName(product.getProductName());
-                purchase.setBName(product.getBName());
+        List<Purchase> pendingPurchases = new ArrayList<>();
+        List<Purchase> paidPurchases = new ArrayList<>();
+        List<Purchase> readyPurchases = new ArrayList<>();
+        List<Purchase> shippingPurchases = new ArrayList<>();
+        List<Purchase> deliveredPurchases = new ArrayList<>();
+        List<Purchase> cancelledPurchases = new ArrayList<>();
 
-                // 상품 이미지 설정
-                Files file = new Files();
-                file.setParentNo(purchase.getPNo());
-                file.setParentTable(product.getCategory());
-                List<Files> productImages = fileService.listByParent(file);
+        for (Purchase purchase : purchases) {
+            // 상품 정보 설정
+            Product product = productService.getProductBypNo(purchase.getPNo());
+            purchase.setProductName(product.getProductName());
+            purchase.setBName(product.getBName());
 
-                // 첫 번째 이미지 URL 설정
-                if (!productImages.isEmpty()) {
-                    purchase.setImageUrl(productImages.get(0).getFilePath());
-                } else {
-                    purchase.setImageUrl("/files/img?imgUrl=no-image.png");
+            // 상품 이미지 설정
+            Files file = new Files();
+            file.setParentNo(purchase.getPNo());
+            file.setParentTable(product.getCategory());
+            List<Files> productImages = fileService.listByParent(file);
+
+            // 첫 번째 이미지 URL 설정
+            if (!productImages.isEmpty()) {
+                for (Files imgFiles : productImages) {
+                    if (imgFiles.getFileCode() == 1) {
+                        purchase.setMainImgNo(imgFiles.getNo());
+                    }
                 }
-
-                // 원화 형식으로 변환
-                String formattedPurchasePrice = decimalFormat.format(purchase.getPurchasePrice() + 3000);
-                purchase.setFormattedPurchasePrice(formattedPurchasePrice);
-
-                // 상태별로 구매 내역 필터링
-                if ("pending".equals(purchase.getPurchaseState())) {
-                    pendingPurchases.add(purchase);
-                } else if ("paid".equals(purchase.getPurchaseState())) {
-                    paidPurchases.add(purchase);
-                } else if ("ready_to_ship".equals(purchase.getPurchaseState())) {
-                    readyPurchases.add(purchase); 
-                } else if ("shipping".equals(purchase.getPurchaseState())) {
-                    shippingPurchases.add(purchase);
-                } else if ("delivered".equals(purchase.getPurchaseState())) {
-                    deliveredPurchases.add(purchase);
-                } else if ("cancelled".equals(purchase.getPurchaseState())) {
-                    cancelledPurchases.add(purchase);
-                }
-
-                // 운송장 번호 로그 추가
-                System.out.println("Purchase No: " + purchase.getPurchaseNo() + ", Tracking No: " + purchase.getTrackingNo());
+                // purchase.setImageUrl(productImages.get(0).getFilePath());
+            } else {
+                // purchase.setImageUrl("/files/img?imgUrl=no-image.png");
+                purchase.setMainImgNo(0);
             }
 
-            model.addAttribute("pendingPurchases", pendingPurchases);
-            model.addAttribute("paidPurchases", paidPurchases);
-            model.addAttribute("readyPurchases", readyPurchases);
-            model.addAttribute("shippingPurchases", shippingPurchases);
-            model.addAttribute("deliveredPurchases", deliveredPurchases);
-            model.addAttribute("cancelledPurchases", cancelledPurchases);
-            model.addAttribute("allPurchases", purchases); // 통합된 구매 내역 추가
+            // 원화 형식으로 변환
+            String formattedPurchasePrice = decimalFormat.format(purchase.getPurchasePrice() + 3000);
+            purchase.setFormattedPurchasePrice(formattedPurchasePrice);
+
+            // 상태별로 구매 내역 필터링
+            if ("pending".equals(purchase.getPurchaseState())) {
+                pendingPurchases.add(purchase);
+            } else if ("paid".equals(purchase.getPurchaseState())) {
+                paidPurchases.add(purchase);
+            } else if ("ready_to_ship".equals(purchase.getPurchaseState())) {
+                readyPurchases.add(purchase); 
+            } else if ("shipping".equals(purchase.getPurchaseState())) {
+                shippingPurchases.add(purchase);
+            } else if ("delivered".equals(purchase.getPurchaseState())) {
+                deliveredPurchases.add(purchase);
+            } else if ("cancelled".equals(purchase.getPurchaseState())) {
+                cancelledPurchases.add(purchase);
+            }
+
+            // 운송장 번호 로그 추가
+            System.out.println("Purchase No: " + purchase.getPurchaseNo() + ", Tracking No: " + purchase.getTrackingNo());
         }
 
-        return "/user/purchase";
+        result.put("allPurchases", purchases);
+        result.put("pendingPurchases", pendingPurchases.size());
+        result.put("paidPurchases", paidPurchases.size());
+        result.put("readyPurchases", readyPurchases.size());
+        result.put("shippingPurchases", shippingPurchases.size());
+        result.put("deliveredPurchases", deliveredPurchases.size());
+        result.put("cancelledPurchases", cancelledPurchases.size());
+        
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
