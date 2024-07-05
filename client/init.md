@@ -33,5 +33,6 @@ const MyComponent = () => {
 ## 리액트 컴포넌트 기반의 bootstrap
 npm install react-bootstrap
 
+
 # props 타입을 검사하는 데 사용되는 라이브러리
 npm install prop-types

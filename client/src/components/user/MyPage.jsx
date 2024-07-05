@@ -1,9 +1,15 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 const MyPage = () => {
+    const navigate = useNavigate();
+
+    const manageInfo = () => {
+        navigate('/users/manage_info');
+    };
   return (
     <div className="userMainContainer">
 
@@ -26,7 +32,7 @@ const MyPage = () => {
             </div>
         </div>
         <div className="profile_buttons my-auto">
-            <button className="btn btn-sm btn-outline-secondary" onClick="manage_info()">내 정보 관리</button>
+            <button className="btn btn-sm btn-outline-secondary" onClick={manageInfo}>내 정보 관리</button>
             <a type="button" className="btn btn-sm btn-outline-secondary" href="|/styles/user/@${user.nickname}|">스타일</a>
         </div>
     </div>
