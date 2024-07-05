@@ -18,4 +18,3 @@ npm install bootstrap
 # 라이브러리 설치
 ## 리액트 컴포넌트 기반의 bootstrap
 npm install react-bootstrap
-npm install @fortawesome/react-fontawesome
