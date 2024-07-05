@@ -72,7 +72,7 @@ public class ProductController {
     // DecimalFormat 인스턴스 한 번 생성
     DecimalFormat decimalFormat = new DecimalFormat("#,### 원");
 
-    @GetMapping("")
+    @GetMapping("/shop")
     public ResponseEntity<List<Product>> index() throws Exception {
 
         List<Product> productList = productService.list();

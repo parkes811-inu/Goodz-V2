@@ -24,7 +24,7 @@ import OAuth2RedirectHandler from './components/user/OAuth2RedirectHandler';
 import MyPage from './pages/user/MyPage';
 import Purchase from './pages/user/Purchase';
 import Sales from './pages/user/Sales';
-import Wishlist_Products from './pages/user/Wishlist_Products';
+import Wishlist_Products from './pages/user/wishlist_Products';
 import Wishlist_Posts from './pages/user/Wishlist_Posts';
 import Manage_Info from './pages/user/Manage_Info';
 import Address from './pages/user/Address';
@@ -35,6 +35,9 @@ import FindPW from './pages/user/FindPW';
 import ChangePW from './pages/user/changePW';
 import Add_address from './pages/user/Add_address';
 import ProductInsertPage from './pages/admin/ProductInsertPage';
+import ProductContextProvider from './contexts/product/ProductContextProvider';
+import ProductDetailPage from './pages/product/ProductDetailPage';
+import ProductDetailContextProvider from './contexts/product/ProductDetailContextProvider';
 import PurchaseDetailPage from './pages/admin/PurchaseDetailPage';
 import BuyPage from './pages/pay/BuyPage';
 
@@ -71,13 +74,37 @@ function AppRoutes() {
       
 
       {/* 헤더 접근 링크 */}
-      <Route path="/product/top" element={<Top />} />
-      <Route path="/product/pants" element={<Pants />} />
-      <Route path="/product/shoes" element={<Shoes />} />
-      <Route path="/product/accessory" element={<Accessory />} />
+      <Route path="/product/top" element={
+        <ProductContextProvider endpoint="/product/top">
+          <Top />
+        </ProductContextProvider>
+      } />
+      <Route path="/product/pants" element={
+        <ProductContextProvider endpoint="/product/pants">
+          <Pants />
+        </ProductContextProvider>
+      } />
+      <Route path="/product/shoes" element={
+        <ProductContextProvider endpoint="/product/shoes">
+          <Shoes />
+        </ProductContextProvider>
+      } />
+      <Route path="/product/accessory" element={
+        <ProductContextProvider endpoint="/product/accessory">
+          <Accessory />
+        </ProductContextProvider>
+      } />
       <Route path="/styles" element={<AllPosts />} />
-      <Route path="/product" element={<AllProduct />} />
-
+      <Route path="/product" element={
+        <ProductContextProvider endpoint="/product/shop">
+          <AllProduct />
+        </ProductContextProvider>
+      } />
+      <Route path="/product/detail/:pNo" element={
+        <ProductDetailContextProvider endpoint="/product/detail/:pNo">
+          <ProductDetailPage />
+        </ProductDetailContextProvider>
+      } />
       {/* 어드민만 접근 가능한 곳 */}
       <Route path="/admin" element={
         // <ProtectedRoute requiredRole="admin">
@@ -120,9 +147,6 @@ function AppRoutes() {
           <PurchaseDetailPage />
         // </ProtectedRoute>
       } />
-
-
-
 
 
       {/* 로그인된 유저만 접근 가능한 곳 */}
@@ -183,12 +207,6 @@ function AppRoutes() {
         }/>
 
         <Route path="/pay/buy" element={
-          // <ProtectedRoute requiredRole="user">
-              <BuyPage />
-          // </ProtectedRoute>
-        }/>
-
-        <Route path="/pay/buy/:purchaseNo" element={
           // <ProtectedRoute requiredRole="user">
               <BuyPage />
           // </ProtectedRoute>

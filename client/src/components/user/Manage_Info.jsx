@@ -1,18 +1,51 @@
-import React from 'react'
+import React, { useState } from 'react'
+import MainBtn from '../../components/common/MainBtn';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Manage_Info = ({ user = {}, profileImgNo, csrfToken = { parameterName: '', token: '' } }) => {
-  const checkNickname = () => {
-    // Implement the nickname check logic here
+  
+  const [nickname, setNickName] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordCheck, setPasswordCheck] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const handleInputNickName = (e) => {
+    setNickName(e.target.value);
+    console.log(e.target.value);
+  }
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    console.log(e.target.value);
+  }
+
+  const handlePasswordCheckChange = (e) => {
+    setPasswordCheck(e.target.value);
+    console.log(e.target.value);
+  }
+
+  const handleInputPhoneNumber = (e) => {
+    setPhoneNumber(e.target.value);
+    console.log(e.target.value);
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(nickname, password, passwordCheck, phoneNumber)
   };
 
-  const togglePasswordVisibility = (id) => {
-    const input = document.getElementById(id);
-    if (input.type === 'password') {
-      input.type = 'text';
-    } else {
-      input.type = 'password';
-    }
+  const checkNickname = (e) =>  {
+    setNickName(e.target.value);
+    console.log(e.target.value);
+    // 닉네임 중복 체크 로직 구현
   };
+
+  const togglePasswordVisibility = (e) => {
+    setPassword(e.target.value);
+    console.log(e.target.value);
+    // 비밀번호 가리기/보이기 토글 로직 구현
+  };
+ 
 
   const check = () => {
     // Implement the check logic here
@@ -45,7 +78,7 @@ const Manage_Info = ({ user = {}, profileImgNo, csrfToken = { parameterName: '',
               </div>
             </div>
           </div>
-          <form id="form" className="row g-3 needs-validation mb-5" method="POST" action="/user/update" encType="multipart/form-data">
+          <form onSubmit={handleSubmit} className="row g-3 needs-validation mb-5" method="POST" action="/user/update" encType="multipart/form-data">
             <input type="hidden" id="csrfToken" name={csrfToken.parameterName} value={csrfToken.token} />
             {/* 유저의 기존 정보 -닉네임 변경 유무 체크하기위해- */}
             <input type="hidden" name="no" value={user.no} />
@@ -64,15 +97,15 @@ const Manage_Info = ({ user = {}, profileImgNo, csrfToken = { parameterName: '',
             <div className="position-relative">
               <label htmlFor="nickName" className="form-label m-0">닉네임*</label>
               <div className="input-group mb-3">
-                <input type="text" name="nickname" id="nickname" className="form-control" placeholder="영문, 숫자, 특수문자 조합 (한글사용불가)" aria-describedby="nickname" defaultValue={user.nickname} />
-                <button className="btn btn-outline-secondary" type="button" id="nicknameBtn" onClick={checkNickname}>중복체크</button>
+                <input type="text" name="nickname" id="nickname" className="form-control" placeholder="영문, 숫자, 특수문자 조합 (한글사용불가)" aria-describedby="nickname" defaultValue={user.nickname} value={nickname} onChange={handleInputNickName}/>
+                <button className="btn btn-outline-secondary" type="button" id="nicknameBtn" onClick={checkNickname} value={nickname}  onChange={handleInputNickName}>중복체크</button>
               </div>
             </div>
 
             <div className="form-group">
               <label htmlFor="password">비밀번호*</label>
               <div className="input-group">
-                <input type="password" className="form-control" name="password" id="password" placeholder="영문, 숫자, 특수문자 조합 7-16자" aria-describedby="password" />
+                <input type="password" className="form-control" name="password" id="password" placeholder="영문, 숫자, 특수문자 조합 7-16자" aria-describedby="password" value={password} onChange={handlePasswordChange} />
                 <button className="btn btn-outline-secondary" type="button" id="passwordBtn" onClick={() => togglePasswordVisibility('password')} style={{ minWidth: '90px' }}><i className="fa fa-eye-slash"></i></button>
               </div>
             </div>
@@ -80,7 +113,7 @@ const Manage_Info = ({ user = {}, profileImgNo, csrfToken = { parameterName: '',
             <div className="form-group">
               <label htmlFor="password_check">비밀번호 확인*</label>
               <div className="input-group">
-                <input type="password" className="form-control" id="checkPassword" placeholder="영문, 숫자, 특수문자 조합 7-16자" aria-describedby="checkPassword" />
+                <input type="password" className="form-control" id="checkPassword" placeholder="영문, 숫자, 특수문자 조합 7-16자" aria-describedby="checkPassword" value={passwordCheck} onChange={handlePasswordCheckChange} />
                 <button className="btn btn-outline-secondary" type="button" id="checkPasswordBtn" onClick={() => togglePasswordVisibility('checkPassword')} style={{ minWidth: '90px' }}><i className="fa fa-eye-slash"></i></button>
               </div>
             </div>
@@ -88,11 +121,10 @@ const Manage_Info = ({ user = {}, profileImgNo, csrfToken = { parameterName: '',
             <div className="form-group">
               <label htmlFor="phone_number">핸드폰 번호 수정*</label>
               <div className="input-group">
-                <input type="text" className="form-control me-2 rounded-1" name="phoneNumber" id="phoneNumber" placeholder="'-'을 제외하고 입력해주세요." />
+                <input type="text" className="form-control me-2 rounded-1" name="phoneNumber" id="phoneNumber" placeholder="'-'을 제외하고 입력해주세요." value={phoneNumber} onChange={handleInputPhoneNumber} />
               </div>
             </div>
-
-            <button className="btn btn-dark" type="button" onClick={check} style={{ backgroundColor: '#393E46', border: 'none' }}>저장</button>
+            <MainBtn text={"저장"}/>
           </form>
         </div>
       </div>
