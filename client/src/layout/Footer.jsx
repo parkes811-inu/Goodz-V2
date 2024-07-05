@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 const Footer = () => {
@@ -6,9 +7,9 @@ const Footer = () => {
     <footer className="footer">
       <div className="container d-flex justify-content-between">
         <div className="left">
-          <a href="/">
+          <Link to="/">
             <img src="/img/footer/Goodz_logo2.png" alt="GoodZ Logo" />
-          </a>
+          </Link>
           <div className="social-icons d-flex">
             <a href="https://www.facebook.com/?locale=ko_KR" target="_blank" rel="noopener noreferrer">
               <img src="/img/footer/facebook_Icon.png" alt="Facebook" />
@@ -27,10 +28,9 @@ const Footer = () => {
         <div className="links">
           <h5 style={{ fontWeight: 'bold' }}>이용정책</h5>
           <div className="link-wrapper">
-            <a href="/footer/1">개인정보처리방침</a>
-            <a href="/footer/2">검수기준</a>
-            <a href="/footer/3">스토어안내</a>
-            <a href="/footer/4">커뮤니티 가이드라인</a>
+            <Link to="/footer/1">개인정보처리방침</Link>
+            <Link to="/footer/2">검수기준</Link>
+            <Link to="/footer/3">커뮤니티 가이드라인</Link>
           </div>
         </div>
         <div className="right">

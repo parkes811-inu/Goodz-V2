@@ -1,7 +1,7 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
 
 
 const MyPage = () => {
@@ -127,7 +127,8 @@ const MyPage = () => {
             {/* <th:block th:if="${wishlistProducts.size() == 0}"> */}
                 <h5 className="text-body-tertiary text-center">관심 목록에 추가된 상품이 없습니다.</h5>
             {/* </th:block> */}
-        </div>      
+        </div> 
+        <Link to ="/pay/buy?pNo=1&size=S">결제</Link>     
     </div>
     </div>    
   )
