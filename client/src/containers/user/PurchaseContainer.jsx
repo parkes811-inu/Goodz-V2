@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as userAPI from '../../apis/user/user';
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
 import PurchaseStatus from '../../components/user/PurchaseStatus';
 
 
@@ -108,25 +109,9 @@ const PurchaseContainer = () => {
                                         </div>
                                         <div className="product_date_price text-end">
                                             {/* <!-- 구매 상태 --> */}
-                                            <PurchaseStatus status={order.purchaseState} />
-                                            <div>
-                                                {/* <!-- 구매일자/가격 --> */}
-                                                {/* <p>{dates.format(order.orderedAt, 'yyyy-MM-dd')}</p> */}
-                                                <p className='m-0'>{order.formattedPurchasePrice}</p>
-                                            </div>
-                                            {/* <!-- 운송장 번호 표시 --> */}
-                                            <div if={`${order.purchaseState === 'ready_to_ship' || order.purchaseState === 'shipping' || order.purchaseState === 'delivered'}`} className="trackingNumber">
-                                                <p className='m-0'>운송장 정보 - <span>{order.trackingNo}</span></p>
-                                            </div>
-                                            {/* <!-- 미결제 상태일 때 결제하기 버튼 추가 --> */}
-                                            <div if="${purchase.purchaseState} == 'pending'" className="payCancel" style={{alignSelf: 'flex-end'}}>
-                                                <Link to={`/pay/buy/${order.purchaseNo}`} style={{textDecoration: 'none' , color: 'black'}}>결제</Link>
-                                                <span>|</span>
-                                                <form action={`/user/purchase/cancel/${order.purchaseNo}`} method="post" style={{display: 'inline'}}>
-                                                    <input type="hidden" name="purchaseNo" value="${purchase.purchaseNo}" />
-                                                    <button type="submit" style={{background: 'none' , border: 'none' , padding: '0' , color: 'black' , cursor: 'pointer' , textDecoration: 'none'}}>취소</button>
-                                                </form>
-                                            </div>
+                                            <PurchaseStatus orderDetail={order} />
+                                            
+                                           
                                         </div>
                                     </div>
                                 </>
