@@ -36,6 +36,7 @@ import ChangePW from './pages/user/changePW';
 import Add_address from './pages/user/Add_address';
 import ProductInsertPage from './pages/admin/ProductInsertPage';
 import PurchaseDetailPage from './pages/admin/PurchaseDetailPage';
+import BuyPage from './pages/pay/BuyPage';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -178,6 +179,12 @@ function AppRoutes() {
         <Route path="/users/add_address" element={
           // <ProtectedRoute requiredRole="user">
               <Add_address/>
+          // </ProtectedRoute>
+        }/>
+
+        <Route path="/pay/buy" element={
+          // <ProtectedRoute requiredRole="user">
+              <BuyPage />
           // </ProtectedRoute>
         }/>
 
