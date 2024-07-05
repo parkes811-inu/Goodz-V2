@@ -45,6 +45,17 @@ body {
     text-decoration: none;
     color: black;
 }
+/* 팔로우 */
+.followBtn {
+    height: 30px;
+    margin: auto 0;
+}
+/* followBtn 클래스를 가진 모든 버튼의 hover 효과 없애기 */
+.followBtn:hover {
+    background-color: inherit !important;
+    border-color: inherit !important;
+    color: inherit !important;
+}
 
 /* 유저 프로필 사진 -s */
 .profile-img {

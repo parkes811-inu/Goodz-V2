@@ -19,12 +19,12 @@ const Manage_Info = ({ user = {}, profileImgNo, csrfToken = { parameterName: '',
   };
 
   return (
-    <div className="UserMainContainer">
+    <div className="userMainContainer">
       <div className="row mx-auto">
-        <div className="content" style={{ maxWidth: '640px' }}>
+        <div className="content" style={{ maxWidth: '640px', marginTop: '20px'}}>
           <div className="card">
             <div className="card-body">
-              <div className="card-title-section">
+              <div className="card-title-section" style={{ display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' , fontSize: '15px' }}>
                 <div className="profile-details">
                   <div className="profile_img">
                     {/* User profile image */}

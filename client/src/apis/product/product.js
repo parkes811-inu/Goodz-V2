@@ -7,3 +7,6 @@ export const fetchNewArrivalsAndPopularPosts = () =>
         console.log('API Response:', response.data); // 디버깅을 위한 콘솔 로그
         return response.data;
       });
+
+// 상품 정보 가져오기
+export const getProductBypNo = (pNo) => api.get(`/product/${pNo}`);

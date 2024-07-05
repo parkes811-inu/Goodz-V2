@@ -68,57 +68,55 @@
 <body layout:fragment="content">
     <div class="container">
         <div class="mainContainer">
-                        <div class="form-container my-5">
-                            <h2 class="text-center fw-bold">비밀번호 찾기</h2>
+            <div class="form-container my-5">
+                <h2 class="text-center fw-bold">비밀번호 찾기</h2>
 
-                            <!-- 비밀번호 찾기 실패 안내 -->
-                            <!-- 실패한 경우에만 표시됩니다. -->
-                            <th:block th:if="${param.error}">
-                                <!-- 사용자에게 해당 정보와 일치하는 계정이 존재하지 않음을 안내합니다. -->
-                                <p class="text-center text-danger">해당 정보와 일치하는 계정이 존재하지 않습니다.</p>
-                            </th:block>
+                <!-- 비밀번호 찾기 실패 안내 -->
+                <!-- 실패한 경우에만 표시됩니다. -->
+                <th:block th:if="${param.error}">
+                    <!-- 사용자에게 해당 정보와 일치하는 계정이 존재하지 않음을 안내합니다. -->
+                    <p class="text-center text-danger">해당 정보와 일치하는 계정이 존재하지 않습니다.</p>
+                </th:block>
 
-                            <div class="underline"></div>
-  
-                            <!-- 비밀번호 찾기 양식입니다. -->
-                            <form id="form" action="/user/findPW" method="post">
-                                <!-- CSRF 토큰을 양식에 추가합니다. -->
-                                <input type="hidden" name="_csrf" id="csrf" th:value="${_csrf.token}" />
+                <div class="underline"></div>
 
-                                <!-- 사용자의 이름을 입력할 수 있는 입력란입니다. -->
-                                <div class="form-group">
-                                    <label for="name">이름 입력*</label>
-                                    <input type="text" class="form-control" name="username" id="username" placeholder="이름">
-                                </div>
+                <!-- 비밀번호 찾기 양식입니다. -->
+                <form id="form" action="/user/findPW" method="post">
+                    <!-- CSRF 토큰을 양식에 추가합니다. -->
+                    <input type="hidden" name="_csrf" id="csrf" th:value="${_csrf.token}" />
 
-                                <!-- 사용자의 주민등록번호를 입력할 수 있는 입력란입니다. -->
-                                <div class="form-group">
-                                    <label for="birth">주민등록번호 입력*</label>
-                                    <div class="d-flex align-items-center">
-                                        <input type="text" class="form-control mr-2" name="birth1" id="birth1" placeholder="주민번호 앞자리">
-                                        <span class="mx-2">-</span>
-                                        <input type="text" class="form-control" name="birth2" id="birth2" placeholder="주민번호 뒷자리">
-                                        <br>
-                                        <!-- 주민등록번호를 숨겨진 필드에 저장합니다. -->
-                                        <input type="hidden" id="birth" name="birth" value="">
-                                    </div>
-                                </div>
+                    <!-- 사용자의 이름을 입력할 수 있는 입력란입니다. -->
+                    <div class="form-group">
+                        <label for="name">이름 입력*</label>
+                        <input type="text" class="form-control" name="username" id="username" placeholder="이름">
+                    </div>
 
-                                <!-- 사용자의 아이디를 입력할 수 있는 입력란입니다. -->
-                                <div class="form-group">
-                                    <label for="name">아이디 입력*</label>
-                                    <input type="text" class="form-control" name="userId" id="userId" placeholder="아이디">
-                                </div>
-
-                                <!-- 해당 버튼을 눌러 비밀번호 변경으로 넘어갑니다 -->
-                                <button type="button" class="btn btn-block mt-3" onclick="actionSubmit()">비밀번호 찾기</button>
-                            </form>
+                    <!-- 사용자의 주민등록번호를 입력할 수 있는 입력란입니다. -->
+                    <div class="form-group">
+                        <label for="birth">주민등록번호 입력*</label>
+                        <div class="d-flex align-items-center">
+                            <input type="text" class="form-control mr-2" name="birth1" id="birth1" placeholder="주민번호 앞자리">
+                            <span class="mx-2">-</span>
+                            <input type="text" class="form-control" name="birth2" id="birth2" placeholder="주민번호 뒷자리">
+                            <br>
+                            <!-- 주민등록번호를 숨겨진 필드에 저장합니다. -->
+                            <input type="hidden" id="birth" name="birth" value="">
                         </div>
                     </div>
-                </div>
+
+                    <!-- 사용자의 아이디를 입력할 수 있는 입력란입니다. -->
+                    <div class="form-group">
+                        <label for="name">아이디 입력*</label>
+                        <input type="text" class="form-control" name="userId" id="userId" placeholder="아이디">
+                    </div>
+
+                    <!-- 해당 버튼을 눌러 비밀번호 변경으로 넘어갑니다 -->
+                    <button type="button" class="btn btn-block mt-3" onclick="actionSubmit()">비밀번호 찾기</button>
+                </form>
             </div>
         </div>
     </div>
+            
 
     <!-- 모달 -->
     <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">

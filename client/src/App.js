@@ -11,6 +11,8 @@ import AllPosts from './pages/post/AllPosts';
 import Read from './pages/post/Read';
 import AdminIndex from './pages/admin/AdminIndex';
 import LoginPage from './pages/user/LoginPage';
+import SingUp from './pages/user/SingUp';
+import SingUp2 from './pages/user/SingUp2';
 import LoginContextProvider, { LoginContext } from './contexts/LoginContextProvider';
 import { useContext } from 'react';
 import BrandListPage from './pages/admin/BrandListPage';
@@ -28,11 +30,16 @@ import Manage_Info from './pages/user/Manage_Info';
 import Address from './pages/user/Address';
 import Account from './pages/user/Account';
 import ProfilePage from './pages/post/ProfilePage';
-
+import FindId from './pages/user/FindId';
+import FindPW from './pages/user/FindPW';
+import ChangePW from './pages/user/changePW';
+import Add_address from './pages/user/Add_address';
 import ProductInsertPage from './pages/admin/ProductInsertPage';
 import ProductContextProvider from './contexts/product/ProductContextProvider';
 import ProductDetailPage from './pages/product/ProductDetailPage';
 import ProductDetailContextProvider from './contexts/product/ProductDetailContextProvider';
+import PurchaseDetailPage from './pages/admin/PurchaseDetailPage';
+import BuyPage from './pages/pay/BuyPage';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -59,6 +66,13 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/users/login" element={<LoginPage />} />
+      <Route path="/users/signup" element={<SingUp />} />
+      <Route path="/users/signup2" element={<SingUp2 />} />
+      <Route path="/users/findID" element={<FindId/>} />
+      <Route path="/users/findPW" element={<FindPW/>} />
+      <Route path="/users/ChangePW" element={<ChangePW/>} />
+      
+
       {/* 헤더 접근 링크 */}
       <Route path="/product/top" element={
         <ProductContextProvider endpoint="/product/top">
@@ -128,6 +142,16 @@ function AppRoutes() {
         // </ProtectedRoute>
       } />
 
+    <Route path="/admin/purchase/:saleNo" element={
+        // <ProtectedRoute requiredRole="admin">
+          <PurchaseDetailPage />
+        // </ProtectedRoute>
+      } />
+
+
+
+
+
       {/* 로그인된 유저만 접근 가능한 곳 */}
       <Route path='/users'
         element={
@@ -136,39 +160,58 @@ function AppRoutes() {
           // </ProtectedRoute>
         }>
       </Route>
+
       <Route path="/users/purchase" element={
           // <ProtectedRoute requiredRole="user">
               <Purchase />
           // </ProtectedRoute>
         }/>
+        
       <Route path="/users/sales" element={
           // <ProtectedRoute requiredRole="user">
               <Sales />
           // </ProtectedRoute>
         }/>
+
       <Route path="/users/wishList/products" element={
           // <ProtectedRoute requiredRole="user">
               <Wishlist_Products />
           // </ProtectedRoute>
         }/>
+
       <Route path="/users/wishList/posts" element={
           // <ProtectedRoute requiredRole="user">
               <Wishlist_Posts />
           // </ProtectedRoute>
         }/>
+
         <Route path="/users/manage_info" element={
           // <ProtectedRoute requiredRole="user">
               <Manage_Info />
           // </ProtectedRoute>
         }/>
+
         <Route path="/users/address" element={
           // <ProtectedRoute requiredRole="user">
               <Address />
           // </ProtectedRoute>
         }/>
-          <Route path="/users/account" element={
+
+        <Route path="/users/account" element={
           // <ProtectedRoute requiredRole="user">
               <Account />
+          // </ProtectedRoute>
+        }/>
+
+        <Route path="/users/add_address" element={
+          // <ProtectedRoute requiredRole="user">
+              <Add_address/>
+          // </ProtectedRoute>
+        }/>
+
+        <Route path="/pay/buy" element={
+          // <ProtectedRoute requiredRole="user">
+              <BuyPage />
           // </ProtectedRoute>
         }/>
 

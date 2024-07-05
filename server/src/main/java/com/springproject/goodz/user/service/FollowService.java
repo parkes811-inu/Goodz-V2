@@ -5,17 +5,21 @@ import java.util.Map;
 
 import com.springproject.goodz.user.dto.CustomUser;
 import com.springproject.goodz.user.dto.Follow;
+import com.springproject.goodz.user.dto.Users;
 
 public interface FollowService {
 
     // 팔로워 조회
-    public List<Follow> followerList(String profileId, CustomUser customUser) throws Exception;
+    public List<Users> followerList(String profileId, CustomUser customUser) throws Exception;
 
     // // 팔로워 목록과 수 조회
     // public Map<String, Object> getFollowerDetails(String profileId) throws Exception;
 
     // 팔로잉 조회
-    public List<Follow> followingList(String profileId, CustomUser customUser) throws Exception;
+    public List<Users> followingList(String profileId, CustomUser customUser) throws Exception;
+
+    // 팔로워 여부 조회
+    public Boolean isFollower(String userId, String followerId) throws Exception;
 
     // // 팔로잉 목록과 수 조회
     // public Map<String, Object> getFollowingDetails(String profileId) throws Exception;
@@ -27,6 +31,6 @@ public interface FollowService {
     public int unFollow(Follow follow) throws Exception;
 
     // 팔로워/팔로잉 수 조회
-    public Map<String, Integer> countFollow(String profileId) throws Exception;
+    // public Map<String, Integer> countFollow(String profileId) throws Exception;
     
 }

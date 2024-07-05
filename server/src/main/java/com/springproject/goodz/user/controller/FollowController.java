@@ -56,7 +56,7 @@ public class FollowController {
              * "followerList"   : List<Users> followerList          ➡ 팔로워 리스트
              * "followerCount"  : List<Users> followerList.size()   ➡ 팔로워 수
              */
-            List<Follow> followerDetails = followService.followerList(profileId, customUser);
+            List<Users> followerDetails = followService.followerList(profileId, customUser);
             
             log.info(":::::: {}의 팔로워 정보 :::::", profileId);
             log.info(profileId +"님의 팔로워 리스트: " + followerDetails.toString());
@@ -89,7 +89,7 @@ public class FollowController {
              * "followingCount"  : List<Users> followingList.size()   ➡ 팔로워 수
              */
             // Map<String, Object> followingDetails = followService.getFollowingDetails(profileId);
-            List<Follow> followingDetails = followService.followingList(profileId, customUser);
+            List<Users> followingDetails = followService.followingList(profileId, customUser);
 
             log.info(":::::: {}의 팔로잉 정보 :::::", profileId);
             log.info(profileId+"님의 팔로잉 리스트: " + followingDetails.toString());

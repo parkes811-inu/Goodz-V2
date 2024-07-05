@@ -179,7 +179,6 @@ const AllPostsContainer = () => {
                             </div>
                         ))}
                     </div>
-
                 </>
             }
         </div>

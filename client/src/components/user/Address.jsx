@@ -3,11 +3,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Address = ({ error, shippingaddresses = [] }) => {
   const handleAddAddress = () => {
-    window.location.href = '/user/add_address';
+    window.location.href = '/users/add_address';
   };
 
   const handleEditAddress = (addressNo) => {
-    window.location.href = `/user/upd_address/${addressNo}`;
+    window.location.href = `/users/upd_address/${addressNo}`;
   };
 
   const handleDeleteAddress = (addressNo) => {

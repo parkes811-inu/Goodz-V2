@@ -220,8 +220,8 @@ public class AdminController {
             // 옵션 등록
             for (ProductOption option : options) {
                 option.setPNo(pNo);
-                productService.insertProductOption(option);
-                // productService.makeHistory(pNo, option.getSize(), option.getOptionPrice());
+                // productService.insertProductOption(option);
+                productService.makeHistory(pNo, option.getSize(), option.getOptionPrice());
             }
         } else {
             return new ResponseEntity<>("Error", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -256,12 +256,16 @@ public class AdminController {
     @GetMapping("/purchase/{sNo}")
     public ResponseEntity<Map<String, Object>> purchaseDetail(@PathVariable("sNo") int sNo) throws Exception {
         Map<String, Object> saleDetail = adminService.userSale(sNo);
+        log.info(Map.of("saleDetail", saleDetail).toString());
         return new ResponseEntity<>(Map.of("saleDetail", saleDetail), HttpStatus.OK);
     }
 
     // 유저의 단일 판매 내역 상태 변경
     @PutMapping("/purchase/update")
-    public ResponseEntity<String> updateSaleState(@RequestParam("sNo") int sNo, @RequestParam("saleState") String saleState) throws Exception {
+    public ResponseEntity<String> updateSaleState(@RequestBody Map<String, Object> request) throws Exception {
+        int sNo = (int) request.get("sNo");
+        String saleState = (String) request.get("saleState");
+
         // 현재 판매 내역 가져오기
         Map<String, Object> saleDetail = adminService.userSale(sNo);
         String currentSaleState = (String) saleDetail.get("saleState");
@@ -284,7 +288,6 @@ public class AdminController {
         adminService.updateUserSaleState(sNo, saleState);
         return new ResponseEntity<>("Sale state updated successfully", HttpStatus.OK);
     }
-
     // 거래 내역 
     @GetMapping("/pay_history")
     public ResponseEntity<Map<String, Object>> pay_history(Page page,
