@@ -256,7 +256,7 @@ const ProfileContainer = ({nickname}) => {
                 {viewer === profileUser.userId ?
                     <>
                     {/*  본인프로필 ➡ 게시글 등록 */}
-                        <Link href="/styles/insert" className="p-0" style={{ color: "black", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "1px solid black", padding: "5px", borderRadius: "4px", textDecoration: "none" }}>
+                        <Link to={'/styles/insert'} className="p-0" style={{ color: "black", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "1px solid black", padding: "5px", borderRadius: "4px", textDecoration: "none" }}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6" width="24px" height="24px">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>

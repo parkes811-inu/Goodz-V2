@@ -30,6 +30,7 @@ import Account from './pages/user/Account';
 import ProfilePage from './pages/post/ProfilePage';
 
 import ProductInsertPage from './pages/admin/ProductInsertPage';
+import Insert from './pages/post/Insert';
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -159,6 +160,7 @@ function AppRoutes() {
       {/* styles */}
       <Route path="/styles/:postNo" element={<Read />} />
       <Route path='/styles/user/:nickname' element={<ProfilePage />}/>
+      <Route path='/styles/insert' element={<Insert />} />
     </Routes>
   );
 }
