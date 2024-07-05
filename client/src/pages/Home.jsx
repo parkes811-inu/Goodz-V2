@@ -1,18 +1,11 @@
 import React from 'react';
 import MainLayout from '../layout/MainLayout';
-import Carousel from '../components/product/Carousel'
-import NewArrivals from '../components/product/NewArrivals';
-import PopularPosts from '../components/product/PopularPosts';
+import HomeContainer from '../containers/common/HomeContainer';
+
 
 const Home = () => (
   <MainLayout>
-    <div className="container">
-      <Carousel />
-      <div className="container mt-4">
-        <NewArrivals />
-        <PopularPosts />
-      </div>
-    </div>
+    <HomeContainer />
   </MainLayout>
 );
 

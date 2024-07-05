@@ -65,7 +65,7 @@ public class MainController {
         return ResponseEntity.ok(template);
     }
     
-    @GetMapping("")
+    @GetMapping("/newArrivals")
     public ResponseEntity<Map<String, Object>> newArrivals() throws Exception {
         List<Product> newArrivalsList = productService.newArrivals();
 
