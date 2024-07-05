@@ -26,6 +26,7 @@ public class Purchase {
     // 추가: 상품 이름, 상품 이미지 URL, 옵션 정보 등 필요한 정보 추가
     private String productName; 
     private String imageUrl;
+    private int mainImgNo;
     private List<ProductOption> options; // 연관된 옵션 목록
     private String formattedPurchasePrice; // 구매 가격을 원화 형식으로 표현하기 위한 변수
     private String bName;
