@@ -11,7 +11,12 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.springproject.goodz.pay.dto.Purchase;
 import com.springproject.goodz.pay.dto.Sales;
@@ -59,7 +64,9 @@ public class PayController {
 
         Users user = (Users) session.getAttribute("user");
         if (user == null) {
-            return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+            Map<String, Object> response = new HashMap<>();
+            response.put("redirect", "/user/login");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
         // 기본 배송지를 찾기 위한 로직
@@ -82,9 +89,6 @@ public class PayController {
         for (ProductOption option : options) {
             if (option.getSize().equals(size)) {
                 purchasePrice = option.getOptionPrice();
-            }
-
-            if (option.getPNo() == pNo && option.getSize().equals(size)) {
                 optionId = option.getOptionId();
             }
         }
@@ -95,7 +99,6 @@ public class PayController {
         Purchase purchase = new Purchase();
         purchase.setUserId(userId);
         purchase.setPNo(pNo);
-        purchase.setPurchasePrice(purchasePrice);
         purchase.setPaymentMethod("purchase");
         purchase.setPurchaseState("pending"); // 구매 상태를 pending으로 설정
         purchase.setOptionId(optionId);
@@ -103,14 +106,17 @@ public class PayController {
         // 주문 등록
         int result = payService.savePurchase(purchase);
         int purchaseNo = purchase.getPurchaseNo();
-        log.info(":::::::::::::::::::::::::::::::::::::::::::::");
         log.info("purchaseNo : " + purchaseNo);
 
         if (result == 0) {
-            return new ResponseEntity<>("ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+            Map<String, Object> response = new HashMap<>();
+            response.put("redirect", "/product/detail/" + pNo);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(purchaseNo, HttpStatus.OK); // 상품 구매 페이지로 이동
+        Map<String, Object> response = new HashMap<>();
+        response.put("redirect", "/pay/buy/" + purchaseNo);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     /**
@@ -128,11 +134,12 @@ public class PayController {
         Users user = (Users) session.getAttribute("user");
         // TODO : 나중에 시큐리티로 권한 처리할 것..
         if (user == null) {
-            return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+            Map<String, Object> response = new HashMap<>();
+            response.put("redirect", "/user/login");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
-        // userId 가져 와서 
-        // Shippingaddress 조회
+        // userId 가져 와서 Shippingaddress 조회
         Shippingaddress defaultAddress = null;
         List<Shippingaddress> addresses = userService.selectByUserId(user.getUserId());
         for (Shippingaddress address : addresses) {
@@ -142,22 +149,18 @@ public class PayController {
             }
         }
         
-        // purchaseNo 조회
-        // - p_no,  option_id 꺼내옴
+        // purchaseNo 조회 - p_no, option_id 꺼내옴
         Purchase purchase = payService.selectPurchase(purchaseNo);
 
-        // Product 조회
+        // Product와 Option 정보 조회
         int pNo = purchase.getPNo();
-        log.info("::::::::::::::::::::::::::::::::::::::::::");
+        int optionId = purchase.getOptionId();
+        ProductOption productOption = payService.selectProductWithOption(pNo, optionId);
+
         log.info("pNo : " + pNo);
+        log.info("optionId : " + optionId);
         Product product = productService.getProductBypNo(pNo);
         
-        // ProductOption 조회
-        int optionId = purchase.getOptionId();
-        log.info("::::::::::::::::::::::::::::::::::::::::::");
-        log.info("optionId : " + optionId);
-        ProductOption productOption = productService.getProductOptionByOptionId(optionId);
-
         // 상품 이미지 설정
         Files file = new Files();
         file.setParentNo(product.getPNo());
@@ -172,10 +175,10 @@ public class PayController {
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("product", product);
+        response.put("product", product); // 모델에 상품 정보를 추가합니다.
         response.put("size", productOption.getSize());
         response.put("image", productImages);
-        response.put("price", purchase.getPurchasePrice());
+        response.put("price", productOption.getOptionPrice()); // 정확한 옵션 가격을 설정
         response.put("purchaseNo", purchaseNo); // purchaseNo를 모델에 추가
         response.put("optionId", optionId);
         response.put("defaultAddress", defaultAddress);
@@ -191,22 +194,24 @@ public class PayController {
      * @param paymentKey 결제 키
      * @param orderId 주문 ID
      * @param amount 결제 금액
-     * @param address 배송 주소
+     * @param address 주소
+     * @param purchasePrice 구매 가격
      * @return 결제 결과
      * @throws Exception
      */
     @PostMapping("/buy")
-    public ResponseEntity<String> updatePurchase(@RequestParam("purchaseNo") int purchaseNo,
+    public ResponseEntity<Object> updatePurchase(@RequestParam("purchaseNo") int purchaseNo,
                                                  @RequestParam("paymentKey") String paymentKey,
                                                  @RequestParam("orderId") String orderId,
                                                  @RequestParam("amount") int amount,
-                                                 @RequestParam("address") String address) throws Exception {
-        log.info("updatePurchase 호출됨: purchaseNo={}, orderId={}, amount={}, address={}", purchaseNo, orderId, amount, address);
+                                                 @RequestParam("address") String address,
+                                                 @RequestParam("purchasePrice") int purchasePrice) throws Exception {
 
         Purchase purchase = new Purchase();
         purchase.setPurchaseNo(purchaseNo);
         purchase.setOrderId(orderId);
         purchase.setPurchaseState("paid");
+        purchase.setPurchasePrice(purchasePrice); // purchasePrice 설정
         purchase.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         String decodedAddress = URLDecoder.decode(address, "UTF-8"); // URL 디코딩
@@ -214,12 +219,15 @@ public class PayController {
         log.info("Purchase 객체 생성됨: {}", purchase);
 
         int result = payService.updatePurchase(purchase);
+        Map<String, Object> response = new HashMap<>();
         if (result > 0) {
             log.info("구매 업데이트 성공");
-            return new ResponseEntity<>("success", HttpStatus.OK);
+            response.put("status", "success");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         log.info("구매 업데이트 실패");
-        return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+        response.put("status", "fail");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -239,7 +247,9 @@ public class PayController {
     
         Users user = (Users) session.getAttribute("user");
         if (user == null) {
-            return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+            Map<String, Object> response = new HashMap<>();
+            response.put("redirect", "/user/login");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
     
         // 단일 상품 조회
@@ -271,7 +281,7 @@ public class PayController {
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("product", product);
+        response.put("product", product); // 모델에 상품 정보를 추가합니다.
         response.put("size", size);
         response.put("image", productImages);
         response.put("defaultAddress", defaultAddress);
@@ -279,7 +289,7 @@ public class PayController {
         response.put("addresses", addresses);
         response.put("price", price); // 선택된 가격
         response.put("initialPrice", product.getInitialPrice()); // 초기 가격 추가
-
+    
         // 정산 계좌 정보 추가
         String account = user.getAccount();
         if (account != null && !account.isEmpty()) {
@@ -295,10 +305,9 @@ public class PayController {
         } else {
             response.put("hasAccount", false);
         }
-    
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
     /**
      * 판매 등록 처리
@@ -313,7 +322,7 @@ public class PayController {
      * @throws Exception
      */
     @PostMapping("/sell")
-    public ResponseEntity<String> insertSale(@RequestParam("productNo") int productNo,
+    public ResponseEntity<Object> insertSale(@RequestParam("productNo") int productNo,
                                              @RequestParam("courierKorean") String courierKorean,
                                              @RequestParam("trackingNumber") String trackingNumber,
                                              @RequestParam("size") String size,
@@ -323,13 +332,17 @@ public class PayController {
 
         Users user = (Users) session.getAttribute("user");
         if (user == null) {
-            return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+            Map<String, Object> response = new HashMap<>();
+            response.put("redirect", "/user/login");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
         // 계좌 정보 확인
         String account = user.getAccount();
         if (account == null || account.isEmpty()) {
-            return new ResponseEntity<>("NO_ACCOUNT", HttpStatus.BAD_REQUEST);
+            Map<String, Object> response = new HashMap<>();
+            response.put("redirect", "/user/account");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
         // Sales 객체 생성 및 데이터 설정
@@ -344,45 +357,52 @@ public class PayController {
         sales.setAccount(account); // Sales 객체에 계좌 정보 설정
 
         int result = payService.insertSale(sales);
+        Map<String, Object> response = new HashMap<>();
 
         if (result > 0) {
-            return new ResponseEntity<>("SELL_SUCCESS", HttpStatus.OK);
+            response.put("redirect", "/pay/complete/sell");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("SELL_FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+            response.put("errorMessage", "판매 정보를 저장하는 데 실패했습니다.");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
     /**
      * 결제 또는 판매 완료 페이지
      * @param type 완료 타입 (buy 또는 sell)
+     * @param model 모델
      * @return 완료 페이지
-     * 결제 또는 판매가 완료된 후, 결제 정보를 업데이트하고 상태를 변경하는 실제 처리 작업을 수행
      * @throws Exception 
      */
-    @PostMapping("/complete")
-    public ResponseEntity<String> complete (@RequestParam(value = "purchaseNo", required = false) Integer purchaseNo,
+    @GetMapping("/complete")
+    public ResponseEntity<Object> complete (@RequestParam(value = "purchaseNo", required = false) Integer purchaseNo,
                                             @RequestParam(value = "paymentKey", required = false) String paymentKey,
                                             @RequestParam(value = "orderId", required = false) String orderId,
                                             @RequestParam(value = "amount", required = false) Integer amount,
+                                            @RequestParam(value = "purchasePrice", required = false) Integer purchasePrice,
                                             @RequestParam(value = "address", required = false) String address,
                                             @RequestParam(value = "type", required = false) String type) throws Exception {
         
         String decodedAddress = URLDecoder.decode(address, "UTF-8"); // URL 디코딩
 
-        log.info("updatePurchase 호출됨: purchaseNo={}, orderId={}, amount={}", purchaseNo, orderId, amount);
-                            
+        log.info("updatePurchase 호출됨: purchaseNo={}, orderId={}, amount={}, address={}, purchasePrice={}", purchaseNo, orderId, amount, address, purchasePrice);
+
         Purchase purchase = new Purchase();
         purchase.setPurchaseNo(purchaseNo);
         purchase.setOrderId(orderId);
         purchase.setPurchaseState("paid");
         purchase.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         purchase.setAddress(decodedAddress);
+        purchase.setPurchasePrice(purchasePrice);
 
         log.info("Purchase 객체 생성됨: {}", purchase);
 
         int result = payService.updatePurchase(purchase);
+        Map<String, Object> response = new HashMap<>();
         if (result > 0) {
             log.info("구매 업데이트 성공");
+            response.put("type", type);
             
             Purchase optionId = payService.selectPurchase(purchaseNo);
             int cnt = productService.checkStockQuantity(optionId.getOptionId());
@@ -394,22 +414,24 @@ public class PayController {
                 productService.minusQuantityByProductId(optionId.getOptionId());
             }
 
-            return new ResponseEntity<>("BUY_SUCCESS", HttpStatus.OK);
+            response.put("redirect", "/pay/complete/buy");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         log.info("구매 업데이트 실패");
-        return new ResponseEntity<>("BUY_FAIL", HttpStatus.INTERNAL_SERVER_ERROR);
+        type = "fail";
+        response.put("type", type);
+        response.put("redirect", "/pay/fail" + purchaseNo);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**
      * 결제 완료 페이지
      * @param type : buy
      * @return
-     * 결제 또는 판매 완료 후 유저에게 완료 타입을 전달하는 역할
-     *  실제로 데이터베이스를 업데이트하거나 처리하는 작업 X
      */
     @GetMapping("/complete/{type}")
-    public ResponseEntity<Map<String, String>> getResult(@PathVariable("type") String type) {
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<Object> getResult(@PathVariable("type") String type) {
+        Map<String, Object> response = new HashMap<>();
         response.put("type", type);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
