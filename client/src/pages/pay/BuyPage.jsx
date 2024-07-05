@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { buy, getProductBypNo } from '../../apis/pay/pay'; // 경로를 올바르게 설정합니다.
+import { buy } from '../../apis/pay/pay'; 
+import { getProductBypNo } from '../../apis/product/product'; 
 import ProductInfo from '../../components/pay/ProductInfo';
 import AddressContainer from '../../containers/pay/AddressContainer';
 import PaymentContainer from '../../containers/pay/PaymentContainer';
