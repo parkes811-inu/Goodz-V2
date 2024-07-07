@@ -175,6 +175,8 @@ public class ProductController {
     @GetMapping("/detail/{pNo}")
     public ResponseEntity<Map<String, Object>> productDetailPage(@PathVariable("pNo") Integer pNo, HttpSession session) throws Exception {
 
+        log.info(("상품 상세 페이지 "));
+
         Map<String, Object> response = new HashMap<>();
 
         // 세션 정보 세팅
@@ -184,7 +186,10 @@ public class ProductController {
         Product product = productService.getProductBypNo(pNo);
         List<ProductOption> options = productService.getProductOptionsByProductId(pNo);
         product.setOptions(options);
-
+        log.info("================================");
+        log.info("product : " + product);
+        log.info("options : " + options);
+        log.info("================================");
         Files file = new Files();
         file.setParentNo(pNo);
         file.setParentTable(product.getCategory());
