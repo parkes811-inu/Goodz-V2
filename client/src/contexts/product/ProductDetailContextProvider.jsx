@@ -1,23 +1,28 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 export const ProductDetailContext = createContext();
 
-const ProductDetailContextProvider = ({ children, endpoint, pNo }) => {
+const ProductDetailContextProvider = ({ children }) => {
+  const { pNo } = useParams(); // useParams를 사용하여 pNo를 가져옴
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchProduct = useCallback(async () => {
     try {
-      const response = await axios.get(`${endpoint}/${pNo}`);
+      const response = await axios.get(`/product/detail/${pNo}`);
       console.log('Fetched product:', response.data); // 디버깅용 로그
-      setProduct(response.data);
+      console.log(response.data.product.pno);
+      console.log(pNo);
+      const mappedData = mapProductData(response.data); // 데이터 매핑 함수 사용
+      setProduct(mappedData);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching product:', error);
       setLoading(false);
     }
-  }, [endpoint, pNo]);
+  }, [pNo]);
 
   useEffect(() => {
     fetchProduct();
@@ -28,6 +33,16 @@ const ProductDetailContextProvider = ({ children, endpoint, pNo }) => {
       {children}
     </ProductDetailContext.Provider>
   );
+};
+
+const mapProductData = (data) => {
+  return {
+    ...data,
+    product: {
+      ...data.product,
+      pNo: data.product.pno,
+    }
+  };
 };
 
 export default ProductDetailContextProvider;

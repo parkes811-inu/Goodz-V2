@@ -1,6 +1,10 @@
 import React from 'react';
 
-const ProductOptions = ({ options }) => {
+const ProductOptions = ({ options, setSelectedSize }) => {
+    const handleSizeClick = (size) => {
+        setSelectedSize(size);
+    };
+
     return (
         <div className="product-options">
             <button id="sizeButton" name="size" className="form-select w-100" data-bs-toggle="modal" data-bs-target="#sizeModal">
@@ -15,7 +19,13 @@ const ProductOptions = ({ options }) => {
                         </div>
                         <div className="modal-body">
                             {options.map((option, index) => (
-                                <button className="btn btn-outline-secondary size-option" data-size={option.size} data-price={option.optionPrice} key={index}>
+                                <button 
+                                    className="btn btn-outline-secondary size-option" 
+                                    data-size={option.size} 
+                                    data-price={option.optionPrice} 
+                                    key={index}
+                                    onClick={() => handleSizeClick(option.size)}
+                                >
                                     {option.size}
                                 </button>
                             ))}

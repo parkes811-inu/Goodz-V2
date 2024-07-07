@@ -19,7 +19,7 @@ const ProductCarousel = ({ images }) => {
             <div className="carousel-inner">
                 {images.map((image, index) => (
                     <div className={`carousel-item${index === 0 ? ' active' : ''}`} key={index}>
-                        <img src={`/files/${image.no}`} alt={image.filePath} className="d-block w-100" />
+                        <img src={`/files/${image.no}`} alt={image.filePath} className="d-block w-100 h-100" />
                     </div>
                 ))}
             </div>

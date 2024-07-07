@@ -1,13 +1,14 @@
 import React from 'react';
 import ProductContainer from '../../containers/product/ProductContainer';
 import MainLayout from '../../layout/MainLayout';
+import ProductContextProvider from '../../contexts/product/ProductContextProvider';
 
 const Accessory = () => {
   return (
     <MainLayout>
-      <div className="container">
-        <ProductContainer />
-      </div>
+      <ProductContextProvider category="accessory">
+        <ProductContainer category="accessory" />
+      </ProductContextProvider>
     </MainLayout>
   );
 };
