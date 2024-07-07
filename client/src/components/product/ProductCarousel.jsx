@@ -2,7 +2,7 @@ import React from 'react';
 
 const ProductCarousel = ({ images }) => {
     return (
-        <div id="carouselExampleIndicators" className="carousel slide">
+        <div id="carouselExampleIndicators" className="carousel slide" data-bs-ride="carousel">
             <div className="carousel-indicators">
                 {images.map((image, index) => (
                     <button
@@ -19,7 +19,7 @@ const ProductCarousel = ({ images }) => {
             <div className="carousel-inner">
                 {images.map((image, index) => (
                     <div className={`carousel-item${index === 0 ? ' active' : ''}`} key={index}>
-                        <img src={`/files/img?imgUrl=${image.filePath}`} alt={image.filePath} />
+                        <img src={`/files/${image.no}`} alt={image.filePath} className="d-block w-100" />
                     </div>
                 ))}
             </div>
