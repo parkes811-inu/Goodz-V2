@@ -27,6 +27,7 @@ const ProfileContainer = ({nickname}) => {
     }
     
     // 🔁 프로필 유저
+    // const [profileNickname, setprofileNickname] = useState(`${nickname}`)
     const [profileUser, setProfileUser] = useState({});
     const [followers, setFollowers] = useState([]);
     const [followings, setFollowings] = useState([]);
@@ -43,6 +44,7 @@ const ProfileContainer = ({nickname}) => {
             // console.log(data.postList);
             setProfileUser(data.profileUser);
             setPostList(data.postList);
+            // setprofileNickname(nickname)
             
         } catch (error) {
             console.error('게시글을 가져오는 중 오류 발생:', error);
@@ -212,6 +214,13 @@ const ProfileContainer = ({nickname}) => {
         getFollowers(profileUser.userId);   // 프로필 계정의 팔로워 조회
         getFollowings(profileUser.userId);  // 프로필 계정의 팔로잉 조회
     }, [postList])
+
+    // Link를 통해 url 경로의 요청프로필이 달라졌을 때, 재세팅처리
+    useEffect(()=>{
+        setMFollower(false);    // 모달창 닫기
+        setMFollowing(false);   // 모달창 닫기
+        getPostList();
+    }, [nickname])
 
     return (
         <>

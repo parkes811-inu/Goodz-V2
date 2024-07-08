@@ -9,7 +9,6 @@ import BtnFollow from '../post/BtnFollow';
 const ModalFollow = ({ show, onHide, title, followList, handleFollow}) => {
 
     const [modalShow, setModalShow] = React.useState(false);
-    // console.log("자증난다")
     // console.log(followList)
 
     return (

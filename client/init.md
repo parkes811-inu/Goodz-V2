@@ -11,6 +11,8 @@ npm install sweetalert2-react-content
 
 ## 기본 방식의  bootstrap
 npm install bootstrap
+## 리액트 컴포넌트 기반의 bootstrap
+npm install react-bootstrap
 
 ## 날짜 포맷
 npm install date-fns
@@ -25,10 +27,3 @@ const MyComponent = () => {
 }
 
 ```
-
-
-
-# ####################### 쓸지 말지 모르겠웡 #######################
-# 라이브러리 설치
-## 리액트 컴포넌트 기반의 bootstrap
-npm install react-bootstrap
