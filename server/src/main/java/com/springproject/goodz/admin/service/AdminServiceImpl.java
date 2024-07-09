@@ -10,6 +10,9 @@ import com.springproject.goodz.admin.mapper.AdminMapper;
 import com.springproject.goodz.pay.dto.Purchase;
 import com.springproject.goodz.product.dto.Page;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class AdminServiceImpl implements AdminService {
 
@@ -37,6 +40,7 @@ public class AdminServiceImpl implements AdminService {
     // 유저가 판매한 상품 단일 조회
     @Override
     public Map<String, Object> userSale(int sNo) throws Exception {
+        // log.info(adminMapper.userSale(sNo).toString());
         return adminMapper.userSale(sNo);
     }
 

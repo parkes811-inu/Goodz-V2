@@ -27,3 +27,14 @@ const MyComponent = () => {
 }
 
 ```
+
+# ####################### 쓸지 말지 모르겠웡 #######################
+# 라이브러리 설치
+## props 타입을 검사하는 데 사용되는 라이브러리
+npm install prop-types
+
+## chart.js 패키지 라이브러리
+npm install chart.js chartjs-plugin-datalabels
+
+## Popper.js 라이브러리
+npm install bootstrap@5.1.3 @popperjs/core

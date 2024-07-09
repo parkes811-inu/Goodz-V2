@@ -72,7 +72,7 @@ public class ProductController {
     // DecimalFormat 인스턴스 한 번 생성
     DecimalFormat decimalFormat = new DecimalFormat("#,### 원");
 
-    @GetMapping("")
+    @GetMapping("/shop")
     public ResponseEntity<List<Product>> index() throws Exception {
 
         List<Product> productList = productService.list();
@@ -175,6 +175,8 @@ public class ProductController {
     @GetMapping("/detail/{pNo}")
     public ResponseEntity<Map<String, Object>> productDetailPage(@PathVariable("pNo") Integer pNo, HttpSession session) throws Exception {
 
+        log.info(("상품 상세 페이지 "));
+
         Map<String, Object> response = new HashMap<>();
 
         // 세션 정보 세팅
@@ -184,7 +186,10 @@ public class ProductController {
         Product product = productService.getProductBypNo(pNo);
         List<ProductOption> options = productService.getProductOptionsByProductId(pNo);
         product.setOptions(options);
-
+        log.info("================================");
+        log.info("product : " + product);
+        log.info("options : " + options);
+        log.info("================================");
         Files file = new Files();
         file.setParentNo(pNo);
         file.setParentTable(product.getCategory());
@@ -423,6 +428,7 @@ public class ProductController {
         return ResponseEntity.ok(accessoryList);
     }
 
+    // const response = await fetch(`/product/brand/products?page=${page}&size=${size}&brand=${brand}&category=${category}&pNo=${pNo}`);
     // 인피니티 스크롤을 위한 컨트롤러
     @GetMapping("/brand/products")
     public ResponseEntity<List<Product>> getBrandProducts(@RequestParam("page") int page, 
@@ -477,4 +483,5 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 }
+
 

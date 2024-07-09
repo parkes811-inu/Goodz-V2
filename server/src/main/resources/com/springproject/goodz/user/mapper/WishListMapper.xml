@@ -21,8 +21,8 @@
 
     <!-- 저장 off -> on -->
     <insert id="wishOn">
-        INSERT INTO wishList (user_id, parent_table, parent_no)
-        VALUES (#{userId}, #{parentTable}, #{parentNo})
+        INSERT INTO wishList (user_id, parent_table, parent_no, created_at)
+        VALUES (#{userId}, #{parentTable}, #{parentNo}, now())
     </insert>
 
     <!-- 저장 on -> off -->
@@ -53,4 +53,10 @@
         LIMIT 4;
     </select>
 
+    <!-- 저장 체크 여부 - id 기준 -->
+    <select id="listById2" resultType="int">
+        SELECT count(*)
+        FROM wishList
+        WHERE user_id = #{userId} and parent_table = #{parentTable} and parent_no = #{parentNo}
+    </select>
 </mapper>

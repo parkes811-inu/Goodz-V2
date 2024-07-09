@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { getAllBrands, registerProduct, registerProductOption } from '../../apis/admin/admin';
+import { fileInsert } from '../../apis/file';
 import ProductDetails from '../../components/admin/ProductDetails';
 import ProductOptions from '../../components/admin/ProductOptions';
 import ProductImages from '../../components/admin/ProductImages';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 
-const shoeSizes = [220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280];
-const clothingSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'FREE'];
-const elseSize = ['FREE'];
+const shoeSizes = ['선택', 220, 225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280];
+const clothingSizes = ['선택', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'FREE'];
+const elseSize = ['선택', 'FREE'];
 
 function ProductInsertContainer() {
 
@@ -67,6 +68,7 @@ function ProductInsertContainer() {
         
         // ⭐ ProductOptions 컴포넌트에서 가져온 옵션배열을 가져와서 foreach돌려서 옵션입력란 행 갯수만큼 반복하여 append
         product.options.forEach((option, index) => {
+    
             formData.append('sizes', option.size);
             // formData.append('optionPrices', option.optionPrice);
             formData.append('optionPrices', option.price);
@@ -103,6 +105,10 @@ function ProductInsertContainer() {
             // }
 
             navigate('/admin/products');
+            
+             // fileInsert를 마지막에 실행
+             const fileResponse = await fileInsert(formData);
+             console.log('Files inserted successfully:', fileResponse.data);
 
         } catch (error) {
             console.error('There was an error registering the product:', error);
@@ -122,52 +128,49 @@ function ProductInsertContainer() {
 
     return (
         <div className="container mt-5">
-            <div className="userMainContainer">
-                <p className="fs-4 fw-bold p-0">상품 등록</p>
-                <form onSubmit={handleFormSubmit} id="add_product-form" style={{ maxWidth: '600px' }}>
-                    <div className="row mb-3">
-                        <div className="col-md-8">
-                            <label htmlFor="brand" className="form-label">브랜드</label>
-                            <select 
-                                className="form-select" 
-                                name="bName" 
-                                id="brand" 
-                                value={product.brand} 
-                                onChange={(e) => setProduct(prev => ({ ...prev, brand: e.target.value }))}
-                            >
-                                <option value="" disabled>브랜드 선택</option>
-                                {Array.isArray(brandListAll) && brandListAll.map((brand, index) => (
-                                    <option key={index} value={brand.bName}>{brand.bName}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="col-md-4">
-                            <label htmlFor="category" className="form-label">카테고리</label>
-                            <select 
-                                className="form-select" 
-                                id="category" 
-                                name="category" 
-                                value={product.category} 
-                                onChange={(e) => setProduct(prev => ({ ...prev, category: e.target.value }))}
-                                required
-                            >
-                                <option value="" disabled>카테고리 선택</option>
-                                <option value="top">상의</option>
-                                <option value="pants">하의</option>
-                                <option value="shoes">신발</option>
-                                <option value="accessory">악세사리</option>
-                            </select>
-                            <div className="invalid-feedback">
-                                카테고리를 선택해주세요.
-                            </div>
+            <form onSubmit={handleFormSubmit} id="add_product-form" style={{ maxWidth: '600px' }}>
+                <div className="row mb-3">
+                    <div className="col-md-8">
+                        <label htmlFor="brand" className="form-label">브랜드</label>
+                        <select 
+                            className="form-select" 
+                            name="bName" 
+                            id="brand" 
+                            value={product.brand} 
+                            onChange={(e) => setProduct(prev => ({ ...prev, brand: e.target.value }))}
+                        >
+                            <option value="" disabled>브랜드 선택</option>
+                            {Array.isArray(brandListAll) && brandListAll.map((brand, index) => (
+                                <option key={index} value={brand.bName}>{brand.bName}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="col-md-4">
+                        <label htmlFor="category" className="form-label">카테고리</label>
+                        <select 
+                            className="form-select" 
+                            id="category" 
+                            name="category" 
+                            value={product.category} 
+                            onChange={(e) => setProduct(prev => ({ ...prev, category: e.target.value }))}
+                            required
+                        >
+                            <option value="" disabled>카테고리 선택</option>
+                            <option value="top">상의</option>
+                            <option value="pants">하의</option>
+                            <option value="shoes">신발</option>
+                            <option value="accessory">악세사리</option>
+                        </select>
+                        <div className="invalid-feedback">
+                            카테고리를 선택해주세요.
                         </div>
                     </div>
-                    <ProductDetails product={product} setProduct={setProduct} />
-                    <ProductOptions product={product} setProduct={setProduct} sizes={product.sizes} />
-                    <ProductImages product={product} setProduct={setProduct} />
-                    <button type="submit" className="btn btn-dark btn-block my-4 w-100" style={{ backgroundColor: '#393E46' }}>등록 완료</button>
-                </form>
-            </div>
+                </div>
+                <ProductDetails product={product} setProduct={setProduct} />
+                <ProductOptions product={product} setProduct={setProduct} sizes={product.sizes} />
+                <ProductImages product={product} setProduct={setProduct} />
+                <button type="submit" className="btn btn-dark btn-block my-4 w-100" style={{ backgroundColor: '#393E46' }}>등록 완료</button>
+            </form>
         </div>
     );
 }

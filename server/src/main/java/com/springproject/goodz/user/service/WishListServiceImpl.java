@@ -83,6 +83,12 @@ public class WishListServiceImpl implements WishListService {
         return wishListMapper.fourByParent(wish);
     }
 
+    @Override
+    public List<Wish> listById2(String parentTable, String userId) throws Exception {
+        List<Wish> wishList = wishListMapper.listById2(parentTable, userId);
+        return wishList;
+    }
+
 
     
 }

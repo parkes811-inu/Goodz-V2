@@ -1,9 +1,16 @@
-import React from 'react'
+import React from 'react';
+import ProductContainer from '../../containers/product/ProductContainer';
+import MainLayout from '../../layout/MainLayout';
+import ProductContextProvider from '../../contexts/product/ProductContextProvider';
 
 const Accessory = () => {
   return (
-    <div>Accessory</div>
-  )
-}
+    <MainLayout>
+      <ProductContextProvider category="accessory">
+        <ProductContainer category="accessory" />
+      </ProductContextProvider>
+    </MainLayout>
+  );
+};
 
-export default Accessory
+export default Accessory;

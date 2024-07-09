@@ -27,7 +27,7 @@ const BrandInsertContainer = () => {
   };
 
   return (
-    <div className="container">
+    <div className="MainContainer">
       <div className="pagetitle">
         <p>브랜드 등록</p>
       </div>

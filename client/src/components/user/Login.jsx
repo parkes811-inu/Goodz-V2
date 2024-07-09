@@ -19,6 +19,9 @@ const Login = () => {
     }
 
     const handleSocialLogin = (provider) => {
+        setRememberId(false); // 소셜 로그인 시 rememberId 초기화
+        setUserId(''); // 소셜 로그인 시 userId 초기화
+        localStorage.setItem("rememberMe", false);
         // http://localhost:3000/login/oauth2/code/kakao
         window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
     };
@@ -88,7 +91,7 @@ const Login = () => {
                     </form>
 
                     <div className="userLinks text-center my-3">
-                        <Link to="/user/signup">회원가입</Link> <span>|</span> <Link to="/user/findID">아이디 찾기</Link> <span>|</span> <Link to="/user/findPW">비밀번호 찾기</Link>
+                        <Link to="/users/signup">회원가입</Link> <span>|</span> <Link to="/users/findID">아이디 찾기</Link> <span>|</span> <Link to="/users/findPW">비밀번호 찾기</Link>
                     </div>
 
                     <hr className="mt-4" />
