@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import { LoginContext } from '../../contexts/LoginContextProvider';
@@ -7,49 +7,87 @@ import SearchedItem from '../../components/post/SearchedItem';
 import MainBtn from '../../components/common/MainBtn';
 import TagItem from '../../components/post/TagItem';
 import * as tag from '../../apis/post/tag';
+import * as post from '../../apis/post/post';
 
 const InsertContainer = () => {
+
+    const navigate = useNavigate();
 
     // 유저 정보
     const {userInfo} = useContext(LoginContext);
     const userId = userInfo ? userInfo.userId : null;
 
-    const[content, setContent] = useState("");              // 게시글 내용
-    const[attachedFiles, setAttachedFiles] = useState([]);  // 첨부 이미지
-    const[mainImgIndex, setMainImgIndex] = useState(0);     // 대표이미지 인덱스번호
-    const[searchKeyWord, setSearchKeyword] = useState('');  // 상품태그 검색 키워드
-    const[searchedItems, setSearchedItems] = useState([]);  // 검색된 상품
-    const[addedTags, setAddedTags] = useState([]);          // 추가된 상품
+    const [content, setContent] = useState("");             // 게시글 내용
+    const [attachedFiles, setAttachedFiles] = useState([]); // 첨부 이미지
+    const [previewImages, setPreviewImages] = useState([]); // 첨부 이미지 미리보기       
+    const fileInputRef = useRef(null);                      // 대표이미지 선택
+    const [mainImgIndex, setMainImgIndex] = useState(0);    // 대표이미지 인덱스번호
+    const [searchKeyWord, setSearchKeyword] = useState(''); // 상품태그 검색 키워드
+    const [searchedItems, setSearchedItems] = useState([]); // 검색된 상품
+    const [addedTags, setAddedTags] = useState([]);         // 추가된 상품
 
-    /* 게시글 관련 */
+    /* 📄 게시글 관련 */
     // 내용 작성 감지
     const handleContent = (e) => {
         setContent(e.target.value);
         // console.log(e.target.value)
     }
+    
+    /* 💾첨부이미지 */
+    // 첨부이미지 미리보기 제공
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        const newPreviewImages = files.map(file => ( {file, url: URL.createObjectURL(file)} ))
+        setPreviewImages(newPreviewImages);
+        setAttachedFiles(files);
+    }
+    // 대표이미지 선택
+    const selectMainImg = (index)=> {
+        setMainImgIndex(index);
+    }
 
     // 게시글 등록 처리
-    const onSubmit = (e) => {
+    const onSubmit = async(e) => {
+
+        // console.log(content)
+        // console.log(attachedFiles)
+        // console.log(mainImgIndex)
+        // console.log(addedTags)
+
         e.preventDefault();
-        // const form = e. target;
-        // form.pr
+
         const formData = new FormData();
+        formData.append('userId', userId);
         formData.append('content', content);
-        // formData.append('attachedFiles', attachedFiles);
-        attachedFiles.forEach(file => {
-            formData.append('attachedFiles', file);
-        })
+        attachedFiles.forEach((file, index) => {
+            formData.append(`attachedFiles[${index}]`, file);
+        });
         formData.append('mainImgIndex', mainImgIndex);
-        // formData.append('taggedProducts', addedTags);
-        addedTags.forEach(tag => {
-            formData.append('taggedProducts', tag.no);
-        })
+        addedTags.forEach((tag, index) => {
+            formData.append(`taggedProducts[${index}]`, tag.pno);
+        });
+
+        const headers = {
+            headers: {
+                'conxtent-Type': 'multipart/form-data'
+            }
+        }
+
+        try {
+            const response = await post.insert(formData, headers);
+            const data = response.data;         // 처리 성공 시, 작성자의 닉네임을 반환함.
+            // console.log(data);
+            navigate(`/styles/user/@${data}`);
+        } catch (error) {
+            console.error("에러발생...", error);            
+        }
+
 
     }
 
-    /* 첨부이미지 */
 
-    /* 상품태그 관련 */
+
+    /* 🎫상품태그 관련 */
     // 💨상품태그 검색 감지 & 검색처리
     const handleSearchInput = async(e) => {
         setSearchKeyword(e.target.value);
@@ -64,14 +102,14 @@ const InsertContainer = () => {
             // console.log(e.target.value);
             const response = await tag.searchItems(searchKeyWord);
             const data = response.data;
-            console.log(response.data);
+            // console.log(response.data);
             setSearchedItems(data);
         }
     }
 
     // 상품태그 추가
     const addTag = (product) => {
-        console.log(product);
+        // console.log(product);
         // 이미 존재하는 상품인지 확인
         const isExisting = addedTags.some(tag => tag.pno === product.pno);  // 기존의 배열을 순회하며 조건을 체크 ➡️ 이미 존재하는 상품인지 확인
         // console.log("존재여부: " +  isExisting);
@@ -89,13 +127,13 @@ const InsertContainer = () => {
 
     // 상품태그 삭제
     const removeTag = (product) => {
-        console.log("상품태그 삭제요청")
-        console.log(product);
+        // console.log("상품태그 삭제요청")
+        // console.log(product);
 
         const updatedTags = addedTags.filter(tag => tag.pno !== product.pno);
 
         setAddedTags(updatedTags);
-        console.log(updatedTags);
+        // console.log(updatedTags);
     }
 
 
@@ -144,10 +182,20 @@ const InsertContainer = () => {
                     <form id="form"style={{width:'600px'}} onSubmit={(e)=> onSubmit(e)}>
                         {/* <!-- 이미지첨부 --> */}
                         <span className="form-text">최대 10장</span>
-                        <input id="imageInput" name="attachedFiles" className="form-control" type="file"  multiple />
+                        <input ref={fileInputRef} name="attachedFiles" className="form-control" type="file"  multiple onChange={handleFileChange}/>
 
                         {/* <!-- 첨부파일 미리보기 --> */}
-                        <div id="imagePreview" style={{ height: '100%', padding: '15px'}}></div>
+                        <div id="imagePreview" style={{ height: '100%', padding: '15px'}}>
+                            {previewImages.map( (img, index) => (
+                                <img key={index} src={img.url} alt='첨부이미지' width={100} height={100} style={{
+                                    cursor: 'pointer',
+                                    border: index === mainImgIndex ? '2px solid red':'none',
+                                    margin: '5px'
+                                }}
+                                onClick={() => selectMainImg(index)}
+                                />
+                            ))}
+                        </div>
 
                         {/* <!-- 대표로 선택한 이미지가 넘어감 --> */}
                         <input type="hidden" name="mainImgIndex" value={mainImgIndex} />

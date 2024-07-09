@@ -1,30 +1,23 @@
 package com.springproject.goodz.post.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springproject.goodz.post.dto.Like;
@@ -36,7 +29,6 @@ import com.springproject.goodz.post.service.TagService;
 import com.springproject.goodz.product.dto.Product;
 import com.springproject.goodz.product.service.ProductService;
 import com.springproject.goodz.user.dto.CustomUser;
-import com.springproject.goodz.user.dto.Follow;
 import com.springproject.goodz.user.dto.Users;
 import com.springproject.goodz.user.dto.Wish;
 import com.springproject.goodz.user.service.FollowService;
@@ -45,7 +37,6 @@ import com.springproject.goodz.user.service.WishListService;
 import com.springproject.goodz.utils.dto.Files;
 import com.springproject.goodz.utils.service.FileService;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -273,12 +264,22 @@ public class PostController {
      * @return
      * @throws Exception 
      */
-    @PostMapping("/insert")
-    public ResponseEntity<String> insert( @RequestBody Post post, @RequestParam("taggedProducts")List<Integer>taggedProducts){
-        String response = "FAIL";
-        int result = 0;
+    @PostMapping("")
+    public ResponseEntity<String> insert(@ModelAttribute Post post, @AuthenticationPrincipal CustomUser customUser){
 
         log.info(post.toString());
+
+        // 로그인 유저 정보
+        // log.info("customUser : "+ customUser);
+
+        // Users loginUser = customUser.getUser();
+        // log.info("user : " + loginUser);
+        // post.setUserId(loginUser.getUserId());
+        
+        int result = 0;
+        List<Integer>taggedProducts = post.getTaggedProducts();
+
+
 
         /* ⬇️ 게시글 등록 처리⬇️ */
         try {
@@ -289,7 +290,7 @@ public class PostController {
             log.info("게시글 등록 처리 시, 예외발생");
             
             //데이터 처리 실패
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
+            return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
         }
 
         /* ⬇️ 상품태그 등록 처리 ⬇️ */
@@ -305,7 +306,7 @@ public class PostController {
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("(상품태그등록 직전) 최근 게시글번호 조회 시, 예외발생");
-                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
+                return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
             }
 
             for (Integer productNo : taggedProducts) {
@@ -320,19 +321,28 @@ public class PostController {
                 } catch (Exception e) {
                     e.printStackTrace();
                     log.info("상품태그 등록 시, 예외발생");
-                    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
+                    return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
                 }
-                response = "SUCCESS";
             }
         }
         // 상품태그 ❌
-        if(result>0 && (taggedProducts.size() == 0 || taggedProducts == null) ) {
+        if(result>0 && (taggedProducts == null || taggedProducts.size() == 0) ) {
             log.info("등록할 상품태그 없음");
-            response = "SUCCESS";
+        }
+
+        try {
+            Users user = userService.select(post.getUserId());
+
+            //데이터 처리 성공
+            return new ResponseEntity<>(user.getNickname(), HttpStatus.CREATED); // CREATED = 201
+
+        } catch (Exception e) {
+            log.info("유저 정보 조회 시, 예외발생");
+            e.printStackTrace();
         }
 
         //데이터 처리 성공
-        return new ResponseEntity<>(response, HttpStatus.CREATED); // CREATED = 201
+        return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
     }    
 
     /**
