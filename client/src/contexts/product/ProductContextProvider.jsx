@@ -3,25 +3,25 @@ import axios from 'axios';
 
 export const ProductContext = createContext();
 
-const ProductContextProvider = ({ children, endpoint }) => {
-  const [accessoryList, setAccessoryList] = useState([]);
+const ProductContextProvider = ({ children, category }) => {
+  const [products, setProducts] = useState([]);
 
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await axios.get(endpoint); // endpoint를 사용하여 API 호출
+      const response = await axios.get(`/product/${category}`);
       console.log('Fetched products:', response.data); // 디버깅용 로그
-      setAccessoryList(response.data);
+      setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
-  }, [endpoint]);
+  }, [category]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
   return (
-    <ProductContext.Provider value={{ accessoryList, fetchProducts }}>
+    <ProductContext.Provider value={{ products, fetchProducts }}>
       {children}
     </ProductContext.Provider>
   );

@@ -1,0 +1,4 @@
+.carousel-image {
+    max-height: 100px;
+    object-fit: cover; /* 이미지가 자르지 않고 부모 요소에 맞게 조절되도록 설정 */
+}
