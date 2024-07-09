@@ -1,49 +1,48 @@
-import React, { useEffect, useRef } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
+import React from 'react';
+import { Modal, Button } from 'react-bootstrap';
 
-const TransactionModal = ({ show, onClose, type, product, formattedMinPrice, selectedSize }) => {
-  const modalRef = useRef(null);
+const TransactionModal = ({ show, handleClose, handleTransaction, transactionType, product, selectedSize, setSelectedSize, selectedPrice, setSelectedPrice }) => {
 
-  useEffect(() => {
-    const modalElement = modalRef.current;
-    if (modalElement) {
-      const modalInstance = new window.bootstrap.Modal(modalElement, {
-        backdrop: 'static',
-        keyboard: false,
-      });
-
-      if (show) {
-        modalInstance.show();
-      } else {
-        modalInstance.hide();
-      }
-
-      return () => {
-        modalInstance.dispose();
-      };
-    }
-  }, [show]);
+  const handleSizeClick = (size, price) => {
+    setSelectedSize(size);
+    setSelectedPrice(price);
+  };
 
   return (
-    <div className="modal fade" ref={modalRef} id="transactionModal" tabIndex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="transactionModalLabel">{type === 'purchase' ? '구매하기' : '판매하기'}</h5>
-            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={onClose}></button>
-          </div>
-          <div className="modal-body">
-            <p>상품명: {product.productName}</p>
-            <p>사이즈: {selectedSize}</p>
-            <p>가격: {formattedMinPrice}</p>
-          </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-dark" id="confirmTransactionButton">거래하기</button>
-          </div>
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>{transactionType === 'purchase' ? '구매하기' : '판매하기'}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div>
+          <h5>사이즈 선택</h5>
+          {product.options.map((option, index) => (
+            <Button
+              variant="outline-secondary"
+              className="size-option w-100 mb-2"
+              key={index}
+              data-size={option.size}
+              data-price={option.optionPrice}
+              onClick={() => handleSizeClick(option.size, option.optionPrice)}
+            >
+              {option.size} - {option.optionPrice}원
+            </Button>
+          ))}
         </div>
-      </div>
-    </div>
+        <div className="mt-3">
+          <p>선택된 사이즈: {selectedSize}</p>
+          <p>선택된 가격: {selectedPrice}원</p>
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          취소
+        </Button>
+        <Button variant="primary" onClick={handleTransaction}>
+          거래하기
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

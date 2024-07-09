@@ -1,4 +1,5 @@
 import React from 'react';
+import './css/ProductCarousel.css'; 
 
 const ProductCarousel = ({ images }) => {
     return (

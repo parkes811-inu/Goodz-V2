@@ -42,30 +42,57 @@ public class WishListController {
 
     // @RequestParam("parentTable") String parentTable, @RequestParam("parentNo") int parentNo
 
-    // /**
-    //  * 관심리스트 조회 - 부모테이블, 유저아이디 기준
-    //  * @param parentTable
-    //  * @param userId
-    //  * @return
-    //  */
+    /**
+     * 관심리스트 조회 - 부모테이블, 유저아이디 기준
+     * @param parentTable
+     * @param userId
+     * @return
+     * @throws Exception 
+     */
     // @GetMapping("/parentTable={parentTable}&userId={userId}")
-    // public ResponseEntity<?> listbyId(@RequestParam("parentTable") String parentTable, @RequestParam("userId") String userId) {
+    // public ResponseEntity<?> listbyId(@RequestParam("parentTable") String parentTable, @RequestParam("userId") String userId, @RequestParam("parentNo") int parentNo) {
     //     log.info("ID-{} 기준 관심{}조회", userId, parentTable);
 
-    //     List<Wish> wishList = new ArrayList<>();
+    //     Wish wish = new Wish();
+    //     wish.setParentTable(parentTable);
+    //     wish.setUserId(userId);
+    //     wish.setParentNo(parentNo);
 
+    //     boolean result;
     //     try {
-    //         wishList = wishListService.listById(parentTable, userId);
-    //         log.info(wishList.toString());
+    //         result = wishListService.listById(wish);
+    //         // log.info(wishList.toString());
 
+    //         if(result == true) {
+    //             return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    //         } else {
+    //             return new ResponseEntity<>("FAIL", HttpStatus.OK);
+    //         }
     //     } catch (Exception e) {
     //         log.info("관심리스트 조회 중 예외 발생");
     //         e.printStackTrace();
     //     }
+    //     return null;
 
-    //     return new ResponseEntity<>(wishList, HttpStatus.OK);
     // }
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Boolean>> getWishlistStatus(@RequestParam("parentTable") String parentTable,
+                                                                @RequestParam("parentNo") int parentNo,
+                                                                @RequestParam("userId") String userId) throws Exception {
+        log.info("Checking wishlist status for userId: {}, parentTable: {}, parentNo: {}", userId, parentTable, parentNo);
+        Wish wish = new Wish();
+        wish.setParentTable(parentTable);
+        wish.setUserId(userId);
+        wish.setParentNo(parentNo);
     
+        boolean isWishlisted = wishListService.listById(wish);
+        
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isWishlisted", isWishlisted);
+        
+        return ResponseEntity.ok(response);
+    }
+
 
     /**
      * 저장 등록 요청 (off -> on)

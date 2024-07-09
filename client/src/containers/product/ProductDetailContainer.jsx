@@ -79,7 +79,7 @@ const ProductDetailContainer = () => {
         </div>
         
         <TaggedPosts taggedPosts={product.taggedPosts} />
-        <RelatedProducts brand={product.product.bname} category={product.product.category} productNo={product.product.pNo} />
+        <RelatedProducts brand={product.product.bname} category={product.product.category} pNo={product.product.pNo} />
       </div>
     </div>
   );

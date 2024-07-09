@@ -428,6 +428,7 @@ public class ProductController {
         return ResponseEntity.ok(accessoryList);
     }
 
+    // const response = await fetch(`/product/brand/products?page=${page}&size=${size}&brand=${brand}&category=${category}&pNo=${pNo}`);
     // 인피니티 스크롤을 위한 컨트롤러
     @GetMapping("/brand/products")
     public ResponseEntity<List<Product>> getBrandProducts(@RequestParam("page") int page, 
@@ -482,4 +483,5 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 }
+
 

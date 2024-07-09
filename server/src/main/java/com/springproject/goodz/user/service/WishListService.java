@@ -10,6 +10,7 @@ public interface WishListService {
     public boolean listById(Wish wish) throws Exception;
     // public List<Wish> listById(String parentTable, String userId) throws Exception;
 
+    public List<Wish> listById2(String parentTable, String userId) throws Exception;
     // 저장 갯수 가져오기
     public int countWish(Wish wish) throws Exception;
 

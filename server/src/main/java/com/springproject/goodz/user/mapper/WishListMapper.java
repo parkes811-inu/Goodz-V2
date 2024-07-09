@@ -32,4 +32,6 @@ public interface WishListMapper {
     // 최근 관심상품 4개 조회 - 유저 마이페이지 메인화면 조회용
     public List<Wish> fourByParent (Wish wish) throws Exception;
     
+    public List<Wish> listById2(String parentTable, String userId) throws Exception;
+
 }
