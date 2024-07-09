@@ -27,6 +27,7 @@ const ProfileContainer = ({nickname}) => {
     }
     
     // 🔁 프로필 유저
+    // const [profileNickname, setprofileNickname] = useState(`${nickname}`)
     const [profileUser, setProfileUser] = useState({});
     const [followers, setFollowers] = useState([]);
     const [followings, setFollowings] = useState([]);
@@ -43,6 +44,7 @@ const ProfileContainer = ({nickname}) => {
             // console.log(data.postList);
             setProfileUser(data.profileUser);
             setPostList(data.postList);
+            // setprofileNickname(nickname)
             
         } catch (error) {
             console.error('게시글을 가져오는 중 오류 발생:', error);
@@ -213,6 +215,13 @@ const ProfileContainer = ({nickname}) => {
         getFollowings(profileUser.userId);  // 프로필 계정의 팔로잉 조회
     }, [postList])
 
+    // Link를 통해 url 경로의 요청프로필이 달라졌을 때, 재세팅처리
+    useEffect(()=>{
+        setMFollower(false);    // 모달창 닫기
+        setMFollowing(false);   // 모달창 닫기
+        getPostList();
+    }, [nickname])
+
     return (
         <>
             {/* <!-- 유저 정보 --> */}
@@ -256,7 +265,7 @@ const ProfileContainer = ({nickname}) => {
                 {viewer === profileUser.userId ?
                     <>
                     {/*  본인프로필 ➡ 게시글 등록 */}
-                        <Link href="/styles/insert" className="p-0" style={{ color: "black", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "1px solid black", padding: "5px", borderRadius: "4px", textDecoration: "none" }}>
+                        <Link to={'/styles/insert'} className="p-0" style={{ color: "black", display: "inline-flex", alignItems: "center", justifyContent: "center", border: "1px solid black", padding: "5px", borderRadius: "4px", textDecoration: "none" }}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6" width="24px" height="24px">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>

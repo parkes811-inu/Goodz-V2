@@ -1,19 +1,13 @@
 package com.springproject.goodz.post.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.springproject.goodz.post.dto.Post;
-import com.springproject.goodz.post.dto.Tag;
 import com.springproject.goodz.post.mapper.PostMapper;
-import com.springproject.goodz.product.dto.Product;
-import com.springproject.goodz.product.service.ProductService;
 import com.springproject.goodz.utils.dto.Files;
 import com.springproject.goodz.utils.service.FileService;
 
@@ -28,9 +22,6 @@ public class PostServiceImpl implements PostService{
 
     @Autowired
     private FileService fileService;
-
-    
-
 
     // 게시글 목록
     @Override

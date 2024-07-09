@@ -35,11 +35,13 @@ import FindPW from './pages/user/FindPW';
 import ChangePW from './pages/user/changePW';
 import Add_address from './pages/user/Add_address';
 import ProductInsertPage from './pages/admin/ProductInsertPage';
+import Insert from './pages/post/Insert';
 import ProductContextProvider from './contexts/product/ProductContextProvider';
 import ProductDetailPage from './pages/product/ProductDetailPage';
 import ProductDetailContextProvider from './contexts/product/ProductDetailContextProvider';
 import PurchaseDetailPage from './pages/admin/PurchaseDetailPage';
 import BuyPage from './pages/pay/BuyPage';
+
 
 // 보호된 라우트를 위한 컴포넌트
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -219,6 +221,7 @@ function AppRoutes() {
       {/* styles */}
       <Route path="/styles/:postNo" element={<Read />} />
       <Route path='/styles/user/:nickname' element={<ProfilePage />}/>
+      <Route path='/styles/insert' element={<Insert />} />
     </Routes>
   );
 }

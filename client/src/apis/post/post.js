@@ -7,6 +7,7 @@ export const list = () => api.get("/styles");
 export const select = (postNo) => api.get(`/styles/${postNo}`);
 
 // 게시글 작성 처리
+export const insert = (postData, headers) => api.post(`/styles`, postData, headers);
 
 // 게시글 수정 처리
 

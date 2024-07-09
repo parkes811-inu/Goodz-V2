@@ -12,21 +12,22 @@ import lombok.Data;
 @Data
 public class Post {
     
-    private int postNo;                 // 게시글 번호
-    private String userId;              // 작성자 아이디
-    private String nickname;            // 작성자 닉네임 - dto 조회용
-    private int profileImgNo;           // 작성자 프로필이미지번호 - dto 조회용
-    private String content;             // 작성내용
+    private int postNo;                     // 게시글 번호
+    private String userId;                  // 작성자 아이디
+    private String nickname;                // 작성자 닉네임 - dto 조회용
+    private int profileImgNo;               // 작성자 프로필이미지번호 - dto 조회용
+    private String content;                 // 작성내용
 
-    private int likeCount;              // 좋아요 갯수
-    private int wishCount;              // 저장 갯수
-    private boolean isLiked;             // 좋아요 체크 여부 -> 'fill' / 'none'
-    private boolean isWished;        // 저장 체크 여부   -> 'fill' / 'none'
+    private int likeCount;                  // 좋아요 갯수
+    private int wishCount;                  // 저장 갯수
+    private boolean isLiked;                // 좋아요 체크 여부 -> 'fill' / 'none'
+    private boolean isWished;               // 저장 체크 여부   -> 'fill' / 'none'
 
-    private List<Product> tagList;      // 게시글에 종속된 상품태그
+    private List<Product> tagList;          // 게시글에 종속된 상품태그
+    private List<Integer> taggedProducts;   // 게시글 등록시 넘어오는 태그된 상품번호
     
-    private Date createdAt;             // 작성일자
-    private Date updatedAt;             // 수정일자
+    private Date createdAt;                 // 작성일자
+    private Date updatedAt;                 // 수정일자
 
     
     // 파일에 대한 변수를 받기위해 정보 추가

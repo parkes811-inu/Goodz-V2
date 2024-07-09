@@ -1,30 +1,23 @@
 package com.springproject.goodz.post.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springproject.goodz.post.dto.Like;
@@ -36,7 +29,6 @@ import com.springproject.goodz.post.service.TagService;
 import com.springproject.goodz.product.dto.Product;
 import com.springproject.goodz.product.service.ProductService;
 import com.springproject.goodz.user.dto.CustomUser;
-import com.springproject.goodz.user.dto.Follow;
 import com.springproject.goodz.user.dto.Users;
 import com.springproject.goodz.user.dto.Wish;
 import com.springproject.goodz.user.service.FollowService;
@@ -45,7 +37,6 @@ import com.springproject.goodz.user.service.WishListService;
 import com.springproject.goodz.utils.dto.Files;
 import com.springproject.goodz.utils.service.FileService;
 
-import io.micrometer.core.ipc.http.HttpSender.Response;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -53,15 +44,13 @@ import lombok.extern.slf4j.Slf4j;
 /*
  * 스타일 게시글
  * [GET]    /styles                     전체 게시글 목록
- * [GET]    /styles/게시글번호           게시글 조회
- * [GET]    /styles/update/게시글번호    게시글 수정페이지
- * [POST]   /styles/update              게시글 수정처리
- * [GET]    /styles/insert              게시글 수정페이지
- * [POST]   /styles/insert              게시글 작성처리
- * [POST]   /styles/delete/게시글번호    게시글 삭제
+ * [GET]    /styles/{postNo}            게시글 조회
+ * [POST]   /styles                     게시글 등록 처리
+ * [PUT]    /styles/update              게시글 수정 처리
+ * [DELETE] /styles/{postNo}            게시글 삭제 처리
  *     
  * 프로필    
- * [GET]    /styles/user/@닉네임     유저 프로필
+ * [GET]    /styles/user/@{nickname}    유저 프로필
  * 
  */
 
@@ -121,13 +110,10 @@ public class PostController {
 
             log.info("user : " + loginUser);
 
-            
             /* 좋아요 & 저장 세팅 */
             // 비 로그인 시, 좋아요 전체 해제
             if (loginUser == null) {
                 for (Post post : postList) {
-                    // post.setIsLiked("none");
-                    // post.setIsWished("none");
                     post.setLiked(false);
                     post.setWished(false);
                 }
@@ -142,11 +128,6 @@ public class PostController {
                     like.setPostNo(post.getPostNo());
                     boolean isChecked_like = likeService.listById(like);
                     
-                    // if (!isChecked_like) {
-                    //     post.setIsLiked("none");
-                    // } else {
-                    //     post.setIsLiked("solid");
-                    // }
                     post.setLiked(isChecked_like);
     
                     // 세션아이디와 게시글 번호 기준으로 저장 여부 확인
@@ -157,12 +138,7 @@ public class PostController {
                     // log.info("{}기준-{}번게시글-{}의 저장조회", "post", post.getPostNo(), loginUser.getUserId());
                     boolean isChecked_wishlist = wishListService.listById(wish);
                     // log.info("isChecked? : " + isChecked_wishlist);
-    
-                    // if (!isChecked_wishlist) {
-                    //     post.setIsWished("none");
-                    // } else {
-                    //     post.setIsWished("solid");
-                    // }
+
                     post.setWished(isChecked_wishlist);
                 }
             }
@@ -173,8 +149,6 @@ public class PostController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-                
     }
 
     
@@ -221,7 +195,6 @@ public class PostController {
         postDetails.put("tagList", taggedProducts);
         postDetails.put("tagCount", taggedProducts.size());
         
-        
         /* 💾 첨부파일 조회 */
         Files file = new Files();
         file.setParentTable("post");
@@ -230,7 +203,6 @@ public class PostController {
         
         postDetails.put("post", post);
         postDetails.put("fileList", fileList);
-        
         
         /* 👩‍💼 조회하는 유저 세팅 */
         log.info("::::: 좋아요/관심 세팅을 위한 customUser 조회 중 :::::");
@@ -281,33 +253,10 @@ public class PostController {
             boolean isChecked_wishlist = wishListService.listById(wish);
             post.setWished(isChecked_wishlist);
             
-            // // 세션아이디의 팔로우 목록 가져오기
-            // // 👤 세션계정 세팅 및 팔로잉 목록 가져오기
-            // Map<String, Object> followingDetails = followService.getFollowingDetails(loginUser.getUserId());
-            // loginUserFollowingList = (List<Users>) followingDetails.get("followingList");
-
         }
         
         return new ResponseEntity<>(postDetails, HttpStatus.OK);
     }
-    
-    // /**
-    //  * 게시글 등록 페이지
-    //  * @return
-    //  * @throws Exception 
-    //  */
-    // @GetMapping("/insert")
-    // public String moveToInsert(Model model,HttpSession session) throws Exception {
-
-    //     // 로그인된 user의 정보를 가져옴
-    //     Users loginUser= (Users)session.getAttribute("user");
-    //     loginUser = userService.select(loginUser.getUserId());
-    //     model.addAttribute("loginUser", loginUser);
-    //     log.info(loginUser.getNickname());
-    //     log.info("작성화면 이동...");
-
-    //     return "/post/insert";
-    // }
 
     /**
      * 게시글 등록 처리
@@ -315,12 +264,22 @@ public class PostController {
      * @return
      * @throws Exception 
      */
-    @PostMapping("/insert")
-    public ResponseEntity<String> insert( @RequestBody Post post, @RequestParam("taggedProducts")List<Integer>taggedProducts){
-        String response = "FAIL";
-        int result = 0;
+    @PostMapping("")
+    public ResponseEntity<String> insert(@ModelAttribute Post post, @AuthenticationPrincipal CustomUser customUser){
 
         log.info(post.toString());
+
+        // 로그인 유저 정보
+        // log.info("customUser : "+ customUser);
+
+        // Users loginUser = customUser.getUser();
+        // log.info("user : " + loginUser);
+        // post.setUserId(loginUser.getUserId());
+        
+        int result = 0;
+        List<Integer>taggedProducts = post.getTaggedProducts();
+
+
 
         /* ⬇️ 게시글 등록 처리⬇️ */
         try {
@@ -331,7 +290,7 @@ public class PostController {
             log.info("게시글 등록 처리 시, 예외발생");
             
             //데이터 처리 실패
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
+            return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
         }
 
         /* ⬇️ 상품태그 등록 처리 ⬇️ */
@@ -347,7 +306,7 @@ public class PostController {
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("(상품태그등록 직전) 최근 게시글번호 조회 시, 예외발생");
-                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
+                return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
             }
 
             for (Integer productNo : taggedProducts) {
@@ -362,97 +321,29 @@ public class PostController {
                 } catch (Exception e) {
                     e.printStackTrace();
                     log.info("상품태그 등록 시, 예외발생");
-                    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
+                    return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
                 }
-                response = "SUCCESS";
             }
         }
         // 상품태그 ❌
-        if(result>0 && (taggedProducts.size() == 0 || taggedProducts == null) ) {
+        if(result>0 && (taggedProducts == null || taggedProducts.size() == 0) ) {
             log.info("등록할 상품태그 없음");
-            response = "SUCCESS";
         }
 
-        // // 로그인된 user의 정보를 가져옴
-        // Users loginUser= (Users)session.getAttribute("user"); 
+        try {
+            Users user = userService.select(post.getUserId());
 
-        // // 프로필로 리다이렉트를 위해 닉네임 필요하므로 아이디로 회원 조회
-        // Users requested = userService.select(post.getUserId());
-        // log.info(requested.getNickname() + "의 프로필로 이동중...");
+            //데이터 처리 성공
+            return new ResponseEntity<>(user.getNickname(), HttpStatus.CREATED); // CREATED = 201
 
-        // List<Post> postList = postService.selectById(requested.getUserId());
-
-        // model.addAttribute("postList", postList);
-        // model.addAttribute("requested", requested);
-        // model.addAttribute("loginUser", loginUser);
+        } catch (Exception e) {
+            log.info("유저 정보 조회 시, 예외발생");
+            e.printStackTrace();
+        }
 
         //데이터 처리 성공
-        return new ResponseEntity<>(response, HttpStatus.CREATED); // CREATED = 201
+        return new ResponseEntity<>("FAIL", HttpStatus.INTERNAL_SERVER_ERROR); // CREATED = 201
     }    
-    
-   
-    // /**
-    //  * 게시글 수정 페이지
-    //  * @param postNo
-    //  * @param model
-    //  * @return
-    //  * @throws Exception
-    //  */
-    // @GetMapping("/update/{postNo}")
-    // public String moveToUpdate(@PathVariable("postNo")int postNo) throws Exception {
-
-    //     /* 게시글 조회 */
-    //     Post post = postService.select(postNo);
-    //     model.addAttribute("post", post);
-
-    //     /* 첨부파일 조회 */
-    //     Files file = new Files();
-    //     file.setParentTable("post");
-    //     file.setParentNo(post.getPostNo());
-    //     List<Files> fileList = fileService.listByParent(file);
-    //     model.addAttribute("fileList", fileList);
-
-    //     /* 상품태그리스트 조회 */
-    //     List<Product> tempList = post.getTagList();
-    //     List<Product> taggedProducts = new ArrayList<>();
-
-    //     log.info("::::태그된 상품 정보::::");
-    //     if (!tempList.isEmpty()) {
-    //         for (Product product : tempList) {
-    //             int productno = product.getPNo();
-    //             Product taggedProduct = productService.getProductBypNo(productno);
-
-    //             // 상품 대표이미지 가져오기
-    //             Files tagItemImg = new Files();
-    //             tagItemImg.setParentTable(taggedProduct.getCategory());
-    //             tagItemImg.setParentNo(taggedProduct.getPNo());
-    //             Files mainImg = fileService.selectMainImg(tagItemImg);
-    //             // 대표 이미지 번호 저장
-    //             taggedProduct.setMainImgNo(mainImg.getNo());
-    //             log.info("대표이미지번호: "+taggedProduct.getMainImgNo());
-                
-    //             // 태그 리스트에 저장
-    //             taggedProducts.add(taggedProduct);
-    //             log.info(taggedProduct.toString());
-    //         }
-    //     }
-    //     model.addAttribute("taggedProducts", taggedProducts);
-
-    //     // 태그 리스트에서 상품번호만 추출
-    //     int[] productNumList = new int[taggedProducts.size()];
-
-    //     if (productNumList.length != 0) {
-    //         for (int i = 0; i < productNumList.length; i++) {
-    //             productNumList[i] = taggedProducts.get(i).getPNo();
-    //         }
-    //     }
-
-    //     String productNumListStr = Arrays.toString(productNumList);
-
-    //     model.addAttribute("productNumListStr",productNumListStr);
-
-    //     return "/post/update";
-    // }
 
     /**
      * 게시글 수정 처리
@@ -508,7 +399,6 @@ public class PostController {
                     response = "FAIL";
                     return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-
                 response = "SUCCESS";
             }
         }
@@ -628,19 +518,10 @@ public class PostController {
                 Boolean isFollower = followService.isFollower(requested.getUserId(), loginUser.getUserId());
                 requested.setFollowed(isFollower);  // T: 팔로우중/ F:미팔로우중
             }
-            
-            // 세션아이디의 팔로우 목록 가져오기
-            // 👤 세션계정 세팅 및 팔로잉 목록 가져오기
-            // Map<String, Object> followingDetails = followService.getFollowingDetails(loginUser.getUserId());
-            // loginUserFollowingList = (List<Users>) followingDetails.get("followingList");
-            // log.info(loginUserFollowingList.toString());
-            // log.info(requested.toString());
         }
-
         response.put("postList", postList);
         response.put("profileUser", requested);
         log.info(response.get("profileUser").toString());
-        
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

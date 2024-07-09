@@ -46,16 +46,17 @@ public class TagController {
     @Autowired
     public FileService fileService;
     
-    @GetMapping("/keyword={keyword}")
+    @GetMapping("")
     public ResponseEntity<?> search(@RequestParam("keyword") String keyword, Model model) {
+        // log.info("keyword: " + keyword);
 
-            List<Product> searchedItems = new ArrayList<>();
+        List<Product> searchedItems = new ArrayList<>();
         try {
             searchedItems = productService.search(keyword);
 
             if (searchedItems != null) {
                 // log.info("요청감지");
-                // log.info("keyword: " + keyword);
+                log.info("keyword: " + keyword);
                 // 상품 대표이미지 세팅
                 for (Product product : searchedItems) {
                     // 상품 대표이미지 가져오기
