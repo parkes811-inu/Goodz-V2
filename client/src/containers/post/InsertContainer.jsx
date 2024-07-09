@@ -56,6 +56,15 @@ const InsertContainer = () => {
 
         e.preventDefault();
 
+        if (attachedFiles.length == 0 || attachedFiles === null) {
+            alert('게시글은 이미지가 최소 1장 이상 첨부되어야 합니다.');
+            return;
+        }
+        if (content === "" || content===null) {
+            alert('내용을 입력해주세요.');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('userId', userId);
         formData.append('content', content);
