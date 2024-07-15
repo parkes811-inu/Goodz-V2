@@ -46,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
  * [GET]    /styles                     전체 게시글 목록
  * [GET]    /styles/{postNo}            게시글 조회
  * [POST]   /styles                     게시글 등록 처리
- * [PUT]    /styles/update              게시글 수정 처리
+ * [PUT]    /styles                     게시글 수정 처리
  * [DELETE] /styles/{postNo}            게시글 삭제 처리
  *     
  * 프로필    
