@@ -226,6 +226,9 @@ public class PostController {
             
             post.setLiked(false);
             post.setWished(false);
+            requested.setFollowed(false);
+            postDetails.put("writer", requested);
+
             
         } else {
             log.info("로그인된 사용자");
