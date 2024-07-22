@@ -122,12 +122,12 @@ public class SecurityConfig {
         // );
         http.authorizeHttpRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/user/**").hasAnyRole("USER" , "ADMIN")
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                // .antMatchers("/").permitAll()
+                // .antMatchers("/login").permitAll()
+                // .antMatchers("/user/**").hasAnyRole("USER" , "ADMIN")
+                // .antMatchers("/admin/**").hasRole("ADMIN")
                 // .antMatchers("/admin/**").permitAll()
-                // .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 ;
 						
         // 사용자 정보를 불러오는 서비스 설정

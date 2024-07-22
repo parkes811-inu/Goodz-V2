@@ -139,7 +139,7 @@ function AppRoutes() {
         // </ProtectedRoute>
       } />
       <Route path="/admin/add_product" element={
-        // <ProtectedRoute requiredRole="admin">
+        // <ProtectedRoute requiredRole="admin"?> 
           <ProductInsertPage />
         // </ProtectedRoute>
       } />

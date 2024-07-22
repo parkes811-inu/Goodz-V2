@@ -709,12 +709,7 @@ public class UserController {
     }
 
     @GetMapping("/manage_info")
-    public String manage_info(Model model, HttpSession session) throws Exception {
-        // Users user = (Users)session.getAttribute("user");
-        // user = userService.select(user.getUserId());
-        // log.info(user.toString());
-
-        
+    public ResponseEntity<Users> manage_info(HttpSession session) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
         Users user = userService.findUserByUsername(currentUserName);
@@ -722,20 +717,14 @@ public class UserController {
 
         if (user == null) {
             log.error("User not found for username: " + currentUserName);
-            return "redirect:/user/login";
-
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } else {
-            model.addAttribute("user", user);
+            log.info(currentUserName);
+            log.info(user.toString());
+            return ResponseEntity.ok(user);
         }
-
-        log.info(currentUserName);
-        log.info(user.toString());
-
-
-        model.addAttribute("user", user);
-        return "/user/manage_info";
     }
-
+    
     /**
      * 주소록 화면
      * @param model
