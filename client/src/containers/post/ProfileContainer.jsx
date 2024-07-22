@@ -300,7 +300,7 @@ const ProfileContainer = ({nickname}) => {
                                 {/* <!--[DB] 이미지 --> */}
                                 {/* <!-- <a href="/styles/cmmtX"> --> */}
                                 <Link to={`/styles/${post.postNo}`}>
-                                    <img src={`/files/${post.fileNo}`} alt="게시글" className="rounded-4" style={{width: '100%'}} />
+                                    <img src={`/files/${post.fileNo}`} alt="게시글" style={{width: '100%', borderRadius: '9px'}} />
                                 </Link>
                                 {/* <!--[DB] 스크랩 & 하트 --> */}
                                 <div className="d-flex justify-content-end column-gap-2 mt-2 px-2">

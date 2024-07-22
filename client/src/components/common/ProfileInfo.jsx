@@ -16,7 +16,7 @@ const ProfileInfo = ({nickname, profileImgNo, size}) => {
                     <img src={`/files/${profileImgNo}`} className={`profile-img${size}`} alt="프로필이미지" />
                 </>
             }
-            <p className="userId fw-bold m-0">{nickname}</p>
+            <p className="userId fw-bold ms-2 my-auto">{nickname}</p>
         </Link>
     </>
   )

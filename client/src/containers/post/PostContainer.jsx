@@ -268,17 +268,26 @@ const PostContainer = ({postNo}) => {
                     <ProfileInfo nickname={nickname} profileImgNo={profileImgNo} size={"-m"}    /> 
 
                     <div className="udpateDelete d-flex align-items-end">
-                        {userId == writer.userId ?
-                        <>
-                            {/* 본인 게시글 -> 수정/삭제 */}
-                            <Link to={`/styles/update/${postNo}`}>수정</Link>
-                            <span>|</span>
-                            <Link type="button" onClick={`deletePost(${postNo})`}>삭제</Link>
-                        </>
-                        :
+                        {userId == undefined ?
                         <>
                             {/* 타인 게시글 -> 팔로우/팔로잉 */}
                             <BtnFollow followInfo={writer} />
+                        </>
+                        :
+                        <>
+                            {userId == writer.userId ?
+                            <>
+                                {/* 본인 게시글 -> 수정/삭제 */}
+                                <Link to={`/styles/update/${postNo}`}>수정</Link>
+                                <span>|</span>
+                                <Link type="button" onClick={`deletePost(${postNo})`}>삭제</Link>
+                            </>
+                            :
+                            <>
+                            {/* 타인 게시글 -> 팔로우/팔로잉 */}
+                            <BtnFollow followInfo={writer} />
+                            </>
+                            }
                         </>
                         }
                         

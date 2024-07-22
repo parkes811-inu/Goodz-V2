@@ -12,8 +12,8 @@ const BtnFollow = ({followInfo, handleFollow, position}) => {
         viewerId = userInfo.userId;
         // console.log("유저아이디: " + userId);
     }
-    // const { followed } = followInfo;
-    // console.log(followInfo);
+    const { followed } = followInfo;
+    console.log(followInfo);
 
     const status = followInfo.followed? "팔로잉" : "팔로우";
     const btnStyle = followInfo.followed? "btn-outline-secondary" : "btn-dark";
