@@ -85,25 +85,6 @@ function ProductInsertContainer() {
             const response = await registerProduct(formData);
             console.log('Product registered successfully:', response.data);
 
-            // Register product options after the product has been successfully created
-            // ⭐ 자바스크립트 반복문!! product.options의 각 요소 하나하나 반복돌림! (배열요소 순회해서 작업수행한다고 함.)
-            // ⭐ 반복문 돌려서 상품 옵션 각각을 추가함. (ex: s-100원-10개-판매중 => 한 세트)
-            // for (const option of product.options) {
-            //     const optionData = {
-            //         pNo: response.data.pNo,  // Assuming the product ID is returned in the response
-            //         size: option.size,
-            //         // optionPrice: option.optionPrice, // ⭐ ProductOptions 컴포넌트 안에 options의 구조랑 맞아야해!!
-            //         optionPrice: option.price,
-            //         // stockQuantity: option.stockQuantity,// ⭐ ProductOptions 컴포넌트 안에 options의 구조랑 맞아야해!!
-            //         stockQuantity: option.stock,
-            //         status: option.status
-            //     };
-                
-            //     // ⭐ 상품옵션 등록 진행 ➡️ product_option 테이블에 데이터 추가됨
-            //     // ⭐ 근데 여기 
-            //     await registerProductOption(optionData);
-            // }
-
             navigate('/admin/products');
             
              // fileInsert를 마지막에 실행

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import com.springproject.goodz.pay.service.PayService;
 import com.springproject.goodz.product.dto.Product;
 import com.springproject.goodz.product.dto.ProductOption;
 import com.springproject.goodz.product.service.ProductService;
+import com.springproject.goodz.user.dto.CustomUser;
 import com.springproject.goodz.user.dto.Shippingaddress;
 import com.springproject.goodz.user.dto.Users;
 import com.springproject.goodz.user.service.UserService;
@@ -60,18 +62,23 @@ public class PayController {
     @GetMapping("/buy")
     public ResponseEntity<Object> buy(@RequestParam("pNo") int pNo,
                                       @RequestParam("size") String size,
-                                      HttpSession session) throws Exception {
+                                      @AuthenticationPrincipal CustomUser customUser) throws Exception {
 
-        Users user = (Users) session.getAttribute("user");
-        if (user == null) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("redirect", "/user/login");
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-        }
+    Users loginUser = null;
 
+    if (customUser != null) {
+        log.info("로그인 사용자.");
+        loginUser = customUser.getUser();
+    } else {
+        log.info("비로그인 사용자.");
+    }
+
+    log.info("user 잔이얀: " + customUser.getUsername());
+                            
+    
         // 기본 배송지를 찾기 위한 로직
         Shippingaddress defaultAddress = null;
-        List<Shippingaddress> addresses = userService.selectByUserId(user.getUserId());
+        List<Shippingaddress> addresses = userService.selectByUserId(customUser.getUsername());
         for (Shippingaddress address : addresses) {
             if (userService.isDefaultAddress(address.getAddressNo())) {
                 defaultAddress = address;
@@ -94,7 +101,7 @@ public class PayController {
         }
 
         // purchase 테이블에 user_id, p_no, optionPrice, option_id 등록
-        String userId = user.getUserId();
+        String userId = customUser.getUsername();
 
         Purchase purchase = new Purchase();
         purchase.setUserId(userId);
